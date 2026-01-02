@@ -8,14 +8,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #050505; }
+        /* Verhindert Scrollen auf der gesamten Seite */
+        html, body { height: 100%; overflow: hidden; }
     </style>
 </head>
-<body class="h-screen flex flex-col justify-between text-white overflow-hidden selection:bg-[#EAB308] selection:text-black">
+<body class="h-full flex flex-col justify-between text-white selection:bg-[#EAB308] selection:text-black relative">
 
-    <main class="flex-grow flex flex-col justify-center items-center text-center px-6 pt-10 z-10">
+    <div class="absolute inset-0 z-0 pointer-events-none flex justify-center items-center overflow-hidden">
+        <div class="w-[500px] md:w-[800px] h-[500px] md:h-[800px] bg-[#EAB308] rounded-full mix-blend-screen filter blur-[150px] opacity-15"></div>
+    </div>
+
+    <main class="flex-grow flex flex-col justify-center items-center text-center px-6 z-10">
         
-        <h1 class="text-[#EAB308] font-extrabold uppercase tracking-tighter
-                   text-5xl md:text-7xl lg:text-9xl mb-4">
+        <h1 class="text-transparent bg-clip-text bg-gradient-to-r from-[#EAB308] to-[#CA8A04] font-extrabold uppercase tracking-tighter
+                   text-5xl md:text-7xl lg:text-9xl mb-4 drop-shadow-sm">
             Remembered
         </h1>
 
@@ -26,28 +32,27 @@
         <h2 class="font-extrabold leading-tight
                    text-4xl md:text-6xl lg:text-7xl">
             Deine Geschichte.<br>
-            <span class="text-white">Unvergessen.</span>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">Unvergessen.</span>
         </h2>
 
     </main>
 
-    <footer class="pb-10 px-6 z-10 w-full flex justify-center">
-        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm w-full max-w-md text-left mb-safe">
+    <footer class="pb-8 px-6 z-10 w-full flex justify-center">
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm w-full max-w-md text-left shadow-xl shadow-black/20">
             <div class="flex items-center space-x-3 mb-4">
-                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <div class="relative flex h-3 w-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                </div>
                 <span class="text-white/60 text-xs font-bold tracking-widest uppercase">System Status</span>
             </div>
             <p class="text-xl font-bold mb-1">Building the Future.</p>
-            <div class="flex justify-between items-center opacity-60 text-sm">
+            <div class="flex justify-between items-center opacity-60 text-sm mt-4">
                  <p>Launch: 2026</p>
                  <p>Legacy Global Ventures Ltd.</p>
             </div>
         </div>
     </footer>
-
-    <div class="absolute inset-0 z-0 pointer-events-none font-sans">
-        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] md:w-[800px] h-[500px] md:h-[800px] bg-[#EAB308] rounded-full mix-blend-screen filter blur-[150px] opacity-10"></div>
-    </div>
 
 </body>
 </html>

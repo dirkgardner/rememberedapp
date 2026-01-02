@@ -2,28 +2,28 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Remembered - The AI Legacy Vault</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #050505; }
-        /* Verhindert Wackeln und Scrollen */
+        /* Verhindert Scrollen und Wackeln */
         html, body { height: 100%; overflow: hidden; }
     </style>
 </head>
 
-<body class="h-full flex flex-col justify-between text-white selection:bg-[#EAB308] selection:text-black relative">
+<body class="h-[100dvh] flex flex-col justify-between text-white selection:bg-[#EAB308] selection:text-black relative">
 
     <div class="absolute inset-0 z-0 pointer-events-none flex justify-center items-center overflow-hidden">
-        <div class="w-[600px] h-[600px] bg-[#EAB308] rounded-full mix-blend-screen filter blur-[180px] opacity-10"></div>
+        <div class="w-[600px] h-[600px] bg-[#EAB308] rounded-full mix-blend-screen filter blur-[150px] opacity-15"></div>
     </div>
 
-    <main class="flex-grow flex flex-col justify-center items-center text-center px-6 z-10">
+    <main class="flex-grow flex flex-col justify-center items-center text-center px-6 z-10 w-full">
         
-        <h1 class="text-transparent bg-clip-text bg-gradient-to-b from-[#FCD34D] to-[#B45309] 
+        <h1 class="text-transparent bg-clip-text bg-gradient-to-r from-[#FDE047] via-[#EAB308] to-[#A16207]
                    font-extrabold uppercase tracking-tighter
-                   text-5xl md:text-7xl lg:text-9xl mb-4 drop-shadow-lg">
+                   text-5xl md:text-7xl lg:text-9xl mb-6 drop-shadow-2xl">
             Remembered
         </h1>
 
@@ -38,21 +38,24 @@
 
     </main>
 
-    <footer class="pb-8 px-6 z-10 w-full flex justify-center">
+    <footer class="pb-10 px-6 z-10 w-full flex justify-center safe-area-bottom">
         <div class="bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-md w-full max-w-xs text-left shadow-2xl">
             
-            <div class="flex items-center space-x-3 mb-3">
-                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
-                <span class="text-white/40 text-[10px] font-bold tracking-widest uppercase">System Status</span>
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="relative flex h-3 w-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                </div>
+                <span class="text-white/50 text-[10px] font-bold tracking-widest uppercase">System Status</span>
             </div>
 
-            <p class="text-lg font-bold mb-3 text-white">Building the Future.</p>
+            <p class="text-lg font-bold mb-4 text-white">Building the Future.</p>
             
-            <div class="border-t border-white/10 pt-3 flex justify-between items-end opacity-60">
+            <div class="border-t border-white/10 pt-3 flex justify-between items-end opacity-70">
                  <div class="flex flex-col">
-                    <span class="text-[10px] uppercase tracking-wider mb-1">Operated by</span>
-                    <span class="text-xs font-semibold">Legacy Global Ventures Ltd.</span>
-                    <p class="text-[10px] text-gray-400 mt-1">Limassol, Cyprus • London • Berlin</p>
+                    <span class="text-[10px] uppercase tracking-wider mb-1 text-white/50">Operated by</span>
+                    <span class="text-xs font-semibold mb-1">Legacy Global Ventures Ltd.</span>
+                    <p class="text-[10px] text-gray-400">Limassol, Cyprus • London • Berlin</p>
                  </div>
                  <span class="text-xs font-mono text-[#EAB308]">2026</span>
             </div>

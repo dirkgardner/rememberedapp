@@ -2,45 +2,51 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remembered App - The Digital Legacy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Remembered - The AI Legacy Vault</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #000000; color: #ffffff; font-family: 'Inter', sans-serif; }
-        /* HIER IST DAS GOLD UPDATE */
-        .gradient-text {
-            background: linear-gradient(to right, #FCD34D, #B45309); /* Luxus-Gold Verlauf */
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #050505; }
     </style>
 </head>
-<body class="h-screen flex flex-col justify-center items-center text-center p-6 bg-black">
+<body class="h-screen flex flex-col justify-between text-white overflow-hidden selection:bg-[#EAB308] selection:text-black">
 
-    <div class="mb-10 animate-pulse">
-        <h1 class="text-7xl font-extrabold tracking-tighter gradient-text mb-2">Remembered.</h1>
-        <p class="text-gray-500 text-sm tracking-[0.4em] uppercase font-bold">The AI Legacy Vault</p>
-    </div>
-
-    <div class="max-w-2xl space-y-8">
-        <p class="text-2xl text-gray-400 font-light leading-relaxed">
-            Deine Geschichte. <span class="text-white font-medium">Unvergessen.</span>
-        </p>
+    <main class="flex-grow flex flex-col justify-center items-center text-center px-6 pt-10 z-10">
         
-        <div class="inline-block p-6 bg-white/5 rounded-xl border border-white/10 backdrop-blur-md">
-            <div class="flex items-center space-x-4 mb-2">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-ping"></span>
-                <p class="text-sm text-gray-400 uppercase tracking-widest">System Status</p>
-            </div>
-            <p class="text-xl text-white font-mono">Building the Future.</p>
-            <p class="text-sm text-gray-600 mt-2 font-mono">Launch: 2026</p>
-        </div>
-    </div>
+        <h1 class="text-[#EAB308] font-extrabold uppercase tracking-tighter
+                   text-5xl md:text-7xl lg:text-9xl mb-4">
+            Remembered
+        </h1>
 
-    <div class="absolute bottom-10 text-center opacity-60">
-        <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Operated by</p>
-        <p class="text-sm text-gray-400 font-semibold">Legacy Global Ventures Ltd.</p>
-        <p class="text-[10px] text-gray-600">Limassol, Cyprus • London • Berlin</p>
+        <p class="text-white/60 text-xs md:text-sm uppercase tracking-[0.3em] mb-12 md:mb-24 font-bold">
+            The AI Legacy Vault
+        </p>
+
+        <h2 class="font-extrabold leading-tight
+                   text-4xl md:text-6xl lg:text-7xl">
+            Deine Geschichte.<br>
+            <span class="text-white">Unvergessen.</span>
+        </h2>
+
+    </main>
+
+    <footer class="pb-10 px-6 z-10 w-full flex justify-center">
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm w-full max-w-md text-left mb-safe">
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span class="text-white/60 text-xs font-bold tracking-widest uppercase">System Status</span>
+            </div>
+            <p class="text-xl font-bold mb-1">Building the Future.</p>
+            <div class="flex justify-between items-center opacity-60 text-sm">
+                 <p>Launch: 2026</p>
+                 <p>Legacy Global Ventures Ltd.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="absolute inset-0 z-0 pointer-events-none font-sans">
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] md:w-[800px] h-[500px] md:h-[800px] bg-[#EAB308] rounded-full mix-blend-screen filter blur-[150px] opacity-10"></div>
     </div>
 
 </body>

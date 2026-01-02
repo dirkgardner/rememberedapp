@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remembered - Internal Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; }
+        .text-gold { color: #EAB308; }
+        /* Versteckt die Scrollbar für cleanen Look */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+    </style>
+</head>
+<body class="min-h-screen pb-20 selection:bg-gold selection:text-black">
+
+    <header class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 bg-gradient-to-br from-white/20 to-transparent rounded border border-white/10 flex items-center justify-center">
+                <span class="text-xs font-bold text-white">R</span>
+            </div>
+            <h1 class="text-sm font-bold tracking-[0.2em] text-white uppercase opacity-90">Remembered</h1>
+        </div>
+        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </div>
+    </header>
+
+    <main class="pt-24 px-4 max-w-7xl mx-auto">
+        <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20">
+            <div class="col-span-2 text-center pt-20 animate-pulse">
+                <p class="text-gold text-xs tracking-widest uppercase">Lade Tresor...</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ⚠️ HIER DEINE DATEN REIN:
+        const supabaseUrl = 'https://aahsaqygohmykhagbihk.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function loadLegends() {
+            // Wir holen alle, sortiert nach Name
+            let { data: legends, error } = await supabase
+                .from('legends')
+                .select('*')
+                .order('name');
+
+            if (error) { console.error(error); return; }
+
+            const grid = document.getElementById('legends-grid');
+            grid.innerHTML = '';
+
+            legends.forEach(legend => {
+                // Fallback, falls kein Bild da ist
+                const image = legend.image_url ? legend.image_url : 'https://placehold.co/600x800/111/444?text=NO+IMAGE';
+                const cat = legend.category ? legend.category : 'LEGEND';
+
+                const card = `
+                    <div class="relative group aspect-[3/4] rounded-2xl overflow-hidden bg-gray-900 cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-white/5 border border-white/5">
+                        <img src="${image}" alt="${legend.name}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700">
+                        
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90"></div>
+
+                        <div class="absolute bottom-0 left-0 p-4 w-full">
+                            <h2 class="text-white font-bold text-base md:text-lg leading-tight mb-1 drop-shadow-lg">${legend.name}</h2>
+                            <p class="text-gold text-[9px] md:text-[10px] font-bold tracking-[0.2em] uppercase opacity-80">${cat}</p>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+        }
+        loadLegends();
+    </script>
+</body>
+</html>

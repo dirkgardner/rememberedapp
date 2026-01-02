@@ -42,11 +42,11 @@
         // ⚠️ HIER DEINE DATEN REIN:
         const supabaseUrl = 'https://aahsaqygohmykhagbihk.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        const db = supabase.createClient(supabaseUrl, supabaseKey);
 
         async function loadLegends() {
             // Wir holen alle, sortiert nach Name
-            let { data: legends, error } = await supabase
+            let { data: legends, error } = await db
                 .from('legends')
                 .select('*')
                 .order('name');

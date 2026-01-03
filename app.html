@@ -3,26 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remembered - Internal Preview</title>
+    <title>Remembered - Legends App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    
     <style>
-        body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; }
+        /* --- GLOBAL NOIR STYLING --- */
+        body { 
+            background-color: #050505; 
+            color: white; 
+            font-family: 'Inter', sans-serif; 
+        }
+        
+        /* Gold Akzentfarben */
         .text-gold { color: #EAB308; }
-        /* Versteckt die Scrollbar für cleanen Look */
+        .bg-gold { background-color: #EAB308; }
+        .border-gold { border-color: #EAB308; }
+        
+        /* Scrollbar unsichtbar machen für App-Look */
         ::-webkit-scrollbar { width: 0px; background: transparent; }
+        
+        /* Fade In Animation für Seitenwechsel */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
     </style>
 </head>
-<body class="min-h-screen pb-20 selection:bg-gold selection:text-black">
+<body class="min-h-screen pb-24 selection:bg-gold selection:text-black">
 
-    <header class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex justify-between items-center">
+    <header class="fixed top-0 w-full z-40 bg-black/80 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex justify-between items-center transition-all duration-300" id="main-header">
         <div class="flex items-center space-x-3">
             <div class="w-8 h-8 bg-gradient-to-br from-white/20 to-transparent rounded border border-white/10 flex items-center justify-center">
                 <span class="text-xs font-bold text-white">R</span>
             </div>
             <h1 class="text-sm font-bold tracking-[0.2em] text-white uppercase opacity-90">Remembered</h1>
         </div>
+        
         <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -30,52 +49,434 @@
         </div>
     </header>
 
-    <main class="pt-24 px-4 max-w-7xl mx-auto">
-        <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20">
-            <div class="col-span-2 text-center pt-20 animate-pulse">
-                <p class="text-gold text-xs tracking-widest uppercase">Lade Tresor...</p>
+    <div id="search-bar-container" class="hidden fixed top-0 w-full z-50 bg-black/95 backdrop-blur-xl border-b border-gold/20 px-4 py-3 shadow-2xl">
+        <div class="relative max-w-7xl mx-auto flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 w-5 h-5 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            
+            <input type="text" id="search-input" onkeyup="filterLegends()" placeholder="Suche nach Legenden..." 
+                   class="w-full bg-white/10 border border-white/10 rounded-full py-3 pl-12 pr-4 text-white placeholder-gray-400 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all shadow-inner">
+            
+            <button onclick="closeSearch()" class="ml-4 text-sm text-gray-400 hover:text-white transition-colors font-medium">Abbrechen</button>
+        </div>
+    </div>
+
+    <main id="home-view" class="pt-24 px-4 max-w-7xl mx-auto fade-in">
+        
+        <div id="hero-section" class="mb-12 transition-all duration-500">
+            <h2 class="text-2xl font-bold text-white mb-1 tracking-tight">Für dich – Heute</h2>
+            <p class="text-gray-400 text-sm mb-6 font-medium">Erinnere dich an Ikonen</p>
+
+            <div id="hero-container" class="relative w-full h-[500px] md:h-[600px] rounded-3xl overflow-hidden bg-gray-900 border border-white/10 shadow-2xl shadow-black/50 cursor-pointer group transition-all duration-500 hover:scale-[1.005] hover:border-gold/50">
+                <div class="w-full h-full animate-pulse bg-gray-900 flex items-center justify-center">
+                    <p class="text-gold text-xs tracking-widest uppercase opacity-50">Lade Highlight...</p>
+                </div>
             </div>
         </div>
+
+        <div id="search-results-header" class="hidden mb-6 animate-in slide-in-from-left-4 fade-in">
+            <h2 class="text-xl font-bold text-white">Suchergebnisse</h2>
+            <p class="text-gray-400 text-xs uppercase tracking-widest mt-1">Gefundene Legenden</p>
+        </div>
+
+        <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20 transition-all duration-500">
+            </div>
     </main>
 
+    <section id="profile-view" class="hidden pt-28 px-6 max-w-lg mx-auto fade-in h-screen">
+        <div class="flex flex-col items-center mb-10">
+            <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-gold to-yellow-600 p-1 mb-4 shadow-lg shadow-gold/20">
+                <div class="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden">
+                    <span class="text-2xl font-bold text-white">ME</span>
+                </div>
+            </div>
+            <h2 class="text-2xl font-bold text-white">Mein Profil</h2>
+            <p class="text-gold text-xs tracking-[0.2em] uppercase mt-1 opacity-80">Mitglied seit 2026</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-10">
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center hover:bg-white/10 transition">
+                <p class="text-2xl font-bold text-white">12</p>
+                <p class="text-gray-500 text-[10px] uppercase tracking-widest mt-1">Kerzen entzündet</p>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center hover:bg-white/10 transition">
+                <p class="text-2xl font-bold text-white">5</p>
+                <p class="text-gray-500 text-[10px] uppercase tracking-widest mt-1">Favoriten</p>
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <button class="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition group">
+                <span class="text-sm font-medium group-hover:text-white text-gray-300">Account Einstellungen</span>
+                <svg class="w-4 h-4 text-gray-500 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+            <button class="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition group">
+                <span class="text-sm font-medium group-hover:text-white text-gray-300">Benachrichtigungen</span>
+                <svg class="w-4 h-4 text-gray-500 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+            <button class="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition group mt-8">
+                <span class="text-sm font-medium text-red-500 group-hover:text-red-400">Ausloggen</span>
+                <svg class="w-4 h-4 text-red-500 group-hover:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            </button>
+        </div>
+    </section>
+
+    <nav class="fixed bottom-0 w-full z-40 bg-black/90 backdrop-blur-xl border-t border-white/5 px-6 py-4 flex justify-around items-center pb-8 safe-area-pb shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <button onclick="showHome()" id="nav-home" class="flex flex-col items-center space-y-1 text-gold group transition-all duration-300 transform active:scale-95">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
+                <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
+            </svg>
+            <span class="text-[9px] uppercase tracking-widest font-bold">Home</span>
+        </button>
+        
+        <button onclick="toggleSearch()" id="nav-search" class="flex flex-col items-center space-y-1 text-gray-500 hover:text-white group transition-all duration-300 transform active:scale-95">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 group-hover:text-gold transition-colors">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            <span class="text-[9px] uppercase tracking-widest font-bold">Suche</span>
+        </button>
+        
+        <button onclick="showProfile()" id="nav-profile" class="flex flex-col items-center space-y-1 text-gray-500 hover:text-white group transition-all duration-300 transform active:scale-95">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 group-hover:text-gold transition-colors">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+            <span class="text-[9px] uppercase tracking-widest font-bold">Profil</span>
+        </button>
+    </nav>
+
+    <div id="detail-overlay" class="hidden fixed inset-0 z-50 bg-black text-white overflow-y-auto animate-in fade-in duration-300">
+        
+        <div class="fixed top-6 right-6 z-[60] flex space-x-3">
+            <button id="music-btn" class="hidden bg-black/50 hover:bg-black p-3 rounded-full border border-white/20 hover:border-gold text-white hover:text-gold transition-all duration-300 backdrop-blur-md shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-2v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-2" />
+                </svg>
+            </button>
+            
+            <button onclick="closeDetail()" class="bg-black/50 hover:bg-black p-3 rounded-full border border-white/20 hover:border-gold text-white hover:text-gold transition-all duration-300 backdrop-blur-md shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="relative min-h-screen pb-20">
+            <div class="h-[65vh] w-full relative">
+                <img id="detail-img" src="" class="w-full h-full object-cover object-top grayscale" alt="">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+            </div>
+
+            <div class="px-6 -mt-32 relative z-10 max-w-2xl mx-auto">
+                <h2 id="detail-name" class="text-5xl font-black text-white uppercase tracking-tighter mb-2 drop-shadow-2xl"></h2>
+                <p id="detail-dates" class="text-gold text-sm tracking-[0.3em] mb-8 opacity-90 font-mono"></p>
+
+                <div class="border-l-4 border-gold pl-6 mb-10 py-1">
+                    <h3 id="detail-headline" class="text-2xl font-bold text-white mb-3 italic leading-tight"></h3>
+                    <p id="detail-quote" class="text-gray-400 italic text-lg leading-relaxed">""</p>
+                </div>
+
+                <div class="prose prose-invert prose-lg mb-12">
+                    <p id="detail-bio" class="text-gray-300 leading-loose font-light text-lg text-justify"></p>
+                </div>
+
+                <div id="video-container" class="hidden mb-16">
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        OFFICIAL TRAILER
+                    </h3>
+                    <div class="aspect-video w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black">
+                        <iframe id="video-frame" class="w-full h-full" src="" title="Trailer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                    </div>
+                </div>
+
+                <div class="mb-16 flex flex-col items-center">
+                    <button id="candle-btn" onclick="toggleCandle()" class="group flex flex-col items-center transition-all duration-300 outline-none">
+                        <div id="candle-circle" class="relative w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-gold/50 transition-all duration-500">
+                            <div id="candle-glow" class="absolute inset-0 rounded-full bg-gold blur-xl opacity-0 transition-opacity duration-700"></div>
+                            <svg id="candle-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="relative z-10 w-8 h-8 text-gray-500 transition-colors duration-500">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" />
+                            </svg>
+                        </div>
+                        <span id="candle-text" class="mt-4 text-[10px] font-bold tracking-[0.2em] text-gray-500 uppercase group-hover:text-white transition-colors">Zünde eine Kerze an</span>
+                        <span id="candle-count" class="mt-1 text-gold font-mono text-sm transition-opacity duration-500 opacity-60">1.204</span>
+                    </button>
+                </div>
+
+                <div class="mb-20 text-center">
+                    <button onclick="closeDetail()" class="group relative px-8 py-3 rounded-full overflow-hidden bg-transparent border border-white/20 hover:border-gold transition-colors duration-300">
+                        <span class="relative z-10 text-white text-xs font-bold tracking-[0.2em] uppercase group-hover:text-gold transition-colors">Zurück zur Gallery</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // ⚠️ HIER DEINE DATEN REIN:
+        // --- 1. CONFIG ---
         const supabaseUrl = 'https://aahsaqygohmykhagbihk.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
         const db = supabase.createClient(supabaseUrl, supabaseKey);
 
+        let allLegendsData = [];
+
+        // --- 2. DATEN LADEN ---
         async function loadLegends() {
-            // Wir holen alle, sortiert nach Name
-            let { data: legends, error } = await db
-                .from('legends')
-                .select('*')
-                .order('name');
+            let { data: legends, error } = await db.from('legends').select('*').order('name');
+            if (error) { 
+                console.error("Datenbank Fehler:", error); 
+                return; 
+            }
+            allLegendsData = legends;
+            
+            // Hero und Grid initialisieren
+            setHero(legends);
+            renderGrid(legends);
+        }
 
-            if (error) { console.error(error); return; }
+        // --- 3. HERO SECTION BAUEN ---
+        function setHero(legends) {
+            const heroContainer = document.getElementById('hero-container');
+            if (legends.length > 0 && heroContainer) {
+                // Zufällige Legende
+                const randomLegend = legends[Math.floor(Math.random() * legends.length)];
+                
+                heroContainer.innerHTML = `
+                    <div onclick="openDetail('${randomLegend.id}')" class="relative w-full h-full">
+                        <img src="${randomLegend.image_url}" class="absolute inset-0 w-full h-full object-cover object-top grayscale transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-105" alt="${randomLegend.name}">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 p-6 md:p-10 w-full max-w-3xl">
+                            <span class="inline-block px-3 py-1 mb-4 text-[10px] font-bold tracking-[0.2em] text-black bg-gold rounded-sm uppercase shadow-lg shadow-gold/20">Highlight des Tages</span>
+                            <h2 class="text-white font-black text-4xl md:text-6xl leading-none mb-3 drop-shadow-2xl">${randomLegend.name}</h2>
+                            <p class="text-gray-200 italic text-sm md:text-xl line-clamp-2 opacity-90 font-light border-l-2 border-gold pl-4">"${randomLegend.quote}"</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
 
+        // --- 4. GRID RENDERN ---
+        function renderGrid(legends) {
             const grid = document.getElementById('legends-grid');
             grid.innerHTML = '';
-
+            
             legends.forEach(legend => {
-                // Fallback, falls kein Bild da ist
                 const image = legend.image_url ? legend.image_url : 'https://placehold.co/600x800/111/444?text=NO+IMAGE';
-                const cat = legend.category ? legend.category : 'LEGEND';
-
+                const cat = legend.category ? legend.category : 'LEGEND'; 
+                
                 const card = `
-                    <div class="relative group aspect-[3/4] rounded-2xl overflow-hidden bg-gray-900 cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-white/5 border border-white/5">
-                        <img src="${image}" alt="${legend.name}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700">
+                    <div onclick="openDetail('${legend.id}')" class="relative group aspect-[3/4] rounded-2xl overflow-hidden bg-gray-900 cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-gold/10 border border-white/5 hover:border-gold/30">
+                        <img src="${image}" alt="${legend.name}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-80 group-hover:opacity-100">
                         
-                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90"></div>
-
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90"></div>
+                        
                         <div class="absolute bottom-0 left-0 p-4 w-full">
-                            <h2 class="text-white font-bold text-base md:text-lg leading-tight mb-1 drop-shadow-lg">${legend.name}</h2>
-                            <p class="text-gold text-[9px] md:text-[10px] font-bold tracking-[0.2em] uppercase opacity-80">${cat}</p>
+                            <h2 class="text-white font-bold text-lg leading-tight mb-1 drop-shadow-md group-hover:text-gold transition-colors">${legend.name}</h2>
+                            <p class="text-white/60 text-[10px] font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors">${cat}</p>
                         </div>
                     </div>
                 `;
                 grid.innerHTML += card;
             });
         }
+
+        // --- 5. NAVIGATION ---
+        function showHome() {
+            document.getElementById('home-view').classList.remove('hidden');
+            document.getElementById('profile-view').classList.add('hidden');
+            updateNavColors('home');
+            closeSearch();
+        }
+
+        function showProfile() {
+            document.getElementById('home-view').classList.add('hidden');
+            document.getElementById('profile-view').classList.remove('hidden');
+            updateNavColors('profile');
+            closeSearch();
+        }
+
+        function toggleSearch() {
+            const searchBar = document.getElementById('search-bar-container');
+            if (searchBar.classList.contains('hidden')) {
+                searchBar.classList.remove('hidden');
+                setTimeout(() => document.getElementById('search-input').focus(), 100);
+                updateNavColors('search');
+            } else {
+                closeSearch();
+            }
+        }
+
+        function closeSearch() {
+            document.getElementById('search-bar-container').classList.add('hidden');
+            document.getElementById('search-input').value = '';
+            // Hero wieder anzeigen
+            document.getElementById('hero-section').classList.remove('hidden');
+            document.getElementById('search-results-header').classList.add('hidden');
+            renderGrid(allLegendsData);
+            
+            // Navi Status korrigieren
+            if (!document.getElementById('home-view').classList.contains('hidden')) {
+                updateNavColors('home');
+            }
+        }
+
+        function filterLegends() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            
+            // Hero verstecken beim Suchen
+            if (query.length > 0) {
+                document.getElementById('hero-section').classList.add('hidden');
+                document.getElementById('search-results-header').classList.remove('hidden');
+            } else {
+                document.getElementById('hero-section').classList.remove('hidden');
+                document.getElementById('search-results-header').classList.add('hidden');
+            }
+
+            const filtered = allLegendsData.filter(l => l.name.toLowerCase().includes(query));
+            renderGrid(filtered);
+        }
+
+        function updateNavColors(active) {
+            // Reset Styles
+            const baseClass = "flex flex-col items-center space-y-1 text-gray-500 hover:text-white group transition-all duration-300 transform active:scale-95";
+            const activeClass = "flex flex-col items-center space-y-1 text-gold group transition-all duration-300 transform active:scale-95";
+
+            document.getElementById('nav-home').className = baseClass;
+            document.getElementById('nav-search').className = baseClass;
+            document.getElementById('nav-profile').className = baseClass;
+            
+            // Set Active
+            if(active === 'home') document.getElementById('nav-home').className = activeClass;
+            if(active === 'search') document.getElementById('nav-search').className = activeClass;
+            if(active === 'profile') document.getElementById('nav-profile').className = activeClass;
+        }
+
+        // --- 6. DETAIL VIEW & MULTIMEDIA (Hier ist der Magic Fix!) ---
+        function openDetail(id) {
+            const legend = allLegendsData.find(l => l.id === id);
+            if (!legend) return;
+
+            // Texte setzen
+            document.getElementById('detail-img').src = legend.image_url;
+            document.getElementById('detail-name').innerText = legend.name;
+            document.getElementById('detail-dates').innerText = legend.dates || "ETERNAL";
+            document.getElementById('detail-headline').innerText = legend.headline || legend.name;
+            document.getElementById('detail-quote').innerText = legend.quote ? `"${legend.quote}"` : "";
+            document.getElementById('detail-bio').innerText = legend.bio || "Noch keine Biografie verfügbar.";
+
+            // 🎬 VIDEO FIX LOGIK
+            const videoContainer = document.getElementById('video-container');
+            const videoFrame = document.getElementById('video-frame');
+            
+            if (legend.trailer_url) {
+                try {
+                    // Wir holen nur die ID (nach "v=")
+                    let videoId = "";
+                    if (legend.trailer_url.includes("v=")) {
+                        videoId = legend.trailer_url.split('v=')[1];
+                        // Falls Parameter wie &t=... dran sind, abschneiden
+                        if (videoId.includes("&")) {
+                            videoId = videoId.split("&")[0];
+                        }
+                    } else if (legend.trailer_url.includes("youtu.be/")) {
+                        // Falls es ein Kurzlink ist
+                        videoId = legend.trailer_url.split("youtu.be/")[1];
+                    }
+
+                    if (videoId) {
+                        // Wir nutzen youtube-nocookie für bessere Kompatibilität
+                        videoFrame.src = `https://www.youtube-nocookie.com/embed/${videoId}`;
+                        videoContainer.classList.remove('hidden');
+                    } else {
+                        throw "Keine ID gefunden";
+                    }
+                } catch (e) {
+                    console.log("Video URL Fehler:", e);
+                    videoContainer.classList.add('hidden');
+                }
+            } else {
+                videoContainer.classList.add('hidden');
+                videoFrame.src = "";
+            }
+
+            // 🎵 MUSIC BUTTON LOGIC
+            const musicBtn = document.getElementById('music-btn');
+            if (legend.music_url) {
+                musicBtn.classList.remove('hidden');
+                musicBtn.onclick = function() { window.open(legend.music_url, '_blank'); };
+            } else {
+                musicBtn.classList.add('hidden');
+            }
+
+            // Candle Reset
+            resetCandle();
+
+            // Overlay anzeigen
+            document.getElementById('detail-overlay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // --- 7. CANDLE LOGIC ---
+        function resetCandle() {
+            const icon = document.getElementById('candle-icon');
+            const circle = document.getElementById('candle-circle');
+            const glow = document.getElementById('candle-glow');
+            const text = document.getElementById('candle-text');
+            const countLabel = document.getElementById('candle-count');
+
+            icon.setAttribute('fill', 'none');
+            icon.setAttribute('stroke', 'currentColor');
+            icon.classList.add('text-gray-500');
+            icon.classList.remove('text-black', 'fill-black');
+            
+            circle.classList.remove('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]');
+            glow.classList.remove('opacity-40');
+            glow.classList.add('opacity-0');
+            
+            text.innerText = "ZÜNDE EINE KERZE AN";
+            text.classList.remove('text-gold');
+            
+            // Zufälliger Zähler für Demo
+            countLabel.innerText = Math.floor(Math.random() * (5000 - 800 + 1) + 800).toLocaleString('de-DE');
+            countLabel.classList.add('opacity-60');
+        }
+
+        function toggleCandle() {
+            const icon = document.getElementById('candle-icon');
+            const circle = document.getElementById('candle-circle');
+            const glow = document.getElementById('candle-glow');
+            const text = document.getElementById('candle-text');
+            const countLabel = document.getElementById('candle-count');
+
+            // Animation
+            icon.classList.remove('text-gray-500');
+            icon.setAttribute('stroke', '#EAB308');
+            icon.setAttribute('fill', '#EAB308');
+            
+            circle.classList.add('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]');
+            glow.classList.remove('opacity-0');
+            glow.classList.add('opacity-40');
+
+            text.innerText = "KERZE ENTZÜNDET";
+            text.classList.add('text-gold');
+            
+            // Zähler +1
+            let currentCount = parseInt(countLabel.innerText.replace(/\./g, ''));
+            countLabel.innerText = (currentCount + 1).toLocaleString('de-DE');
+            countLabel.classList.remove('opacity-60');
+            countLabel.classList.add('opacity-100', 'font-bold');
+        }
+
+        function closeDetail() {
+            document.getElementById('detail-overlay').classList.add('hidden');
+            // Video stoppen durch Leeren der Source
+            document.getElementById('video-frame').src = ""; 
+            document.body.style.overflow = 'auto';
+        }
+
+        // App Start
         loadLegends();
     </script>
 </body>

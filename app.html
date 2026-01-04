@@ -191,15 +191,43 @@
         function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
         function updateNavColors(active) { const b="flex flex-col items-center space-y-1 text-gray-500 hover:text-white group transition-all duration-300 transform active:scale-95"; const a="flex flex-col items-center space-y-1 text-gold group transition-all duration-300 transform active:scale-95"; document.getElementById('nav-home').className=b; document.getElementById('nav-search').className=b; document.getElementById('nav-profile').className=b; if(active==='home') document.getElementById('nav-home').className=a; if(active==='search') document.getElementById('nav-search').className=a; if(active==='profile') document.getElementById('nav-profile').className=a; }
         
+        // --- FIXED: SMARTE DATUMS-FUNKTION (OHNE NOTBREMSE) ---
+        function getSmartDate(datesStr, deathDateStr) {
+            if (!datesStr) return '';
+            if (!deathDateStr) return datesStr;
+
+            // Versuch, das Geburtsjahr zu finden
+            let birthYear = datesStr.split('–')[0].trim();
+            if(datesStr.includes('-')) birthYear = datesStr.split('-')[0].trim();
+            
+            let niceDeathDate = deathDateStr;
+            
+            // Formatieren: 2011-07-23 -> 23.07.2011
+            if (deathDateStr.includes('-')) {
+                const parts = deathDateStr.split('-'); 
+                // Wenn es 3 Teile sind (YYYY-MM-DD), drehen wir es um
+                if(parts.length === 3) {
+                    niceDeathDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
+                }
+            }
+            
+            // Formatieren: 23.07.2011 -> 23.07.2011 (Bleibt so)
+            // Hier war der Fehler: Früher haben wir abgebrochen, jetzt nutzen wir es!
+
+            return `${birthYear} – ${niceDeathDate}`;
+        }
+
         // CARD DESIGN
         function createCard(l) { 
             const i = l.image_url || 'https://placehold.co/600x800'; 
+            const displayDate = getSmartDate(l.dates, l.death_date);
+
             return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden border border-white/5 hover:border-gold/30 transition-all duration-500">
                 <img src="${i}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-700">
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent opacity-90"></div>
                 <div class="absolute bottom-0 left-0 p-4 w-full">
                     <h2 class="text-white font-bold text-lg leading-tight mb-1 group-hover:text-gold transition-colors">${l.name}</h2>
-                    <p class="text-gold text-xs font-mono mb-2 opacity-90">${l.dates || ''}</p>
+                    <p class="text-gold text-xs font-mono mb-2 opacity-90">${displayDate}</p>
                     <p class="text-gray-400 text-[9px] font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors">${l.category || 'LEGEND'}</p>
                 </div>
             </div>`; 
@@ -230,13 +258,15 @@
         function closeSearch() { document.getElementById('search-bar-container').classList.add('hidden'); document.getElementById('search-input').value=''; renderGrid(allLegendsData); }
         function filterLegends() { const q=document.getElementById('search-input').value.toLowerCase(); renderGrid(allLegendsData.filter(l=>l.name.toLowerCase().includes(q))); }
         
-        // --- FIXED: OPEN DETAIL (ZUFALLSZAHL + RESET) ---
         function openDetail(id) { 
             const l=allLegendsData.find(x=>x.id===id); if(!l)return; 
             currentDetailId=id; 
             document.getElementById('detail-img').src=l.image_url; 
             document.getElementById('detail-name').innerText=l.name; 
-            document.getElementById('detail-dates').innerText=l.dates||""; 
+            
+            // HIER AUCH UPDATE
+            document.getElementById('detail-dates').innerText = getSmartDate(l.dates, l.death_date);
+            
             document.getElementById('detail-headline').innerText=l.headline||""; 
             document.getElementById('detail-quote').innerText=l.quote||""; 
             document.getElementById('detail-bio').innerText=l.bio||""; 
@@ -247,14 +277,12 @@
             
             updateFavBtnState(id);
             
-            // --- FIX: KERZE RESETTEN ---
             const icon = document.getElementById('candle-icon'); const circle = document.getElementById('candle-circle'); const glow = document.getElementById('candle-glow'); const text = document.getElementById('candle-text'); const countLabel = document.getElementById('candle-count');
             icon.setAttribute('fill', 'none'); icon.setAttribute('stroke', 'currentColor'); icon.classList.add('text-gray-500'); icon.classList.remove('text-black', 'fill-black'); icon.setAttribute('stroke', 'currentColor');
             circle.classList.remove('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); 
             glow.classList.remove('opacity-40'); glow.classList.add('opacity-0'); 
             text.innerText = "ZÜNDE EINE KERZE AN"; text.classList.remove('text-gold'); 
             
-            // Zufallszahl generieren (800 - 5000)
             const randomCount = Math.floor(Math.random() * (5000 - 800 + 1) + 800);
             countLabel.innerText = randomCount.toLocaleString('de-DE'); 
             countLabel.classList.add('opacity-60'); countLabel.classList.remove('opacity-100', 'font-bold');
@@ -263,35 +291,13 @@
         }
 
         function closeDetail() { document.getElementById('detail-overlay').classList.add('hidden'); document.getElementById('video-frame').src=""; }
-        
         function toggleFavorite() { if(!currentDetailId)return; let f=getFavorites(); if(f.includes(currentDetailId)) f=f.filter(i=>i!==currentDetailId); else f.push(currentDetailId); saveFavorites(f); updateFavBtnState(currentDetailId); }
         function updateFavBtnState(id) { const f=getFavorites(); const i=document.getElementById('fav-icon'); if(f.includes(id)) { i.setAttribute('fill','currentColor'); i.classList.add('text-red-500'); } else { i.setAttribute('fill','none'); i.classList.remove('text-red-500'); } }
-        
-        // --- FIXED: TOGGLE CANDLE (MIT LOGIK) ---
         function toggleCandle() { 
-            const icon = document.getElementById('candle-icon'); 
-            const circle = document.getElementById('candle-circle'); 
-            const glow = document.getElementById('candle-glow'); 
-            const text = document.getElementById('candle-text'); 
-            const countLabel = document.getElementById('candle-count'); 
-
-            // Check ob schon an (einfacher Check via Text)
+            const icon = document.getElementById('candle-icon'); const circle = document.getElementById('candle-circle'); const glow = document.getElementById('candle-glow'); const text = document.getElementById('candle-text'); const countLabel = document.getElementById('candle-count'); 
             if(text.innerText === "KERZE ENTZÜNDET") return;
-
-            icon.classList.remove('text-gray-500'); 
-            icon.setAttribute('stroke', '#EAB308'); 
-            icon.setAttribute('fill', '#EAB308'); 
-            circle.classList.add('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); 
-            glow.classList.remove('opacity-0'); 
-            glow.classList.add('opacity-40'); 
-            text.innerText = "KERZE ENTZÜNDET"; 
-            text.classList.add('text-gold'); 
-
-            // Hochzählen
-            let currentCount = parseInt(countLabel.innerText.replace(/\./g, '')); 
-            countLabel.innerText = (currentCount + 1).toLocaleString('de-DE'); 
-            countLabel.classList.remove('opacity-60'); 
-            countLabel.classList.add('opacity-100', 'font-bold'); 
+            icon.classList.remove('text-gray-500'); icon.setAttribute('stroke', '#EAB308'); icon.setAttribute('fill', '#EAB308'); circle.classList.add('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); glow.classList.remove('opacity-0'); glow.classList.add('opacity-40'); text.innerText = "KERZE ENTZÜNDET"; text.classList.add('text-gold'); 
+            let currentCount = parseInt(countLabel.innerText.replace(/\./g, '')); countLabel.innerText = (currentCount + 1).toLocaleString('de-DE'); countLabel.classList.remove('opacity-60'); countLabel.classList.add('opacity-100', 'font-bold'); 
         }
 
         loadLegends();

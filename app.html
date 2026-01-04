@@ -66,6 +66,14 @@
         <div id="favorites-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
     </main>
 
+    <main id="candles-view" class="hidden pt-24 px-4 max-w-7xl mx-auto fade-in h-screen">
+        <div class="mb-8 flex items-center space-x-4">
+            <button onclick="showProfile()" class="p-2 bg-white/5 rounded-full hover:bg-white/10"><svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
+            <h2 class="text-2xl font-bold text-white">Deine Lichter</h2>
+        </div>
+        <div id="candles-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
+    </main>
+
     <main id="settings-view" class="hidden pt-24 px-6 max-w-lg mx-auto fade-in h-screen">
         <div class="mb-8 flex items-center space-x-4">
             <button onclick="showProfile()" class="p-2 bg-white/5 rounded-full hover:bg-white/10"><svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
@@ -93,10 +101,10 @@
             <p class="text-gold text-xs tracking-[0.2em] uppercase mt-1 opacity-80">Mitglied seit 2026</p>
         </div>
         <div class="grid grid-cols-2 gap-4 mb-10">
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-                <p id="profile-candle-count" class="text-2xl font-bold text-white">12</p><p class="text-gray-500 text-[10px] uppercase mt-1">Kerzen</p>
+            <div onclick="showCandlesView()" class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center cursor-pointer group hover:bg-white/10">
+                <p id="profile-candle-count" class="text-2xl font-bold text-white group-hover:text-gold">0</p><p class="text-gray-500 text-[10px] uppercase mt-1 group-hover:text-white">Kerzen</p>
             </div>
-            <div onclick="showFavoritesView()" class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center cursor-pointer group">
+            <div onclick="showFavoritesView()" class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center cursor-pointer group hover:bg-white/10">
                 <p id="profile-fav-count" class="text-2xl font-bold text-white group-hover:text-gold">0</p><p class="text-gray-500 text-[10px] uppercase mt-1 group-hover:text-white">Favoriten</p>
             </div>
         </div>
@@ -185,45 +193,37 @@
 
         async function loadLegends() { let { data: legends, error } = await db.from('legends').select('*').order('name'); if (!error) { allLegendsData = legends; setHero(legends); renderGrid(legends); loadUserData(); checkAnniversaries(); } }
 
-        // UTILS
+        // UTILS & STORAGE
         function loadUserData() { const n = localStorage.getItem('user_name'); if (n) { document.getElementById('profile-name').innerText=n; document.getElementById('profile-avatar').innerText=n.charAt(0).toUpperCase(); document.getElementById('header-avatar').innerText=n.charAt(0).toUpperCase(); document.getElementById('settings-name-input').value=n; } updatePushBtnState(); updateProfileStats(); }
         function saveSettings() { const n = document.getElementById('settings-name-input').value.trim(); if (n) { localStorage.setItem('user_name', n); loadUserData(); showProfile(); } }
         function resetApp() { if(confirm("Alles löschen?")) { localStorage.clear(); location.reload(); } }
         function getFavorites() { return JSON.parse(localStorage.getItem('my_favorites') || '[]'); }
         function saveFavorites(arr) { localStorage.setItem('my_favorites', JSON.stringify(arr)); updateProfileStats(); checkAnniversaries(); }
-        function updateProfileStats() { document.getElementById('profile-fav-count').innerText = getFavorites().length; }
-        function hideAllViews() { document.getElementById('home-view').classList.add('hidden'); document.getElementById('profile-view').classList.add('hidden'); document.getElementById('favorites-view').classList.add('hidden'); document.getElementById('settings-view').classList.add('hidden'); }
+        // NEW: MY CANDLES STORAGE
+        function getMyCandles() { return JSON.parse(localStorage.getItem('my_candles') || '[]'); }
+        function saveMyCandles(id) { const c = getMyCandles(); if(!c.includes(id)) { c.push(id); localStorage.setItem('my_candles', JSON.stringify(c)); updateProfileStats(); } }
+
+        function updateProfileStats() { 
+            document.getElementById('profile-fav-count').innerText = getFavorites().length; 
+            document.getElementById('profile-candle-count').innerText = getMyCandles().length; // JETZT ECHT!
+        }
+
+        // VIEW NAVIGATION
+        function hideAllViews() { document.getElementById('home-view').classList.add('hidden'); document.getElementById('profile-view').classList.add('hidden'); document.getElementById('favorites-view').classList.add('hidden'); document.getElementById('candles-view').classList.add('hidden'); document.getElementById('settings-view').classList.add('hidden'); }
         function showHome() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); updateNavColors('home'); closeSearch(); }
         function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); closeSearch(); }
+        
         function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); const g = document.getElementById('favorites-grid'); g.innerHTML = ''; const f = getFavorites(); const l = allLegendsData.filter(x => f.includes(x.id)); if(l.length) l.forEach(x => g.innerHTML += createCard(x)); else g.innerHTML = '<p class="col-span-2 text-gray-500">Keine Favoriten.</p>'; }
+        
+        // NEW: SHOW CANDLES VIEW
+        function showCandlesView() { hideAllViews(); document.getElementById('candles-view').classList.remove('hidden'); const g = document.getElementById('candles-grid'); g.innerHTML = ''; const c = getMyCandles(); const l = allLegendsData.filter(x => c.includes(x.id)); if(l.length) l.forEach(x => g.innerHTML += createCard(x)); else g.innerHTML = '<p class="col-span-2 text-gray-500">Noch keine Kerzen entzündet.</p>'; }
+
         function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
         function updateNavColors(active) { const b="flex flex-col items-center space-y-1 text-gray-500 hover:text-white group transition-all duration-300 transform active:scale-95"; const a="flex flex-col items-center space-y-1 text-gold group transition-all duration-300 transform active:scale-95"; document.getElementById('nav-home').className=b; document.getElementById('nav-search').className=b; document.getElementById('nav-profile').className=b; if(active==='home') document.getElementById('nav-home').className=a; if(active==='search') document.getElementById('nav-search').className=a; if(active==='profile') document.getElementById('nav-profile').className=a; }
         
-        // --- HELPER: NUR JAHRESZAHLEN (für Karte) ---
-        function getCardDate(datesStr, deathDateStr) {
-            if (!datesStr) return '';
-            let birthYear = datesStr.substr(-4); 
-            const match = datesStr.match(/(\d{4})/);
-            if (match) birthYear = match[0];
-            let deathYear = '';
-            if (deathDateStr) { deathYear = deathDateStr.split('-')[0]; }
-            if(deathYear) return `${birthYear} – ${deathYear}`;
-            return datesStr; 
-        }
-
-        // --- HELPER: VOLLES DATUM (für Detail) ---
-        function getDetailDate(datesStr, deathDateStr) {
-            if (!datesStr) return '';
-            if (!deathDateStr) return datesStr;
-            let birthPart = datesStr.split('–')[0].trim();
-            if(datesStr.includes('-')) birthPart = datesStr.split('-')[0].trim();
-            let niceDeathDate = deathDateStr;
-            if (deathDateStr.includes('-')) {
-                const parts = deathDateStr.split('-'); 
-                if(parts.length === 3) { niceDeathDate = `${parts[2]}.${parts[1]}.${parts[0]}`; }
-            }
-            return `${birthPart} – ${niceDeathDate}`;
-        }
+        // DATE HELPERS
+        function getCardDate(datesStr, deathDateStr) { if (!datesStr) return ''; let birthYear = datesStr.substr(-4); const match = datesStr.match(/(\d{4})/); if (match) birthYear = match[0]; let deathYear = ''; if (deathDateStr) { deathYear = deathDateStr.split('-')[0]; } if(deathYear) return `${birthYear} – ${deathYear}`; return datesStr; }
+        function getDetailDate(datesStr, deathDateStr) { if (!datesStr) return ''; if (!deathDateStr) return datesStr; let birthPart = datesStr.split('–')[0].trim(); if(datesStr.includes('-')) birthPart = datesStr.split('-')[0].trim(); let niceDeathDate = deathDateStr; if (deathDateStr.includes('-')) { const parts = deathDateStr.split('-'); if(parts.length === 3) { niceDeathDate = `${parts[2]}.${parts[1]}.${parts[0]}`; } } return `${birthPart} – ${niceDeathDate}`; }
 
         function createCard(l) { 
             const i = l.image_url || 'https://placehold.co/600x800'; 
@@ -242,23 +242,10 @@
         function renderGrid(legends) { 
             const g=document.getElementById('legends-grid'); g.innerHTML=''; 
             legends.forEach(l => g.innerHTML+=createCard(l));
-            g.innerHTML += `
-            <div onclick="suggestLegend()" class="relative group aspect-[3/4] bg-white/5 rounded-xl border-2 border-dashed border-white/20 hover:border-gold flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-white/10">
-                <div class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center mb-4 group-hover:bg-gold text-gold group-hover:text-black transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                </div>
-                <p class="text-white font-bold text-sm text-center px-4">Jemanden vergessen?</p>
-                <p class="text-gray-400 text-xs text-center mt-1">Schlag eine Ikone vor</p>
-            </div>`;
+            g.innerHTML += `<div onclick="suggestLegend()" class="relative group aspect-[3/4] bg-white/5 rounded-xl border-2 border-dashed border-white/20 hover:border-gold flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-white/10"><div class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center mb-4 group-hover:bg-gold text-gold group-hover:text-black transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></div><p class="text-white font-bold text-sm text-center px-4">Jemanden vergessen?</p><p class="text-gray-400 text-xs text-center mt-1">Schlag eine Ikone vor</p></div>`;
         }
         
-        function suggestLegend() {
-            const email = "admin@rememberedapp.io"; 
-            const subject = "Vorschlag für Remembered";
-            const body = "Name der Legende:%0AWarum:%0A";
-            window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-        }
-
+        function suggestLegend() { const email = "admin@rememberedapp.io"; window.location.href = `mailto:${email}?subject=Vorschlag&body=Name:%0A`; }
         function setHero(legends) { const c=document.getElementById('hero-container'); if(legends.length && c) { const r=legends[Math.floor(Math.random() * legends.length)]; c.innerHTML=`<div onclick="openDetail('${r.id}')" class="relative w-full h-full"><img src="${r.image_url}" class="absolute inset-0 w-full h-full object-cover object-top grayscale"><div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div><div class="absolute bottom-0 left-0 p-8"><span class="bg-gold text-black text-[10px] font-bold px-2 py-1 uppercase">Highlight</span><h2 class="text-4xl font-black mt-2 text-white">${r.name}</h2></div></div>`; } }
         function toggleSearch() { const s=document.getElementById('search-bar-container'); if(s.classList.contains('hidden')) { s.classList.remove('hidden'); setTimeout(()=>document.getElementById('search-input').focus(),100); } else closeSearch(); }
         function closeSearch() { document.getElementById('search-bar-container').classList.add('hidden'); document.getElementById('search-input').value=''; renderGrid(allLegendsData); }
@@ -287,33 +274,45 @@
             glow.classList.remove('opacity-40'); glow.classList.add('opacity-0'); 
             text.innerText = "ZÜNDE EINE KERZE AN"; text.classList.remove('text-gold'); 
             
-            // Zahl laden
+            // Check if user already lit candle locally
+            const myCandles = getMyCandles();
+            if(myCandles.includes(id)) {
+                text.innerText = "KERZE ENTZÜNDET"; text.classList.add('text-gold');
+                icon.classList.remove('text-gray-500'); icon.setAttribute('stroke', '#EAB308'); icon.setAttribute('fill', '#EAB308'); circle.classList.add('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); glow.classList.remove('opacity-0'); glow.classList.add('opacity-40');
+            }
+
+            // Global Count Load
             const realCount = l.candles || 0; 
             countLabel.innerText = realCount.toLocaleString('de-DE'); 
             if(realCount > 0) { countLabel.classList.add('opacity-100', 'font-bold'); countLabel.classList.remove('opacity-60'); } else { countLabel.classList.add('opacity-60'); countLabel.classList.remove('opacity-100', 'font-bold'); }
 
             document.getElementById('detail-overlay').classList.remove('hidden'); 
-            document.getElementById('radio-fab').classList.add('hidden'); // Radio verstecken
+            document.getElementById('radio-fab').classList.add('hidden'); 
         }
 
-        function closeDetail() { 
-            document.getElementById('detail-overlay').classList.add('hidden'); 
-            document.getElementById('video-frame').src=""; 
-            document.getElementById('radio-fab').classList.remove('hidden'); // Radio zeigen
-        }
+        function closeDetail() { document.getElementById('detail-overlay').classList.add('hidden'); document.getElementById('video-frame').src=""; document.getElementById('radio-fab').classList.remove('hidden'); }
         function toggleFavorite() { if(!currentDetailId)return; let f=getFavorites(); if(f.includes(currentDetailId)) f=f.filter(i=>i!==currentDetailId); else f.push(currentDetailId); saveFavorites(f); updateFavBtnState(currentDetailId); }
         function updateFavBtnState(id) { const f=getFavorites(); const i=document.getElementById('fav-icon'); if(f.includes(id)) { i.setAttribute('fill','currentColor'); i.classList.add('text-red-500'); } else { i.setAttribute('fill','none'); i.classList.remove('text-red-500'); } }
         
         async function toggleCandle() { 
             const text = document.getElementById('candle-text');
             if(text.innerText === "KERZE ENTZÜNDET") return;
+            
+            // 1. UI Update
             const icon = document.getElementById('candle-icon'); const circle = document.getElementById('candle-circle'); const glow = document.getElementById('candle-glow'); const countLabel = document.getElementById('candle-count'); 
             icon.classList.remove('text-gray-500'); icon.setAttribute('stroke', '#EAB308'); icon.setAttribute('fill', '#EAB308'); circle.classList.add('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); glow.classList.remove('opacity-0'); glow.classList.add('opacity-40'); text.innerText = "KERZE ENTZÜNDET"; text.classList.add('text-gold'); 
+            
+            // 2. Global Count Update (+1)
             let currentVal = parseInt(countLabel.innerText.replace(/\./g, '')) || 0;
             const newVal = currentVal + 1;
             countLabel.innerText = newVal.toLocaleString('de-DE'); 
             countLabel.classList.remove('opacity-60'); countLabel.classList.add('opacity-100', 'font-bold'); 
+            
+            // 3. Local Storage Save (Merk dir, dass ICH geklickt habe)
             if(currentDetailId) {
+                saveMyCandles(currentDetailId); // <--- DAS IST NEU!
+                
+                // 4. DB Update
                 const legend = allLegendsData.find(x => x.id === currentDetailId);
                 if(legend) {
                     legend.candles = newVal; 

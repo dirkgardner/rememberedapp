@@ -69,12 +69,10 @@
         </div>
         <div class="space-y-6">
             <input type="text" id="settings-name-input" placeholder="Dein Name" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white">
-            
             <button id="push-btn" onclick="enablePush()" class="w-full bg-white/5 border border-white/10 text-gray-300 font-bold py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-white/10 hover:text-white transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
                 <span id="push-btn-text">Push-Nachrichten aktivieren</span>
             </button>
-
             <button onclick="saveSettings()" class="w-full bg-gold text-black font-bold py-4 rounded-xl">SPEICHERN</button>
             <button onclick="resetApp()" class="w-full text-red-500 py-3 text-sm">Alles löschen</button>
         </div>
@@ -144,155 +142,79 @@
         let allLegendsData = [];
         let currentDetailId = null;
 
-        // --- PUSH NOTIFICATION LOGIC ---
+        // PUSH
         function enablePush() {
-            if (!("Notification" in window)) {
-                alert("Dein Browser unterstützt keine Push-Nachrichten.");
-                return;
-            }
+            if (!("Notification" in window)) { alert("Dein Browser unterstützt keine Push-Nachrichten."); return; }
             Notification.requestPermission().then(permission => {
-                if (permission === "granted") {
-                    document.getElementById('push-btn-text').innerText = "Push ist Aktiviert ✅";
-                    // Test Push
-                    new Notification("Remembered", { body: "Push-Nachrichten aktiviert! Du wirst informiert.", icon: "https://placehold.co/100x100/gold/black?text=R" });
-                } else {
-                    alert("Push-Nachrichten wurden blockiert.");
-                }
+                if (permission === "granted") { document.getElementById('push-btn-text').innerText = "Push ist Aktiviert ✅"; new Notification("Remembered", { body: "Push-Nachrichten aktiviert! Du wirst informiert.", icon: "https://placehold.co/100x100/gold/black?text=R" }); }
+                else { alert("Push-Nachrichten wurden blockiert."); }
             });
         }
-        
-        function updatePushBtnState() {
-            if ("Notification" in window && Notification.permission === "granted") {
-                document.getElementById('push-btn-text').innerText = "Push ist Aktiviert ✅";
-                document.getElementById('push-btn').classList.add('text-gold', 'border-gold');
-            }
-        }
+        function updatePushBtnState() { if ("Notification" in window && Notification.permission === "granted") { document.getElementById('push-btn-text').innerText = "Push ist Aktiviert ✅"; document.getElementById('push-btn').classList.add('text-gold', 'border-gold'); } }
 
-        // --- ANNIVERSARY CHECK ---
+        // CHECK ANNIVERSARY
         function checkAnniversaries() {
-            const today = new Date();
-            const currentMonth = today.getMonth() + 1; 
-            const currentDay = today.getDate();
-            const favIds = getFavorites();
-            let hit = null;
-            let yearsGone = 0;
-
+            const today = new Date(); const currentMonth = today.getMonth() + 1; const currentDay = today.getDate(); const favIds = getFavorites(); let hit = null; let yearsGone = 0;
             allLegendsData.forEach(legend => {
                 if (legend.death_date && favIds.includes(legend.id)) {
                     let dDay, dMonth, dYear;
-                    if (legend.death_date.includes('.')) {
-                        const parts = legend.death_date.split('.');
-                        dDay = parseInt(parts[0]); dMonth = parseInt(parts[1]); dYear = parseInt(parts[2]);
-                    } else {
-                        const parts = legend.death_date.split('-');
-                        dYear = parseInt(parts[0]); dMonth = parseInt(parts[1]); dDay = parseInt(parts[2]);
-                    }
-
-                    if (dMonth === currentMonth && dDay === currentDay) {
-                        hit = legend;
-                        yearsGone = today.getFullYear() - dYear;
-                    }
+                    if (legend.death_date.includes('.')) { const p = legend.death_date.split('.'); dDay = parseInt(p[0]); dMonth = parseInt(p[1]); dYear = parseInt(p[2]); } 
+                    else { const p = legend.death_date.split('-'); dYear = parseInt(p[0]); dMonth = parseInt(p[1]); dDay = parseInt(p[2]); }
+                    if (dMonth === currentMonth && dDay === currentDay) { hit = legend; yearsGone = today.getFullYear() - dYear; }
                 }
             });
-
-            // UI Update
-            const notifBtn = document.getElementById('notif-btn');
-            const notifText = document.getElementById('notif-text');
-            const notifBadge = document.getElementById('notif-badge');
-            const headerDot = document.getElementById('header-notif-dot');
-            const headerDotStatic = document.getElementById('header-notif-dot-static');
-
+            const btn=document.getElementById('notif-btn'); const txt=document.getElementById('notif-text'); const bdg=document.getElementById('notif-badge'); const d1=document.getElementById('header-notif-dot'); const d2=document.getElementById('header-notif-dot-static');
             if (hit) {
-                // RED ALERT UI
-                notifBtn.onclick = function() { openDetail(hit.id); };
-                notifBtn.classList.remove('bg-white/5');
-                notifBtn.classList.add('bg-red-500/10', 'border-red-500/50', 'pulse-red');
-                notifText.innerHTML = `<span class="text-red-400 font-bold">🕊️ ${hit.name}: ${yearsGone}. Todestag</span>`;
-                notifBadge.classList.remove('hidden');
-                headerDot.classList.remove('hidden');
-                headerDotStatic.classList.remove('hidden');
-
-                // PUSH NOTIFICATION SENDEN (Wenn erlaubt)
-                if ("Notification" in window && Notification.permission === "granted") {
-                    // Checken ob wir heute schon genervt haben (Session Storage)
-                    if (!sessionStorage.getItem('notified_' + hit.id)) {
-                        new Notification(`🕊️ Gedenke ${hit.name}`, {
-                            body: `Heute ist der ${yearsGone}. Todestag. Zünde eine Kerze an.`,
-                            icon: hit.image_url || "https://placehold.co/100x100/gold/black?text=R"
-                        });
-                        sessionStorage.setItem('notified_' + hit.id, 'true');
-                    }
+                btn.onclick = function() { openDetail(hit.id); }; btn.classList.remove('bg-white/5'); btn.classList.add('bg-red-500/10', 'border-red-500/50', 'pulse-red');
+                txt.innerHTML = `<span class="text-red-400 font-bold">🕊️ ${hit.name}: ${yearsGone}. Todestag</span>`;
+                bdg.classList.remove('hidden'); d1.classList.remove('hidden'); d2.classList.remove('hidden');
+                if ("Notification" in window && Notification.permission === "granted" && !sessionStorage.getItem('notified_' + hit.id)) {
+                    new Notification(`🕊️ Gedenke ${hit.name}`, { body: `Heute ist der ${yearsGone}. Todestag.`, icon: hit.image_url });
+                    sessionStorage.setItem('notified_' + hit.id, 'true');
                 }
-
-            } else {
-                notifBtn.onclick = null;
-                notifText.innerText = "Keine neuen Nachrichten";
-                notifBtn.classList.remove('bg-red-500/10', 'border-red-500/50', 'pulse-red');
-                notifBtn.classList.add('bg-white/5');
-                notifBadge.classList.add('hidden');
-                headerDot.classList.add('hidden');
-                headerDotStatic.classList.add('hidden');
-            }
+            } else { btn.onclick=null; txt.innerText="Keine neuen Nachrichten"; btn.classList.remove('bg-red-500/10','border-red-500/50','pulse-red'); btn.classList.add('bg-white/5'); bdg.classList.add('hidden'); d1.classList.add('hidden'); d2.classList.add('hidden'); }
         }
 
-        async function loadLegends() {
-            let { data: legends, error } = await db.from('legends').select('*').order('name');
-            if (!error) { 
-                allLegendsData = legends; 
-                setHero(legends); 
-                renderGrid(legends); 
-                loadUserData();
-                checkAnniversaries(); 
-            }
-        }
+        async function loadLegends() { let { data: legends, error } = await db.from('legends').select('*').order('name'); if (!error) { allLegendsData = legends; setHero(legends); renderGrid(legends); loadUserData(); checkAnniversaries(); } }
 
-        // --- REST ---
-        function loadUserData() {
-            const savedName = localStorage.getItem('user_name');
-            if (savedName) {
-                document.getElementById('profile-name').innerText = savedName;
-                document.getElementById('profile-avatar').innerText = savedName.charAt(0).toUpperCase();
-                document.getElementById('header-avatar').innerText = savedName.charAt(0).toUpperCase();
-                document.getElementById('settings-name-input').value = savedName;
-            }
-            updatePushBtnState(); // Update Button UI
-            updateProfileStats();
-        }
-        function saveSettings() {
-            const newName = document.getElementById('settings-name-input').value.trim();
-            if (newName) { localStorage.setItem('user_name', newName); loadUserData(); showProfile(); }
-        }
+        // UTILS
+        function loadUserData() { const n = localStorage.getItem('user_name'); if (n) { document.getElementById('profile-name').innerText=n; document.getElementById('profile-avatar').innerText=n.charAt(0).toUpperCase(); document.getElementById('header-avatar').innerText=n.charAt(0).toUpperCase(); document.getElementById('settings-name-input').value=n; } updatePushBtnState(); updateProfileStats(); }
+        function saveSettings() { const n = document.getElementById('settings-name-input').value.trim(); if (n) { localStorage.setItem('user_name', n); loadUserData(); showProfile(); } }
         function resetApp() { if(confirm("Alles löschen?")) { localStorage.clear(); location.reload(); } }
         function getFavorites() { return JSON.parse(localStorage.getItem('my_favorites') || '[]'); }
         function saveFavorites(arr) { localStorage.setItem('my_favorites', JSON.stringify(arr)); updateProfileStats(); checkAnniversaries(); }
         function updateProfileStats() { document.getElementById('profile-fav-count').innerText = getFavorites().length; }
-
         function hideAllViews() { document.getElementById('home-view').classList.add('hidden'); document.getElementById('profile-view').classList.add('hidden'); document.getElementById('favorites-view').classList.add('hidden'); document.getElementById('settings-view').classList.add('hidden'); }
         function showHome() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); updateNavColors('home'); closeSearch(); }
         function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); closeSearch(); }
         function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); const g = document.getElementById('favorites-grid'); g.innerHTML = ''; const f = getFavorites(); const l = allLegendsData.filter(x => f.includes(x.id)); if(l.length) l.forEach(x => g.innerHTML += createCard(x)); else g.innerHTML = '<p class="col-span-2 text-gray-500">Keine Favoriten.</p>'; }
         function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
-        function updateNavColors(active) { const b = "flex flex-col items-center space-y-1 text-gray-500 hover:text-white group transition-all duration-300 transform active:scale-95"; const a = "flex flex-col items-center space-y-1 text-gold group transition-all duration-300 transform active:scale-95"; document.getElementById('nav-home').className = b; document.getElementById('nav-search').className = b; document.getElementById('nav-profile').className = b; if(active==='home') document.getElementById('nav-home').className=a; if(active==='search') document.getElementById('nav-search').className=a; if(active==='profile') document.getElementById('nav-profile').className=a; }
-
-        function setHero(legends) { const c = document.getElementById('hero-container'); if(legends.length && c) { const r = legends[Math.floor(Math.random() * legends.length)]; c.innerHTML = `<div onclick="openDetail('${r.id}')" class="relative w-full h-full"><img src="${r.image_url}" class="absolute inset-0 w-full h-full object-cover object-top grayscale"><div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div><div class="absolute bottom-0 left-0 p-8"><span class="bg-gold text-black text-[10px] font-bold px-2 py-1 uppercase">Highlight</span><h2 class="text-4xl font-black mt-2 text-white">${r.name}</h2></div></div>`; } }
-        function renderGrid(legends) { const g = document.getElementById('legends-grid'); g.innerHTML = ''; legends.forEach(l => g.innerHTML += createCard(l)); }
-        function createCard(l) { const i = l.image_url || 'https://placehold.co/600x800'; return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden"><img src="${i}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100"><div class="absolute bottom-0 left-0 p-3 w-full bg-gradient-to-t from-black"><h2 class="text-white font-bold">${l.name}</h2></div></div>`; }
+        function updateNavColors(active) { const b="flex flex-col items-center space-y-1 text-gray-500 hover:text-white group transition-all duration-300 transform active:scale-95"; const a="flex flex-col items-center space-y-1 text-gold group transition-all duration-300 transform active:scale-95"; document.getElementById('nav-home').className=b; document.getElementById('nav-search').className=b; document.getElementById('nav-profile').className=b; if(active==='home') document.getElementById('nav-home').className=a; if(active==='search') document.getElementById('nav-search').className=a; if(active==='profile') document.getElementById('nav-profile').className=a; }
         
-        function toggleSearch() { const s = document.getElementById('search-bar-container'); if(s.classList.contains('hidden')) { s.classList.remove('hidden'); setTimeout(()=>document.getElementById('search-input').focus(),100); } else closeSearch(); }
-        function closeSearch() { document.getElementById('search-bar-container').classList.add('hidden'); document.getElementById('search-input').value = ''; renderGrid(allLegendsData); }
-        function filterLegends() { const q = document.getElementById('search-input').value.toLowerCase(); renderGrid(allLegendsData.filter(l=>l.name.toLowerCase().includes(q))); }
-
-        function openDetail(id) { const l = allLegendsData.find(x => x.id === id); if(!l) return; currentDetailId = id; document.getElementById('detail-img').src = l.image_url; document.getElementById('detail-name').innerText = l.name; document.getElementById('detail-dates').innerText = l.dates||""; document.getElementById('detail-headline').innerText = l.headline||""; document.getElementById('detail-quote').innerText = l.quote||""; document.getElementById('detail-bio').innerText = l.bio||""; 
-            const v = document.getElementById('video-container'); const f = document.getElementById('video-frame'); if(l.trailer_url) { try { let i = l.trailer_url.split('v=')[1]; if(i) { i=i.split('&')[0]; f.src=`https://www.youtube-nocookie.com/embed/${i}`; v.classList.remove('hidden'); } } catch(e){ v.classList.add('hidden'); } } else { v.classList.add('hidden'); f.src=""; }
-            const m = document.getElementById('music-btn'); if(l.music_url) { m.classList.remove('hidden'); m.onclick=()=>window.open(l.music_url,'_blank'); } else m.classList.add('hidden');
-            updateFavBtnState(id);
-            document.getElementById('detail-overlay').classList.remove('hidden');
+        // CARD DESIGN - UPDATED!
+        function createCard(l) { 
+            const i = l.image_url || 'https://placehold.co/600x800'; 
+            return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden border border-white/5 hover:border-gold/30 transition-all duration-500">
+                <img src="${i}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent opacity-90"></div>
+                <div class="absolute bottom-0 left-0 p-4 w-full">
+                    <h2 class="text-white font-bold text-lg leading-tight mb-1 group-hover:text-gold transition-colors">${l.name}</h2>
+                    <p class="text-gold text-xs font-mono mb-2 opacity-90">${l.dates || ''}</p>
+                    <p class="text-gray-400 text-[9px] font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors">${l.category || 'LEGEND'}</p>
+                </div>
+            </div>`; 
         }
+        
+        function setHero(legends) { const c=document.getElementById('hero-container'); if(legends.length && c) { const r=legends[Math.floor(Math.random() * legends.length)]; c.innerHTML=`<div onclick="openDetail('${r.id}')" class="relative w-full h-full"><img src="${r.image_url}" class="absolute inset-0 w-full h-full object-cover object-top grayscale"><div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div><div class="absolute bottom-0 left-0 p-8"><span class="bg-gold text-black text-[10px] font-bold px-2 py-1 uppercase">Highlight</span><h2 class="text-4xl font-black mt-2 text-white">${r.name}</h2></div></div>`; } }
+        function renderGrid(legends) { const g=document.getElementById('legends-grid'); g.innerHTML=''; legends.forEach(l => g.innerHTML+=createCard(l)); }
+        function toggleSearch() { const s=document.getElementById('search-bar-container'); if(s.classList.contains('hidden')) { s.classList.remove('hidden'); setTimeout(()=>document.getElementById('search-input').focus(),100); } else closeSearch(); }
+        function closeSearch() { document.getElementById('search-bar-container').classList.add('hidden'); document.getElementById('search-input').value=''; renderGrid(allLegendsData); }
+        function filterLegends() { const q=document.getElementById('search-input').value.toLowerCase(); renderGrid(allLegendsData.filter(l=>l.name.toLowerCase().includes(q))); }
+        function openDetail(id) { const l=allLegendsData.find(x=>x.id===id); if(!l)return; currentDetailId=id; document.getElementById('detail-img').src=l.image_url; document.getElementById('detail-name').innerText=l.name; document.getElementById('detail-dates').innerText=l.dates||""; document.getElementById('detail-headline').innerText=l.headline||""; document.getElementById('detail-quote').innerText=l.quote||""; document.getElementById('detail-bio').innerText=l.bio||""; const v=document.getElementById('video-container'); const f=document.getElementById('video-frame'); if(l.trailer_url) { try { let i=l.trailer_url.split('v=')[1]; if(i) { i=i.split('&')[0]; f.src=`https://www.youtube-nocookie.com/embed/${i}`; v.classList.remove('hidden'); } } catch(e){ v.classList.add('hidden'); } } else { v.classList.add('hidden'); f.src=""; } const m=document.getElementById('music-btn'); if(l.music_url) { m.classList.remove('hidden'); m.onclick=()=>window.open(l.music_url,'_blank'); } else m.classList.add('hidden'); updateFavBtnState(id); document.getElementById('detail-overlay').classList.remove('hidden'); }
         function closeDetail() { document.getElementById('detail-overlay').classList.add('hidden'); document.getElementById('video-frame').src=""; }
-        function toggleFavorite() { if(!currentDetailId) return; let f = getFavorites(); if(f.includes(currentDetailId)) f = f.filter(i => i !== currentDetailId); else f.push(currentDetailId); saveFavorites(f); updateFavBtnState(currentDetailId); }
-        function updateFavBtnState(id) { const f = getFavorites(); const i = document.getElementById('fav-icon'); if(f.includes(id)) { i.setAttribute('fill','currentColor'); i.classList.add('text-red-500'); } else { i.setAttribute('fill','none'); i.classList.remove('text-red-500'); } }
-        function toggleCandle() { const t = document.getElementById('candle-text'); const c = document.getElementById('candle-count'); t.innerText="ENTZÜNDET"; t.classList.add('text-gold'); c.innerText = "Check..."; } 
-
+        function toggleFavorite() { if(!currentDetailId)return; let f=getFavorites(); if(f.includes(currentDetailId)) f=f.filter(i=>i!==currentDetailId); else f.push(currentDetailId); saveFavorites(f); updateFavBtnState(currentDetailId); }
+        function updateFavBtnState(id) { const f=getFavorites(); const i=document.getElementById('fav-icon'); if(f.includes(id)) { i.setAttribute('fill','currentColor'); i.classList.add('text-red-500'); } else { i.setAttribute('fill','none'); i.classList.remove('text-red-500'); } }
+        function toggleCandle() { const t=document.getElementById('candle-text'); const c=document.getElementById('candle-count'); t.innerText="ENTZÜNDET"; t.classList.add('text-gold'); c.innerText="Check..."; }
         loadLegends();
     </script>
 </body>

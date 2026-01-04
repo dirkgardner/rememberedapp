@@ -15,7 +15,6 @@
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        /* Pulsierender roter Schein für Benachrichtigungen */
         .pulse-red { animation: pulseRed 2s infinite; }
         @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
     </style>
@@ -70,6 +69,12 @@
         </div>
         <div class="space-y-6">
             <input type="text" id="settings-name-input" placeholder="Dein Name" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white">
+            
+            <button id="push-btn" onclick="enablePush()" class="w-full bg-white/5 border border-white/10 text-gray-300 font-bold py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-white/10 hover:text-white transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                <span id="push-btn-text">Push-Nachrichten aktivieren</span>
+            </button>
+
             <button onclick="saveSettings()" class="w-full bg-gold text-black font-bold py-4 rounded-xl">SPEICHERN</button>
             <button onclick="resetApp()" class="w-full text-red-500 py-3 text-sm">Alles löschen</button>
         </div>
@@ -94,7 +99,7 @@
             </div>
         </div>
         <div class="space-y-3">
-            <button onclick="showSettings()" class="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition"><span class="text-sm font-medium text-gray-300">Account Einstellungen</span><svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+            <button onclick="showSettings()" class="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition"><span class="text-sm font-medium text-gray-300">Account & Push</span><svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
             <button id="notif-btn" class="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition">
                 <div class="flex items-center"><span id="notif-text" class="text-sm font-medium text-gray-300">Keine neuen Nachrichten</span></div>
                 <div id="notif-badge" class="hidden w-2 h-2 bg-red-500 rounded-full"></div>
@@ -139,12 +144,35 @@
         let allLegendsData = [];
         let currentDetailId = null;
 
-        // --- 1. ROBUSTE DATUMS-PRÜFUNG ---
+        // --- PUSH NOTIFICATION LOGIC ---
+        function enablePush() {
+            if (!("Notification" in window)) {
+                alert("Dein Browser unterstützt keine Push-Nachrichten.");
+                return;
+            }
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    document.getElementById('push-btn-text').innerText = "Push ist Aktiviert ✅";
+                    // Test Push
+                    new Notification("Remembered", { body: "Push-Nachrichten aktiviert! Du wirst informiert.", icon: "https://placehold.co/100x100/gold/black?text=R" });
+                } else {
+                    alert("Push-Nachrichten wurden blockiert.");
+                }
+            });
+        }
+        
+        function updatePushBtnState() {
+            if ("Notification" in window && Notification.permission === "granted") {
+                document.getElementById('push-btn-text').innerText = "Push ist Aktiviert ✅";
+                document.getElementById('push-btn').classList.add('text-gold', 'border-gold');
+            }
+        }
+
+        // --- ANNIVERSARY CHECK ---
         function checkAnniversaries() {
             const today = new Date();
-            const currentMonth = today.getMonth() + 1; // 1 = Januar
-            const currentDay = today.getDate(); // 4
-            
+            const currentMonth = today.getMonth() + 1; 
+            const currentDay = today.getDate();
             const favIds = getFavorites();
             let hit = null;
             let yearsGone = 0;
@@ -152,24 +180,14 @@
             allLegendsData.forEach(legend => {
                 if (legend.death_date && favIds.includes(legend.id)) {
                     let dDay, dMonth, dYear;
-                    
-                    // Wir lesen das Datum als TEXT, nicht als Zeit!
-                    // Versteht: 2009-01-04 UND 04.01.2009
                     if (legend.death_date.includes('.')) {
-                        // Deutsches Format in DB (04.01.2009)
                         const parts = legend.death_date.split('.');
-                        dDay = parseInt(parts[0]);
-                        dMonth = parseInt(parts[1]);
-                        dYear = parseInt(parts[2]);
+                        dDay = parseInt(parts[0]); dMonth = parseInt(parts[1]); dYear = parseInt(parts[2]);
                     } else {
-                        // Standard Format in DB (2009-01-04)
                         const parts = legend.death_date.split('-');
-                        dYear = parseInt(parts[0]);
-                        dMonth = parseInt(parts[1]);
-                        dDay = parseInt(parts[2]);
+                        dYear = parseInt(parts[0]); dMonth = parseInt(parts[1]); dDay = parseInt(parts[2]);
                     }
 
-                    // STUMPFer Vergleich: Ist heute Tag 4 und Monat 1?
                     if (dMonth === currentMonth && dDay === currentDay) {
                         hit = legend;
                         yearsGone = today.getFullYear() - dYear;
@@ -177,6 +195,7 @@
                 }
             });
 
+            // UI Update
             const notifBtn = document.getElementById('notif-btn');
             const notifText = document.getElementById('notif-text');
             const notifBadge = document.getElementById('notif-badge');
@@ -184,7 +203,7 @@
             const headerDotStatic = document.getElementById('header-notif-dot-static');
 
             if (hit) {
-                // ALARM!
+                // RED ALERT UI
                 notifBtn.onclick = function() { openDetail(hit.id); };
                 notifBtn.classList.remove('bg-white/5');
                 notifBtn.classList.add('bg-red-500/10', 'border-red-500/50', 'pulse-red');
@@ -192,6 +211,19 @@
                 notifBadge.classList.remove('hidden');
                 headerDot.classList.remove('hidden');
                 headerDotStatic.classList.remove('hidden');
+
+                // PUSH NOTIFICATION SENDEN (Wenn erlaubt)
+                if ("Notification" in window && Notification.permission === "granted") {
+                    // Checken ob wir heute schon genervt haben (Session Storage)
+                    if (!sessionStorage.getItem('notified_' + hit.id)) {
+                        new Notification(`🕊️ Gedenke ${hit.name}`, {
+                            body: `Heute ist der ${yearsGone}. Todestag. Zünde eine Kerze an.`,
+                            icon: hit.image_url || "https://placehold.co/100x100/gold/black?text=R"
+                        });
+                        sessionStorage.setItem('notified_' + hit.id, 'true');
+                    }
+                }
+
             } else {
                 notifBtn.onclick = null;
                 notifText.innerText = "Keine neuen Nachrichten";
@@ -210,11 +242,11 @@
                 setHero(legends); 
                 renderGrid(legends); 
                 loadUserData();
-                checkAnniversaries(); // START CHECK
+                checkAnniversaries(); 
             }
         }
 
-        // --- RESTLICHE APP LOGIK (Bleibt gleich) ---
+        // --- REST ---
         function loadUserData() {
             const savedName = localStorage.getItem('user_name');
             if (savedName) {
@@ -223,6 +255,7 @@
                 document.getElementById('header-avatar').innerText = savedName.charAt(0).toUpperCase();
                 document.getElementById('settings-name-input').value = savedName;
             }
+            updatePushBtnState(); // Update Button UI
             updateProfileStats();
         }
         function saveSettings() {
@@ -258,7 +291,7 @@
         function closeDetail() { document.getElementById('detail-overlay').classList.add('hidden'); document.getElementById('video-frame').src=""; }
         function toggleFavorite() { if(!currentDetailId) return; let f = getFavorites(); if(f.includes(currentDetailId)) f = f.filter(i => i !== currentDetailId); else f.push(currentDetailId); saveFavorites(f); updateFavBtnState(currentDetailId); }
         function updateFavBtnState(id) { const f = getFavorites(); const i = document.getElementById('fav-icon'); if(f.includes(id)) { i.setAttribute('fill','currentColor'); i.classList.add('text-red-500'); } else { i.setAttribute('fill','none'); i.classList.remove('text-red-500'); } }
-        function toggleCandle() { const t = document.getElementById('candle-text'); const c = document.getElementById('candle-count'); t.innerText="ENTZÜNDET"; t.classList.add('text-gold'); c.innerText = "Check..."; } // Simplified candle for now
+        function toggleCandle() { const t = document.getElementById('candle-text'); const c = document.getElementById('candle-count'); t.innerText="ENTZÜNDET"; t.classList.add('text-gold'); c.innerText = "Check..."; } 
 
         loadLegends();
     </script>

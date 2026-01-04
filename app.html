@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remembered - Legends App</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -196,25 +198,20 @@
             if (!datesStr) return '';
             if (!deathDateStr) return datesStr;
 
-            // Versuch, das Geburtsjahr zu finden
-            let birthYear = datesStr.split('–')[0].trim();
-            if(datesStr.includes('-')) birthYear = datesStr.split('-')[0].trim();
+            // Versuch, den Geburtstag zu finden (Alles vor dem Bindestrich)
+            let birthPart = datesStr.split('–')[0].trim();
+            if(datesStr.includes('-')) birthPart = datesStr.split('-')[0].trim();
             
             let niceDeathDate = deathDateStr;
-            
             // Formatieren: 2011-07-23 -> 23.07.2011
             if (deathDateStr.includes('-')) {
                 const parts = deathDateStr.split('-'); 
-                // Wenn es 3 Teile sind (YYYY-MM-DD), drehen wir es um
                 if(parts.length === 3) {
                     niceDeathDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
                 }
             }
-            
-            // Formatieren: 23.07.2011 -> 23.07.2011 (Bleibt so)
-            // Hier war der Fehler: Früher haben wir abgebrochen, jetzt nutzen wir es!
-
-            return `${birthYear} – ${niceDeathDate}`;
+            // Kombinieren: "01.06.1926" (aus Feld dates) + " - " + "04.08.1962" (aus Alarm)
+            return `${birthPart} – ${niceDeathDate}`;
         }
 
         // CARD DESIGN

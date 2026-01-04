@@ -191,7 +191,7 @@
         function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
         function updateNavColors(active) { const b="flex flex-col items-center space-y-1 text-gray-500 hover:text-white group transition-all duration-300 transform active:scale-95"; const a="flex flex-col items-center space-y-1 text-gold group transition-all duration-300 transform active:scale-95"; document.getElementById('nav-home').className=b; document.getElementById('nav-search').className=b; document.getElementById('nav-profile').className=b; if(active==='home') document.getElementById('nav-home').className=a; if(active==='search') document.getElementById('nav-search').className=a; if(active==='profile') document.getElementById('nav-profile').className=a; }
         
-        // CARD DESIGN - UPDATED!
+        // CARD DESIGN
         function createCard(l) { 
             const i = l.image_url || 'https://placehold.co/600x800'; 
             return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden border border-white/5 hover:border-gold/30 transition-all duration-500">
@@ -204,17 +204,96 @@
                 </div>
             </div>`; 
         }
+
+        function renderGrid(legends) { 
+            const g=document.getElementById('legends-grid'); g.innerHTML=''; 
+            legends.forEach(l => g.innerHTML+=createCard(l));
+            g.innerHTML += `
+            <div onclick="suggestLegend()" class="relative group aspect-[3/4] bg-white/5 rounded-xl border-2 border-dashed border-white/20 hover:border-gold flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-white/10">
+                <div class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center mb-4 group-hover:bg-gold text-gold group-hover:text-black transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                </div>
+                <p class="text-white font-bold text-sm text-center px-4">Jemanden vergessen?</p>
+                <p class="text-gray-400 text-xs text-center mt-1">Schlag eine Ikone vor</p>
+            </div>`;
+        }
         
+        function suggestLegend() {
+            const email = "admin@rememberedapp.io"; 
+            const subject = "Vorschlag für Remembered";
+            const body = "Name der Legende:%0AWarum:%0A";
+            window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+        }
+
         function setHero(legends) { const c=document.getElementById('hero-container'); if(legends.length && c) { const r=legends[Math.floor(Math.random() * legends.length)]; c.innerHTML=`<div onclick="openDetail('${r.id}')" class="relative w-full h-full"><img src="${r.image_url}" class="absolute inset-0 w-full h-full object-cover object-top grayscale"><div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div><div class="absolute bottom-0 left-0 p-8"><span class="bg-gold text-black text-[10px] font-bold px-2 py-1 uppercase">Highlight</span><h2 class="text-4xl font-black mt-2 text-white">${r.name}</h2></div></div>`; } }
-        function renderGrid(legends) { const g=document.getElementById('legends-grid'); g.innerHTML=''; legends.forEach(l => g.innerHTML+=createCard(l)); }
         function toggleSearch() { const s=document.getElementById('search-bar-container'); if(s.classList.contains('hidden')) { s.classList.remove('hidden'); setTimeout(()=>document.getElementById('search-input').focus(),100); } else closeSearch(); }
         function closeSearch() { document.getElementById('search-bar-container').classList.add('hidden'); document.getElementById('search-input').value=''; renderGrid(allLegendsData); }
         function filterLegends() { const q=document.getElementById('search-input').value.toLowerCase(); renderGrid(allLegendsData.filter(l=>l.name.toLowerCase().includes(q))); }
-        function openDetail(id) { const l=allLegendsData.find(x=>x.id===id); if(!l)return; currentDetailId=id; document.getElementById('detail-img').src=l.image_url; document.getElementById('detail-name').innerText=l.name; document.getElementById('detail-dates').innerText=l.dates||""; document.getElementById('detail-headline').innerText=l.headline||""; document.getElementById('detail-quote').innerText=l.quote||""; document.getElementById('detail-bio').innerText=l.bio||""; const v=document.getElementById('video-container'); const f=document.getElementById('video-frame'); if(l.trailer_url) { try { let i=l.trailer_url.split('v=')[1]; if(i) { i=i.split('&')[0]; f.src=`https://www.youtube-nocookie.com/embed/${i}`; v.classList.remove('hidden'); } } catch(e){ v.classList.add('hidden'); } } else { v.classList.add('hidden'); f.src=""; } const m=document.getElementById('music-btn'); if(l.music_url) { m.classList.remove('hidden'); m.onclick=()=>window.open(l.music_url,'_blank'); } else m.classList.add('hidden'); updateFavBtnState(id); document.getElementById('detail-overlay').classList.remove('hidden'); }
+        
+        // --- FIXED: OPEN DETAIL (ZUFALLSZAHL + RESET) ---
+        function openDetail(id) { 
+            const l=allLegendsData.find(x=>x.id===id); if(!l)return; 
+            currentDetailId=id; 
+            document.getElementById('detail-img').src=l.image_url; 
+            document.getElementById('detail-name').innerText=l.name; 
+            document.getElementById('detail-dates').innerText=l.dates||""; 
+            document.getElementById('detail-headline').innerText=l.headline||""; 
+            document.getElementById('detail-quote').innerText=l.quote||""; 
+            document.getElementById('detail-bio').innerText=l.bio||""; 
+            
+            const v=document.getElementById('video-container'); const f=document.getElementById('video-frame'); 
+            if(l.trailer_url) { try { let i=l.trailer_url.split('v=')[1]; if(i) { i=i.split('&')[0]; f.src=`https://www.youtube-nocookie.com/embed/${i}`; v.classList.remove('hidden'); } } catch(e){ v.classList.add('hidden'); } } else { v.classList.add('hidden'); f.src=""; } 
+            const m=document.getElementById('music-btn'); if(l.music_url) { m.classList.remove('hidden'); m.onclick=()=>window.open(l.music_url,'_blank'); } else m.classList.add('hidden'); 
+            
+            updateFavBtnState(id);
+            
+            // --- FIX: KERZE RESETTEN ---
+            const icon = document.getElementById('candle-icon'); const circle = document.getElementById('candle-circle'); const glow = document.getElementById('candle-glow'); const text = document.getElementById('candle-text'); const countLabel = document.getElementById('candle-count');
+            icon.setAttribute('fill', 'none'); icon.setAttribute('stroke', 'currentColor'); icon.classList.add('text-gray-500'); icon.classList.remove('text-black', 'fill-black'); icon.setAttribute('stroke', 'currentColor');
+            circle.classList.remove('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); 
+            glow.classList.remove('opacity-40'); glow.classList.add('opacity-0'); 
+            text.innerText = "ZÜNDE EINE KERZE AN"; text.classList.remove('text-gold'); 
+            
+            // Zufallszahl generieren (800 - 5000)
+            const randomCount = Math.floor(Math.random() * (5000 - 800 + 1) + 800);
+            countLabel.innerText = randomCount.toLocaleString('de-DE'); 
+            countLabel.classList.add('opacity-60'); countLabel.classList.remove('opacity-100', 'font-bold');
+
+            document.getElementById('detail-overlay').classList.remove('hidden'); 
+        }
+
         function closeDetail() { document.getElementById('detail-overlay').classList.add('hidden'); document.getElementById('video-frame').src=""; }
+        
         function toggleFavorite() { if(!currentDetailId)return; let f=getFavorites(); if(f.includes(currentDetailId)) f=f.filter(i=>i!==currentDetailId); else f.push(currentDetailId); saveFavorites(f); updateFavBtnState(currentDetailId); }
         function updateFavBtnState(id) { const f=getFavorites(); const i=document.getElementById('fav-icon'); if(f.includes(id)) { i.setAttribute('fill','currentColor'); i.classList.add('text-red-500'); } else { i.setAttribute('fill','none'); i.classList.remove('text-red-500'); } }
-        function toggleCandle() { const t=document.getElementById('candle-text'); const c=document.getElementById('candle-count'); t.innerText="ENTZÜNDET"; t.classList.add('text-gold'); c.innerText="Check..."; }
+        
+        // --- FIXED: TOGGLE CANDLE (MIT LOGIK) ---
+        function toggleCandle() { 
+            const icon = document.getElementById('candle-icon'); 
+            const circle = document.getElementById('candle-circle'); 
+            const glow = document.getElementById('candle-glow'); 
+            const text = document.getElementById('candle-text'); 
+            const countLabel = document.getElementById('candle-count'); 
+
+            // Check ob schon an (einfacher Check via Text)
+            if(text.innerText === "KERZE ENTZÜNDET") return;
+
+            icon.classList.remove('text-gray-500'); 
+            icon.setAttribute('stroke', '#EAB308'); 
+            icon.setAttribute('fill', '#EAB308'); 
+            circle.classList.add('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); 
+            glow.classList.remove('opacity-0'); 
+            glow.classList.add('opacity-40'); 
+            text.innerText = "KERZE ENTZÜNDET"; 
+            text.classList.add('text-gold'); 
+
+            // Hochzählen
+            let currentCount = parseInt(countLabel.innerText.replace(/\./g, '')); 
+            countLabel.innerText = (currentCount + 1).toLocaleString('de-DE'); 
+            countLabel.classList.remove('opacity-60'); 
+            countLabel.classList.add('opacity-100', 'font-bold'); 
+        }
+
         loadLegends();
     </script>
 </body>

@@ -6,15 +6,10 @@
     <title>Controller</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
-        /* Custom Toggle Animation */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #10B981;
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #10B981;
-        }
+        .toggle-checkbox:checked { right: 0; border-color: #10B981; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #10B981; }
     </style>
 </head>
 <body class="bg-black text-white font-sans selection:bg-green-900 min-h-screen p-4 md:p-8">
@@ -22,10 +17,9 @@
     <div class="max-w-4xl mx-auto flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
         <h1 class="text-3xl font-black tracking-tighter uppercase">Controller</h1>
         <div class="flex items-center gap-2">
-            <span class="text-gray-400 text-sm font-bold">ONLINE</span>
+            <span class="text-gray-400 text-sm font-bold">ADMIN</span>
             <span class="relative flex h-3 w-3">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
             </span>
         </div>
     </div>
@@ -35,90 +29,61 @@
         <div class="bg-[#111] border border-gray-800 rounded-xl p-8 relative overflow-hidden hover:border-gray-700 transition-colors">
             <div class="flex justify-between items-start mb-4">
                 <span class="text-amber-400 font-bold tracking-wider text-sm uppercase">Wartungsmodus</span>
-                
                 <div class="relative inline-block w-14 h-7 align-middle select-none transition duration-200 ease-in">
                     <input type="checkbox" name="toggle" id="maintenance-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-700 appearance-none cursor-pointer transition-all duration-300 top-1 left-1 checked:left-7" onclick="toggleMaintenance()"/>
                     <label for="maintenance-toggle" class="toggle-label block overflow-hidden h-7 rounded-full bg-gray-700 cursor-pointer transition-colors duration-300"></label>
                 </div>
             </div>
-
-            <h2 id="status-text" class="text-3xl font-bold mb-2 leading-tight">
-                Lädt...
-            </h2>
-            <p class="text-gray-500 text-sm">
-                Schaltet die Index-Seite live/offline.
-            </p>
+            <h2 id="status-text" class="text-3xl font-bold mb-2 leading-tight">Lädt...</h2>
+            <p class="text-gray-500 text-sm">Schaltet die App live/offline.</p>
         </div>
 
-        <div class="bg-[#111] border border-gray-800 rounded-xl p-8 relative hover:border-gray-700 transition-colors">
-            <div class="flex items-center gap-2 mb-6">
-                <span class="text-gray-400 font-bold tracking-wider text-sm uppercase">Datenbank</span>
-            </div>
-
-            <div id="db-action-area">
-                <button onclick="initDB()" class="w-full py-3 px-4 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-all active:scale-95 flex items-center justify-center gap-2">
-                    <i data-lucide="database" class="w-4 h-4"></i>
-                    <span>Tabelle 'config' erstellen</span>
-                </button>
-                <p class="text-gray-600 text-xs mt-3 text-center">
-                    Klicken, falls der Schalter nicht geht.
-                </p>
-            </div>
+        <div class="bg-[#111] border border-gray-800 rounded-xl p-8 flex flex-col justify-center gap-4 hover:border-gray-700 transition-colors">
+            <span class="text-gray-400 font-bold tracking-wider text-sm uppercase mb-2">Navigation</span>
             
-            <div id="db-success-msg" class="hidden flex items-center gap-2 text-green-500 font-bold mt-4">
-                <i data-lucide="check-circle" class="w-5 h-5"></i>
-                <span>Config Tabelle aktiv</span>
-            </div>
+            <a href="dashboard.html" class="w-full py-4 px-4 bg-gray-800 hover:bg-gray-700 text-white font-bold rounded-lg transition-all active:scale-95 flex items-center justify-between group">
+                <span>Mission Control öffnen</span>
+                <i data-lucide="bar-chart-2" class="text-[#D4AF37] group-hover:scale-110 transition-transform"></i>
+            </a>
+
+            <a href="index.html" class="w-full py-4 px-4 border border-gray-800 hover:border-gray-600 text-gray-400 hover:text-white font-medium rounded-lg transition-all flex items-center justify-between">
+                <span>Zur Landing Page</span>
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+            </a>
         </div>
 
-    </div>
-
-    <div class="max-w-4xl mx-auto mt-12 text-center">
-        <a href="index.html" class="text-gray-500 hover:text-white text-sm font-medium transition-colors">
-            Zurück zur Website
-        </a>
     </div>
 
     <script>
-        // Init Icons
         lucide.createIcons();
-
-        // ---------------------------------------------------------
-        // DEINE LOGIK (Hier musst du deinen Supabase Client einbinden!)
-        // ---------------------------------------------------------
-        // Da ich deinen Client-Import nicht sehe, nehme ich an, 'db' 
-        // ist global verfügbar oder du fügst deinen Import hier oben ein.
-        // ---------------------------------------------------------
+        const SUPABASE_URL = 'https://dein-projekt.supabase.co'; 
+        const SUPABASE_KEY = 'dein-anon-key'; 
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         async function loadMaintenanceStatus() {
-            // Placeholder: Hol den Status aus der DB
-            // const { data } = await db.from('config').select('value').eq('key', 'maintenance').single();
-            console.log("Lade Status...");
-            
-            // Simuliert:
-            updateUI(false); 
+            const { data } = await db.from('config').select('value').eq('key', 'maintenance').single();
+            if (data) {
+                const isOn = (data.value === 'true' || data.value === true);
+                updateUI(isOn);
+            } else {
+                // Default create if missing
+                await db.from('config').insert([{ key: 'maintenance', value: false }]);
+                updateUI(false);
+            }
         }
 
         async function toggleMaintenance() {
             const toggle = document.getElementById('maintenance-toggle');
-            const isNowActive = toggle.checked;
-
-            console.log("Setze Wartung auf:", isNowActive);
-            updateUI(isNowActive);
-
-            // ECHTER CALL (Einkommentieren wenn DB verbunden):
-            /*
-            const { error } = await db.from('config').upsert({ key: 'maintenance', value: isNowActive });
-            if(error) alert("Fehler: " + error.message);
-            */
+            const newVal = toggle.checked;
+            updateUI(newVal);
+            const { error } = await db.from('config').upsert({ key: 'maintenance', value: newVal });
+            if(error) console.error("Fehler:", error);
         }
 
         function updateUI(isOn) {
             const statusText = document.getElementById('status-text');
             const toggle = document.getElementById('maintenance-toggle');
-            
             toggle.checked = isOn;
-            
             if(isOn) {
                 statusText.innerText = "WARTUNG AKTIV";
                 statusText.className = "text-3xl font-bold mb-2 leading-tight text-amber-500";
@@ -127,28 +92,8 @@
                 statusText.className = "text-3xl font-bold mb-2 leading-tight text-green-500";
             }
         }
-
-        async function initDB() {
-            const btn = document.querySelector('#db-action-area button');
-            const originalText = btn.innerHTML;
-            btn.innerText = "Erstelle...";
-            
-            // ECHTER CALL (Einkommentieren):
-            /*
-            const { error } = await db.from('config').insert([{ key: 'maintenance', value: false }]);
-            if(error) alert("Fehler: " + error.message);
-            */
-
-            // Simulation Erfolg:
-            setTimeout(() => {
-                document.getElementById('db-action-area').classList.add('hidden');
-                document.getElementById('db-success-msg').classList.remove('hidden');
-            }, 1000);
-        }
-
-        // Start
-        window.onload = loadMaintenanceStatus;
-
+        
+        loadMaintenanceStatus();
     </script>
 </body>
 </html>

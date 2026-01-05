@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body { background-color: #050505; color: white; font-family: sans-serif; }
+        .text-gold { color: #EAB308; }
+        .bg-gold { background-color: #EAB308; }
+        .toggle-checkbox:checked { right: 0; border-color: #EAB308; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #EAB308; }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+    <div id="login-overlay" class="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center">
+        <h1 class="text-2xl font-bold mb-4">MISSION CONTROL</h1>
+        <input type="password" id="password-input" placeholder="Passwort" class="bg-gray-800 text-white px-4 py-2 rounded mb-4 text-center">
+        <button onclick="checkPass()" class="bg-gold text-black font-bold px-6 py-2 rounded">LOGIN</button>
+        <p id="error-msg" class="text-red-500 mt-4 hidden">Falsch.</p>
+    </div>
+
+    <div id="dashboard" class="hidden max-w-4xl mx-auto">
+        <header class="flex justify-between items-end mb-8 border-b border-gray-800 pb-4">
+            <h1 class="text-3xl font-black text-white">CONTROLLER</h1>
+            <p class="text-green-500 font-bold">ONLINE ●</p>
+        </header>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gray-900 border border-gold p-8 rounded-xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-gold font-bold">WARTUNGSMODUS</h3>
+                    <div class="relative inline-block w-12 mr-2 align-middle select-none">
+                        <input type="checkbox" id="maintenance-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300" style="top: -2px; left: -2px;" onclick="toggleMaintenance()"/>
+                        <label for="maintenance-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-700 cursor-pointer"></label>
+                    </div>
+                </div>
+                <p id="maintenance-status" class="text-2xl font-black text-white">LÄDT...</p>
+                <p class="text-gray-500 text-xs mt-2">Schaltet die Index-Seite live/offline.</p>
+            </div>
+            <div class="bg-gray-900 border border-gray-800 p-8 rounded-xl">
+                <h3 class="text-gray-400 font-bold mb-4">DATENBANK</h3>
+                <button onclick="initDB()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm w-full">Tabelle 'config' erstellen</button>
+                <p class="text-gray-500 text-xs mt-2">Klicken, falls der Schalter nicht geht.</p>
+            </div>
+        </div>
+        <div class="text-center mt-12">
+            <a href="index.html" class="text-gray-500 hover:text-white">Zurück zur Website</a>
+        </div>
+    </div>
+    <script>
+        const supabaseUrl = 'https://aahsaqygohmykhagbihk.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
+        const db = supabase.createClient(supabaseUrl, supabaseKey);
+
+        function checkPass() {
+            if(document.getElementById('password-input').value === "admin123") {
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                loadMaintenanceStatus();
+            } else {
+                document.getElementById('error-msg').classList.remove('hidden');
+            }
+        }
+
+        async function loadMaintenanceStatus() {
+            const { data, error } = await db.from('config').select('value').eq('key', 'maintenance').single();
+            const toggle = document.getElementById('maintenance-toggle');
+            const status = document.getElementById('maintenance-status');
+            if (data) {
+                const isOn = (data.value === 'true' || data.value === true);
+                toggle.checked = isOn;
+                updateUI(isOn);
+            } else { status.innerText = "DB FEHLT (Klick rechts)"; }
+        }
+
+        async function toggleMaintenance() {
+            const toggle = document.getElementById('maintenance-toggle');
+            const newVal = toggle.checked;
+            updateUI(newVal);
+            const { error } = await db.from('config').upsert({ key: 'maintenance', value: newVal });
+            if(error) alert("Fehler: " + error.message);
+        }
+
+        function updateUI(isOn) {
+            const status = document.getElementById('maintenance-status');
+            const toggle = document.getElementById('maintenance-toggle');
+            status.innerText = isOn ? "AKTIV (Seite zu)" : "INAKTIV (Live)";
+            status.style.color = isOn ? "#EAB308" : "#4ade80";
+            toggle.style.transform = isOn ? "translateX(100%)" : "translateX(0)";
+            toggle.parentElement.querySelector('.toggle-label').style.backgroundColor = isOn ? "#EAB308" : "#374151";
+        }
+
+        async function initDB() {
+            const { error } = await db.from('config').insert([{ key: 'maintenance', value: false }]);
+            if(error) alert("Fehler: " + error.message); else alert("Initialisiert!");
+        }
+    </script>
+</body>
+</html>

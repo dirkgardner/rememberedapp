@@ -6,7 +6,7 @@
     <title>Legenden sterben nie</title>
     <style>
         :root { --gold: #D4AF37; --bg: #050505; }
-        body { background-color: var(--bg); color: white; font-family: 'Helvetica Neue', sans-serif; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; }
+        body { background-color: var(--bg); color: white; font-family: sans-serif; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; }
         .hidden { display: none !important; }
         .box { border: 1px solid #333; padding: 40px; border-radius: 20px; background: #111; max-width: 600px; width: 90%; }
         h1 { color: var(--gold); text-transform: uppercase; margin-bottom: 20px; }
@@ -20,7 +20,6 @@
             <h1>Wartungsarbeiten</h1>
             <p>Wir polieren das Gold. Wir sind bald zurück.</p>
         </div>
-        
         <div id="live-view" class="hidden">
             <h1>Legenden sterben nie.</h1>
             <p>Erlebe ihre Geschichten. Jeden Tag.</p>
@@ -28,9 +27,7 @@
         </div>
     </div>
     <script>
-        // HIER STELLST DU UM: true = Wartung, false = Live
         const maintenance = true; 
-        
         if (maintenance) {
             document.getElementById('maintenance-view').classList.remove('hidden');
         } else {

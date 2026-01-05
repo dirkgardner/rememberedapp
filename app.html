@@ -1,4 +1,4 @@
-cat << 'EOF' > app.html
+cat << '' > app.html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -24,7 +24,8 @@ cat << 'EOF' > app.html
         .pulse-gold-slow { animation: pulseGold 3s infinite; }
         @keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.2); } 50% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); } 100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); } }
         .img-top { object-position: top !important; }
-    </style>
+    .head-fix { object-position: top !important; }
+</style>
 </head>
 <body class="min-h-screen pb-24 selection:bg-gold selection:text-black">
 
@@ -156,7 +157,7 @@ cat << 'EOF' > app.html
         </div>
         <div class="relative min-h-screen pb-20">
             <div class="h-[65vh] w-full relative">
-                <img id="detail-img" src="" class="w-full h-full object-cover img-top grayscale" alt="">
+                <img id="detail-img" src="" class="w-full h-full object-cover head-fix img-top grayscale" alt="">
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
             </div>
             <div class="px-6 -mt-32 relative z-10 max-w-2xl mx-auto">
@@ -220,7 +221,7 @@ cat << 'EOF' > app.html
                 const colors = ['border-purple-600', 'border-yellow-600', 'border-indigo-600', 'border-red-600', 'border-green-600', 'border-blue-600'];
                 const html = `
                 <div onclick="openDetail('${p.id}')" class="min-w-[160px] h-56 bg-zinc-900 rounded-2xl relative overflow-hidden border-l-4 ${colors[i % colors.length]} flex-shrink-0 group cursor-pointer shadow-2xl">
-                    <img src="${supabaseUrl}/storage/v1/object/public/assets/img/${p.id}.jpg" class="w-full h-full object-cover img-top grayscale opacity-50 group-hover:opacity-100 transition duration-500" onerror="this.src='https://placehold.co/400x600/222/555?text=${p.name}'">
+                    <img src="${supabaseUrl}/storage/v1/object/public/assets/img/${p.id}.jpg" class="w-full h-full object-cover head-fix img-top grayscale opacity-50 group-hover:opacity-100 transition duration-500" onerror="this.src='https://placehold.co/400x600/222/555?text=${p.name}'">
                     <div class="absolute bottom-0 left-0 p-4 bg-gradient-to-t from-black via-black/80 to-transparent w-full">
                         <p class="text-white font-black text-xs uppercase tracking-tight">${p.name}</p>
                         <p class="text-[9px] text-gold/80 font-mono mt-1">${p.lifespan}</p>
@@ -247,9 +248,9 @@ cat << 'EOF' > app.html
         function showCandlesView() { hideAllViews(); document.getElementById('candles-view').classList.remove('hidden'); const g = document.getElementById('candles-grid'); g.innerHTML = ''; const c = getMyCandles(); const l = allLegendsData.filter(x => c.includes(x.id)); if(l.length) l.forEach(x => g.innerHTML += createCard(x)); else g.innerHTML = '<p class="col-span-2 text-gray-500 text-xs font-black uppercase tracking-widest p-4">Noch keine Kerzen.</p>'; }
         function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
 
-        function createCard(l) { const i = l.image_url || 'https://placehold.co/600x800'; return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-zinc-900 rounded-2xl overflow-hidden border border-white/5 hover:border-gold/30 transition-all duration-500 cursor-pointer shadow-xl"><img src="${i}" class="w-full h-full object-cover img-top grayscale group-hover:grayscale-0 opacity-80 transition-all duration-700"><div class="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent opacity-90"></div><div class="absolute bottom-0 left-0 p-4 w-full"><h2 class="text-white font-black text-sm uppercase tracking-tight mb-1 group-hover:text-gold transition-colors">${l.name}</h2><p class="text-gold text-[9px] font-mono leading-tight mb-1 opacity-90">${l.dates || ''}</p></div></div>`; }
+        function createCard(l) { const i = l.image_url || 'https://placehold.co/600x800'; return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-zinc-900 rounded-2xl overflow-hidden border border-white/5 hover:border-gold/30 transition-all duration-500 cursor-pointer shadow-xl"><img src="${i}" class="w-full h-full object-cover head-fix img-top grayscale group-hover:grayscale-0 opacity-80 transition-all duration-700"><div class="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent opacity-90"></div><div class="absolute bottom-0 left-0 p-4 w-full"><h2 class="text-white font-black text-sm uppercase tracking-tight mb-1 group-hover:text-gold transition-colors">${l.name}</h2><p class="text-gold text-[9px] font-mono leading-tight mb-1 opacity-90">${l.dates || ''}</p></div></div>`; }
         function renderGrid(l) { const g=document.getElementById('legends-grid'); g.innerHTML=''; l.forEach(x => g.innerHTML+=createCard(x)); }
-        function setHero(l) { const r=l[Math.floor(Math.random()*l.length)]; document.getElementById('hero-container').innerHTML = `<img src="${r.image_url}" class="w-full h-full object-cover img-top grayscale opacity-60 transition duration-700"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div><div class="absolute bottom-8 left-8"><span class="bg-gold text-black text-[9px] font-black px-2 py-0.5 uppercase rounded mb-3 inline-block shadow-lg shadow-gold/20">Highlight</span><h2 class="text-4xl font-black uppercase tracking-tighter text-white">${r.name}</h2></div>`; document.getElementById('hero-container').onclick=()=>openDetail(r.id); }
+        function setHero(l) { const r=l[Math.floor(Math.random()*l.length)]; document.getElementById('hero-container').innerHTML = `<img src="${r.image_url}" class="w-full h-full object-cover head-fix img-top grayscale opacity-60 transition duration-700"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div><div class="absolute bottom-8 left-8"><span class="bg-gold text-black text-[9px] font-black px-2 py-0.5 uppercase rounded mb-3 inline-block shadow-lg shadow-gold/20">Highlight</span><h2 class="text-4xl font-black uppercase tracking-tighter text-white">${r.name}</h2></div>`; document.getElementById('hero-container').onclick=()=>openDetail(r.id); }
 
         function openDetail(id) { 
             const l=allLegendsData.find(x=>x.id===id) || allLegendsData.find(x=>x.name.toLowerCase().includes(id.toLowerCase())); 
@@ -270,7 +271,7 @@ cat << 'EOF' > app.html
     </script>
 </body>
 </html>
-EOF
+
 
 git add app.html
 git commit -m "Full Restore & Design Fix"

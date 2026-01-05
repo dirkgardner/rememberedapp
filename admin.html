@@ -14,6 +14,15 @@
 </head>
 <body class="bg-black text-white font-sans selection:bg-green-900 min-h-screen p-4 md:p-8">
 
+    <div id="login-overlay" class="fixed inset-0 bg-black z-50 flex items-center justify-center p-4">
+        <div class="max-w-sm w-full bg-[#111] border border-gray-800 p-8 rounded-xl text-center">
+            <h2 class="text-xl font-bold mb-4 uppercase tracking-widest text-amber-500">Security Check</h2>
+            <input type="password" id="password-input" placeholder="Passwort eingeben" class="w-full bg-black border border-gray-700 text-white px-4 py-3 rounded-lg mb-4 text-center focus:border-green-500 focus:outline-none transition-colors">
+            <button onclick="checkLogin()" class="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-transform active:scale-95">UNLOCK</button>
+            <p id="error-msg" class="text-red-500 text-xs mt-4 hidden">ZUGRIFF VERWEIGERT</p>
+        </div>
+    </div>
+
     <div class="max-w-4xl mx-auto flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
         <h1 class="text-3xl font-black tracking-tighter uppercase">Controller</h1>
         <div class="flex items-center gap-2">
@@ -56,9 +65,34 @@
 
     <script>
         lucide.createIcons();
-        const SUPABASE_URL = 'https://dein-projekt.supabase.co'; 
-        const SUPABASE_KEY = 'dein-anon-key'; 
+        // ----------------------------------------------------
+        // CONFIG
+        // ----------------------------------------------------
+        const PASSWORD = "quantum2026"; // <--- HIER DEIN PASSWORT
+        const SUPABASE_URL = 'https://aahsaqygohmykhagbihk.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E'; 
+        // ----------------------------------------------------
+        
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // --- SECURITY LOGIC (Das fehlte vorher!) ---
+        function checkLogin() {
+            const input = document.getElementById('password-input').value;
+            if(input === PASSWORD) {
+                // Das hier ist der Schlüssel! Damit merkt sich der Browser: "Du bist Admin"
+                localStorage.setItem('admin_logged_in', 'true');
+                document.getElementById('login-overlay').classList.add('hidden');
+            } else {
+                document.getElementById('error-msg').classList.remove('hidden');
+                document.getElementById('password-input').value = '';
+            }
+        }
+
+        // Prüfen beim Laden: War ich schon eingeloggt?
+        if(localStorage.getItem('admin_logged_in') === 'true') {
+            document.getElementById('login-overlay').classList.add('hidden');
+        }
+        // -------------------------------------------
 
         async function loadMaintenanceStatus() {
             const { data } = await db.from('config').select('value').eq('key', 'maintenance').single();
@@ -66,7 +100,6 @@
                 const isOn = (data.value === 'true' || data.value === true);
                 updateUI(isOn);
             } else {
-                // Default create if missing
                 await db.from('config').insert([{ key: 'maintenance', value: false }]);
                 updateUI(false);
             }

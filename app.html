@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="robots" content="noindex, nofollow">
-    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remembered - Legends App</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,6 +14,8 @@
         .bg-gold { background-color: #EAB308; }
         .border-gold { border-color: #EAB308; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .pulse-red { animation: pulseRed 2s infinite; }
@@ -50,10 +51,48 @@
         <div id="hero-section" class="mb-12 transition-all duration-500">
             <h2 class="text-2xl font-bold text-white mb-1 tracking-tight">Für dich – Heute</h2>
             <p class="text-gray-400 text-sm mb-6 font-medium">Erinnere dich an Ikonen</p>
-            <div id="hero-container" class="relative w-full h-[500px] md:h-[600px] rounded-3xl overflow-hidden bg-gray-900 border border-white/10 shadow-2xl cursor-pointer">
+            <div id="hero-container" class="relative w-full h-[400px] md:h-[500px] rounded-3xl overflow-hidden bg-gray-900 border border-white/10 shadow-2xl cursor-pointer">
                 <div class="w-full h-full animate-pulse bg-gray-900 flex items-center justify-center"><p class="text-gold opacity-50">Lade...</p></div>
             </div>
         </div>
+        <section id="club-27" class="mb-12">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-white">The <span class="text-red-600">27 Club</span> 🥀</h2>
+                <span class="text-[10px] text-gray-500 uppercase tracking-widest border border-white/10 px-2 py-1 rounded">Forever Young</span>
+            </div>
+            
+            <div class="w-full h-32 md:h-40 bg-gray-800 rounded-2xl mb-6 flex items-center justify-center border border-white/10 overflow-hidden relative group">
+                <div class="absolute inset-0 bg-gradient-to-r from-red-900/20 via-black to-red-900/20"></div>
+                <p class="relative z-10 text-gold font-bold tracking-[0.2em] opacity-50 group-hover:opacity-100 transition">DEIN BANNER BILD</p>
+            </div>
+
+            <div class="flex overflow-x-auto space-x-4 pb-4 -mx-4 px-4 scrollbar-hide">
+                <div class="min-w-[160px] h-56 bg-gray-900 rounded-xl relative overflow-hidden border-l-4 border-purple-500 shadow-lg flex-shrink-0">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Amy_Winehouse_fne_2007.jpg/800px-Amy_Winehouse_fne_2007.jpg" class="w-full h-full object-cover grayscale opacity-60 hover:opacity-100 transition duration-500">
+                    <div class="absolute bottom-0 left-0 p-3 bg-gradient-to-t from-black to-transparent w-full">
+                        <p class="text-white font-bold text-sm">Amy Winehouse</p>
+                    </div>
+                </div>
+                <div class="min-w-[160px] h-56 bg-gray-900 rounded-xl relative overflow-hidden border-l-4 border-yellow-500 shadow-lg flex-shrink-0">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Nirvana_around_1992.jpg" class="w-full h-full object-cover grayscale opacity-60 hover:opacity-100 transition duration-500">
+                    <div class="absolute bottom-0 left-0 p-3 bg-gradient-to-t from-black to-transparent w-full">
+                        <p class="text-white font-bold text-sm">Kurt Cobain</p>
+                    </div>
+                </div>
+                <div class="min-w-[160px] h-56 bg-gray-900 rounded-xl relative overflow-hidden border-l-4 border-indigo-500 shadow-lg flex-shrink-0">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Jimi_Hendrix_1967.png" class="w-full h-full object-cover grayscale opacity-60 hover:opacity-100 transition duration-500">
+                    <div class="absolute bottom-0 left-0 p-3 bg-gradient-to-t from-black to-transparent w-full">
+                        <p class="text-white font-bold text-sm">Jimi Hendrix</p>
+                    </div>
+                </div>
+                <div class="min-w-[160px] h-56 bg-gray-900 rounded-xl relative overflow-hidden border-l-4 border-red-500 shadow-lg flex-shrink-0">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b3/Janis_Joplin_1970.JPG" class="w-full h-full object-cover grayscale opacity-60 hover:opacity-100 transition duration-500">
+                    <div class="absolute bottom-0 left-0 p-3 bg-gradient-to-t from-black to-transparent w-full">
+                        <p class="text-white font-bold text-sm">Janis Joplin</p>
+                    </div>
+                </div>
+            </div>
+        </section>
         <div id="search-results-header" class="hidden mb-6"><h2 class="text-xl font-bold text-white">Ergebnisse</h2></div>
         <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
     </main>
@@ -215,7 +254,6 @@
         
         function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); const g = document.getElementById('favorites-grid'); g.innerHTML = ''; const f = getFavorites(); const l = allLegendsData.filter(x => f.includes(x.id)); if(l.length) l.forEach(x => g.innerHTML += createCard(x)); else g.innerHTML = '<p class="col-span-2 text-gray-500">Keine Favoriten.</p>'; }
         
-        // NEW: SHOW CANDLES VIEW
         function showCandlesView() { hideAllViews(); document.getElementById('candles-view').classList.remove('hidden'); const g = document.getElementById('candles-grid'); g.innerHTML = ''; const c = getMyCandles(); const l = allLegendsData.filter(x => c.includes(x.id)); if(l.length) l.forEach(x => g.innerHTML += createCard(x)); else g.innerHTML = '<p class="col-span-2 text-gray-500">Noch keine Kerzen entzündet.</p>'; }
 
         function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
@@ -298,21 +336,16 @@
             const text = document.getElementById('candle-text');
             if(text.innerText === "KERZE ENTZÜNDET") return;
             
-            // 1. UI Update
             const icon = document.getElementById('candle-icon'); const circle = document.getElementById('candle-circle'); const glow = document.getElementById('candle-glow'); const countLabel = document.getElementById('candle-count'); 
             icon.classList.remove('text-gray-500'); icon.setAttribute('stroke', '#EAB308'); icon.setAttribute('fill', '#EAB308'); circle.classList.add('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); glow.classList.remove('opacity-0'); glow.classList.add('opacity-40'); text.innerText = "KERZE ENTZÜNDET"; text.classList.add('text-gold'); 
             
-            // 2. Global Count Update (+1)
             let currentVal = parseInt(countLabel.innerText.replace(/\./g, '')) || 0;
             const newVal = currentVal + 1;
             countLabel.innerText = newVal.toLocaleString('de-DE'); 
             countLabel.classList.remove('opacity-60'); countLabel.classList.add('opacity-100', 'font-bold'); 
             
-            // 3. Local Storage Save (Merk dir, dass ICH geklickt habe)
             if(currentDetailId) {
-                saveMyCandles(currentDetailId); // <--- DAS IST NEU!
-                
-                // 4. DB Update
+                saveMyCandles(currentDetailId); 
                 const legend = allLegendsData.find(x => x.id === currentDetailId);
                 if(legend) {
                     legend.candles = newVal; 

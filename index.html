@@ -1,38 +1,163 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Legenden sterben nie</title>
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<style>
-:root { --gold: #D4AF37; --bg: #050505; }
-body { background-color: var(--bg); color: white; font-family: sans-serif; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; }
-.hidden { display: none !important; }
-.box { border: 1px solid #333; padding: 40px; border-radius: 20px; background: #111; max-width: 600px; width: 90%; }
-h1 { color: var(--gold); text-transform: uppercase; margin-bottom: 20px; }
-p { color: #888; font-size: 1.2rem; margin-bottom: 30px; }
-.btn { background: var(--gold); color: black; padding: 15px 40px; text-decoration: none; font-weight: bold; border-radius: 50px; display: inline-block; cursor: pointer; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <style>
+        body { font-family: sans-serif; }
+    </style>
 </head>
-<body>
-<div class="box">
-<div id="loading">System wird geladen...</div>
-<div id="maintenance-view" class="hidden"><h1>Wartungsarbeiten</h1><p>Wir polieren das Gold. Wir sind bald zurück.</p></div>
-<div id="live-view" class="hidden"><h1>Legenden sterben nie.</h1><p>Erlebe ihre Geschichten. Jeden Tag.</p><a href="app.html" class="btn">Login</a></div>
-</div>
-<script>
-const supabaseUrl = "https://aahsaqygohmykhagbihk.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E";
-const db = supabase.createClient(supabaseUrl, supabaseKey);
-async function checkStatus() {
-let isMaintenance = false;
-try { const { data } = await db.from("config").select("value").eq("key", "maintenance").single(); if (data) isMaintenance = (data.value === "true" || data.value === true); } catch (e) { console.log("Offline"); }
-document.getElementById("loading").classList.add("hidden");
-if (isMaintenance) document.getElementById("maintenance-view").classList.remove("hidden");
-else document.getElementById("live-view").classList.remove("hidden");
-}
-checkStatus();
-</script>
+<body class="bg-black text-white p-6 md:p-12 min-h-screen selection:bg-green-900">
+
+    <header class="max-w-6xl mx-auto flex justify-between items-end mb-16 border-b border-gray-800 pb-6">
+        <div>
+            <div class="text-[#D4AF37] text-xs font-bold tracking-[0.2em] mb-1">QUANTUM GROOVE PRODUCTIONS</div>
+            <h1 class="text-5xl md:text-6xl font-black tracking-tighter uppercase">Mission Control</h1>
+        </div>
+        <div class="text-right">
+            <div class="flex items-center gap-2 justify-end mb-1">
+                <span class="text-gray-400 text-sm font-bold">Status:</span>
+                <span id="system-status" class="text-green-500 font-bold tracking-wider flex items-center gap-1">
+                    ONLINE <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span></span>
+                </span>
+            </div>
+            <div class="text-gray-600 text-xs">Supabase: Free Tier</div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        
+        <div class="bg-[#111] border border-gray-800 rounded-2xl p-8 hover:border-gray-600 transition-colors group">
+            <div class="flex justify-between items-start mb-4">
+                <span class="text-gray-400 font-black tracking-widest text-sm uppercase">Datenbank</span>
+                <i data-lucide="database" class="text-[#D4AF37] group-hover:rotate-12 transition-transform"></i>
+            </div>
+            <div id="count-db" class="text-6xl font-black mb-2">--</div>
+            <div class="text-gray-500 text-sm">Gespeicherte Legenden</div>
+        </div>
+
+        <div class="bg-[#111] border border-gray-800 rounded-2xl p-8 hover:border-orange-900/50 transition-colors group">
+            <div class="flex justify-between items-start mb-4">
+                <span class="text-gray-400 font-black tracking-widest text-sm uppercase">Engagement</span>
+                <i data-lucide="flame" class="text-orange-500 group-hover:scale-110 transition-transform"></i>
+            </div>
+            <div id="count-candles" class="text-6xl font-black mb-2 text-white">--</div>
+            <div class="text-gray-500 text-sm">Entzündete Kerzen (Echtzeit)</div>
+        </div>
+
+        <div class="bg-[#111] border border-gray-800 rounded-2xl p-8 hover:border-blue-900/50 transition-colors">
+            <div class="flex justify-between items-start mb-4">
+                <span class="text-gray-400 font-black tracking-widest text-sm uppercase">Community</span>
+                <i data-lucide="users" class="text-[#D4AF37]"></i>
+            </div>
+            <div class="text-5xl font-black mb-2 mt-2">Guest</div>
+            <div class="text-gray-500 text-sm">Aktueller Modus: Offen</div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+        
+        <div class="bg-[#0f111a] border border-blue-900/30 rounded-lg p-8 relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-green-600 text-black text-xs font-bold px-2 py-1">AKTIV</div>
+            <h3 class="text-2xl font-bold mb-6">Supabase Free Tier</h3>
+            <ul class="space-y-3 text-gray-400 text-sm">
+                <li class="flex items-center gap-3">
+                    <i data-lucide="check" class="text-green-500 w-4 h-4"></i> 500MB Datenbank (Reicht für ca. 10.000 Legenden)
+                </li>
+                <li class="flex items-center gap-3">
+                    <i data-lucide="check" class="text-green-500 w-4 h-4"></i> 2GB Bandbreite / Monat
+                </li>
+                <li class="flex items-center gap-3">
+                    <i data-lucide="check" class="text-green-500 w-4 h-4"></i> Unbegrenzte API Aufrufe
+                </li>
+            </ul>
+            <div class="mt-8 text-3xl font-bold">0,00 € <span class="text-base text-gray-500 font-normal">/ Monat</span></div>
+        </div>
+
+        <div class="bg-[#111] border border-gray-800 rounded-lg p-8 opacity-50 grayscale hover:grayscale-0 transition-all">
+            <div class="flex justify-between items-start mb-6">
+                <h3 class="text-2xl font-bold text-gray-400">Pro Plan (Upgrade)</h3>
+                <div class="border border-gray-700 text-gray-500 text-xs px-2 py-1 rounded">Erst bei >100k Usern nötig</div>
+            </div>
+            <ul class="space-y-3 text-gray-500 text-sm">
+                <li class="flex items-center gap-3"><i data-lucide="rocket" class="w-4 h-4"></i> 8GB Datenbank</li>
+                <li class="flex items-center gap-3"><i data-lucide="shield" class="w-4 h-4"></i> Tägliche Backups</li>
+                <li class="flex items-center gap-3"><i data-lucide="mail" class="w-4 h-4"></i> Email Support</li>
+            </ul>
+            <div class="mt-8 text-3xl font-bold text-gray-600">25,00 $ <span class="text-base text-gray-700 font-normal">/ Monat</span></div>
+        </div>
+    </div>
+
+    <div class="text-center mb-12">
+        <a href="https://supabase.com/dashboard" target="_blank" class="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-8 py-3 rounded-full font-bold transition-all hover:scale-105 border border-gray-700">
+            Zum Supabase Editor (Daten eingeben) <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+        </a>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // ----------------------------------------------------
+        // HIER DEINE DATEN EINFÜGEN
+        // ----------------------------------------------------
+        const SUPABASE_URL = 'https://aahsaqygohmykhagbihk.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E'; 
+        // ----------------------------------------------------
+
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function initDashboard() {
+            // 1. Status Check (Wartungsmodus)
+            const { data: config } = await db.from('config').select('value').eq('key', 'maintenance').single();
+            
+            if (config && config.value === true) {
+                // Wenn Wartung an ist -> Status rot
+                document.getElementById('system-status').innerHTML = 'OFFLINE <span class="bg-red-500 w-2 h-2 rounded-full ml-1"></span>';
+                document.getElementById('system-status').className = 'text-red-500 font-bold tracking-wider flex items-center gap-1';
+            }
+
+            // 2. Datenbank Count (Tabelle: legends)
+            const { count: dbCount } = await db.from('legends').select('*', { count: 'exact', head: true });
+            animateValue("count-db", 0, dbCount || 0, 1000);
+
+            // 3. Kerzen Count (Tabelle: candles)
+            const { count: candleCount } = await db.from('candles').select('*', { count: 'exact', head: true });
+            animateValue("count-candles", 0, candleCount || 0, 1500);
+
+            // Realtime Listener
+            db.channel('candles-channel')
+              .on('postgres_changes', { event: '*', schema: 'public', table: 'candles' }, () => {
+                  updateCandleCount();
+              })
+              .subscribe();
+        }
+
+        async function updateCandleCount() {
+            const { count } = await db.from('candles').select('*', { count: 'exact', head: true });
+            document.getElementById('count-candles').innerText = count;
+        }
+
+        function animateValue(id, start, end, duration) {
+            if (end === null) end = 0;
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        initDashboard();
+    </script>
 </body>
 </html>

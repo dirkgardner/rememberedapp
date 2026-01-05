@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mission Control</title>
+    <script>
+        if (localStorage.getItem('admin_logged_in') !== 'true') {
+            window.location.href = 'index.html'; 
+        }
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -27,7 +33,7 @@
                         ONLINE <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span></span>
                     </span>
                 </div>
-                <div class="text-gray-600 text-xs">Supabase: Free Tier</div>
+                <button onclick="logout()" class="text-red-500 text-xs font-bold hover:underline mt-1">LOGOUT (Sitzung beenden)</button>
             </div>
         </header>
 
@@ -89,163 +95,19 @@
             <a href="https://supabase.com/dashboard" target="_blank" class="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-full font-bold transition-all hover:scale-105 border border-gray-700 text-sm md:text-base">
                 Zum Supabase Editor (Daten eingeben) <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
             </a>
+            <div class="mt-6">
+                 <a href="admin.html" class="text-gray-500 hover:text-white text-sm">Zurück zum Admin Controller</a>
+            </div>
         </div>
     </div>
 
     <script>
         lucide.createIcons();
-
-        // ----------------------------------------------------
-        // HIER DEINE DATEN EINFÜGEN (Prüf, ob die drin stehen!)
-        // ----------------------------------------------------
+        
+        // --- HIER DEINE DATEN WIEDER REIN ---
         const SUPABASE_URL = 'https://aahsaqygohmykhagbihk.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E'; 
-        // ----------------------------------------------------
-
-        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        async function initDashboard() {
-            try {
-                // 1. Status Check
-                const { data: config } = await db.from('config').select('value').eq('key', 'maintenance').single();
-                if (config && config.value === true) {
-                    const statusEl = document.getElementById('system-status');
-                    statusEl.innerHTML = 'OFFLINE <span class="bg-red-500 w-2 h-2 rounded-full ml-1"></span>';
-                    statusEl.className = 'text-red-500 font-bold tracking-wider flex items-center gap-1';
-                }
-
-                // 2. Datenbank Count (Anzahl Zeilen in 'legends')
-                const { count: dbCount, error: err1 } = await db.from('legends').select('*', { count: 'exact', head: true });
-                if(err1) console.error("DB Error:", err1);
-                animateValue("count-db", 0, dbCount || 0, 1000);
-
-                // 3. KERZEN FIX (Summe der Spalte 'candles' in Tabelle 'legends')
-                const { data: legendsData, error: err2 } = await db.from('legends').select('candles');
-                
-                let totalCandles = 0;
-                if(legendsData) {
-                    // Rechnet alle Zahlen in der Spalte 'candles' zusammen
-                    totalCandles = legendsData.reduce((acc, curr) => acc + (curr.candles || 0), 0);
-                }
-                
-                if(err2) console.error("Candle Error:", err2);
-                animateValue("count-candles", 0, totalCandles, 1500);
-
-                // Realtime Listener
-                db.channel('legends-channel')
-                  .on('postgres_changes', { event: '*', schema: 'public', table: 'legends' }, () => {
-                      // Wenn sich was ändert, Seite neu laden (simpleste Lösung für Summen-Update)
-                      initDashboard(); 
-                  })
-                  .subscribe();
-
-            } catch (e) {
-                console.error("Fehler:", e);
-            }
-        }
-
-        function animateValue(id, start, end, duration) {
-            if (end === null) end = 0;
-            const obj = document.getElementById(id);
-            if(!obj) return;
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                obj.innerHTML = Math.floor(progress * (end - start) + start);
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
-            };
-            window.requestAnimationFrame(step);
-        }
-
-        initDashboard();
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mission Control</title>
-    <script>
-        if (localStorage.getItem('admin_logged_in') !== 'true') {
-            window.location.href = 'index.html'; // Rauswurf zur Startseite
-        }
-    </script>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    
-    <style>
-        body { font-family: sans-serif; overflow-x: hidden; }
-    </style>
-</head>
-<body class="bg-black text-white p-4 md:p-8 min-h-screen selection:bg-green-900 flex flex-col items-center">
-
-    <div class="w-full max-w-6xl mx-auto">
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 border-b border-gray-800 pb-6 gap-4">
-            <div>
-                <div class="text-[#D4AF37] text-xs font-bold tracking-[0.2em] mb-1">QUANTUM GROOVE PRODUCTIONS</div>
-                <h1 class="text-4xl md:text-6xl font-black tracking-tighter uppercase break-words">Mission Control</h1>
-            </div>
-            <div class="text-left md:text-right">
-                <div class="flex items-center gap-2 md:justify-end mb-1">
-                    <span class="text-gray-400 text-sm font-bold">Status:</span>
-                    <span id="system-status" class="text-green-500 font-bold tracking-wider flex items-center gap-1">
-                        ONLINE <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span></span>
-                    </span>
-                </div>
-                <button onclick="logout()" class="text-red-500 text-xs font-bold hover:underline mt-1">LOGOUT (Sitzung beenden)</button>
-            </div>
-        </header>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            
-            <div class="bg-[#111] border border-gray-800 rounded-2xl p-6 md:p-8 hover:border-gray-600 transition-colors group relative overflow-hidden">
-                <div class="flex justify-between items-start mb-4">
-                    <span class="text-gray-400 font-black tracking-widest text-sm uppercase">Datenbank</span>
-                    <i data-lucide="database" class="text-[#D4AF37] group-hover:rotate-12 transition-transform"></i>
-                </div>
-                <div id="count-db" class="text-5xl md:text-6xl font-black mb-2">--</div>
-                <div class="text-gray-500 text-sm">Gespeicherte Legenden</div>
-            </div>
-
-            <div class="bg-[#111] border border-gray-800 rounded-2xl p-6 md:p-8 hover:border-orange-900/50 transition-colors group relative overflow-hidden">
-                <div class="flex justify-between items-start mb-4">
-                    <span class="text-gray-400 font-black tracking-widest text-sm uppercase">Engagement</span>
-                    <i data-lucide="flame" class="text-orange-500 group-hover:scale-110 transition-transform"></i>
-                </div>
-                <div id="count-candles" class="text-5xl md:text-6xl font-black mb-2 text-white">--</div>
-                <div class="text-gray-500 text-sm">Entzündete Kerzen (Echtzeit)</div>
-            </div>
-
-            <div class="bg-[#111] border border-gray-800 rounded-2xl p-6 md:p-8 hover:border-blue-900/50 transition-colors">
-                <div class="flex justify-between items-start mb-4">
-                    <span class="text-gray-400 font-black tracking-widest text-sm uppercase">Community</span>
-                    <i data-lucide="users" class="text-[#D4AF37]"></i>
-                </div>
-                <div class="text-5xl font-black mb-2 mt-2">Guest</div>
-                <div class="text-gray-500 text-sm">Aktueller Modus: Offen</div>
-            </div>
-        </div>
-
-        <div class="text-center mb-12">
-            <a href="admin.html" class="text-gray-500 hover:text-white text-sm">Zurück zum Admin Controller</a>
-        </div>
-    </div>
-
-    <script>
-        lucide.createIcons();
-
-        // ----------------------------------------------------
-        // HIER DEINE DATEN EINFÜGEN
-        // ----------------------------------------------------
-        const SUPABASE_URL = 'https://aahsaqygohmykhagbihk.supabase.co'; 
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E'; 
-        // ----------------------------------------------------
+        // ------------------------------------
 
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -256,40 +118,32 @@
 
         async function initDashboard() {
             try {
-                // 1. Status Check
+                // Status Check
                 const { data: config } = await db.from('config').select('value').eq('key', 'maintenance').single();
                 if (config && config.value === true) {
                     const statusEl = document.getElementById('system-status');
                     statusEl.innerHTML = 'OFFLINE <span class="bg-red-500 w-2 h-2 rounded-full ml-1"></span>';
                     statusEl.className = 'text-red-500 font-bold tracking-wider flex items-center gap-1';
                 }
-
-                // 2. Datenbank Count
+                // Datenbank Count
                 const { count: dbCount } = await db.from('legends').select('*', { count: 'exact', head: true });
                 animateValue("count-db", 0, dbCount || 0, 1000);
 
-                // 3. KERZEN FIX (Summe der Spalte 'candles')
+                // Kerzen Count (Summe)
                 const { data: legendsData } = await db.from('legends').select('candles');
                 let totalCandles = 0;
-                if(legendsData) {
-                    totalCandles = legendsData.reduce((acc, curr) => acc + (curr.candles || 0), 0);
-                }
+                if(legendsData) totalCandles = legendsData.reduce((acc, curr) => acc + (curr.candles || 0), 0);
                 animateValue("count-candles", 0, totalCandles, 1500);
 
-                // Realtime Listener
+                // Realtime
                 db.channel('legends-channel')
-                  .on('postgres_changes', { event: '*', schema: 'public', table: 'legends' }, () => {
-                      initDashboard(); 
-                  })
+                  .on('postgres_changes', { event: '*', schema: 'public', table: 'legends' }, () => initDashboard())
                   .subscribe();
 
-            } catch (e) {
-                console.error("Fehler:", e);
-            }
+            } catch (e) { console.error("Fehler:", e); }
         }
 
         function animateValue(id, start, end, duration) {
-            if (end === null) end = 0;
             const obj = document.getElementById(id);
             if(!obj) return;
             let startTimestamp = null;
@@ -297,9 +151,7 @@
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                 obj.innerHTML = Math.floor(progress * (end - start) + start);
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
+                if (progress < 1) window.requestAnimationFrame(step);
             };
             window.requestAnimationFrame(step);
         }

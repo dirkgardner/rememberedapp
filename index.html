@@ -1,56 +1,38 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legenden sterben nie</title>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <style>
-        :root { --gold: #D4AF37; --bg: #050505; }
-        body { background-color: var(--bg); color: white; font-family: sans-serif; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; }
-        .hidden { display: none !important; }
-        .box { border: 1px solid #333; padding: 40px; border-radius: 20px; background: #111; max-width: 600px; width: 90%; }
-        h1 { color: var(--gold); text-transform: uppercase; margin-bottom: 20px; }
-        p { color: #888; font-size: 1.2rem; margin-bottom: 30px; }
-        .btn { background: var(--gold); color: black; padding: 15px 40px; text-decoration: none; font-weight: bold; border-radius: 50px; display: inline-block; cursor: pointer; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legenden sterben nie</title>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<style>
+:root { --gold: #D4AF37; --bg: #050505; }
+body { background-color: var(--bg); color: white; font-family: sans-serif; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; }
+.hidden { display: none !important; }
+.box { border: 1px solid #333; padding: 40px; border-radius: 20px; background: #111; max-width: 600px; width: 90%; }
+h1 { color: var(--gold); text-transform: uppercase; margin-bottom: 20px; }
+p { color: #888; font-size: 1.2rem; margin-bottom: 30px; }
+.btn { background: var(--gold); color: black; padding: 15px 40px; text-decoration: none; font-weight: bold; border-radius: 50px; display: inline-block; cursor: pointer; }
+</style>
 </head>
 <body>
-    <div class="box">
-        <div id="loading">System wird geladen...</div>
-
-        <div id="maintenance-view" class="hidden">
-            <h1>Wartungsarbeiten</h1>
-            <p>Wir polieren das Gold. Wir sind bald zurück.</p>
-        </div>
-        
-        <div id="live-view" class="hidden">
-            <h1>Legenden sterben nie.</h1>
-            <p>Erlebe ihre Geschichten. Jeden Tag.</p>
-            <a href="app.html" class="btn">Login</a>
-        </div>
-    </div>
-
-    <script>
-        const supabaseUrl = 'https://aahsaqygohmykhagbihk.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
-        const db = supabase.createClient(supabaseUrl, supabaseKey);
-
-        async function checkStatus() {
-            let isMaintenance = false; 
-            try {
-                const { data } = await db.from('config').select('value').eq('key', 'maintenance').single();
-                if (data) isMaintenance = (data.value === 'true' || data.value === true);
-            } catch (e) { console.log("Offline mode"); }
-
-            document.getElementById('loading').classList.add('hidden');
-            if (isMaintenance) {
-                document.getElementById('maintenance-view').classList.remove('hidden');
-            } else {
-                document.getElementById('live-view').classList.remove('hidden');
-            }
-        }
-        checkStatus();
-    </script>
+<div class="box">
+<div id="loading">System wird geladen...</div>
+<div id="maintenance-view" class="hidden"><h1>Wartungsarbeiten</h1><p>Wir polieren das Gold. Wir sind bald zurück.</p></div>
+<div id="live-view" class="hidden"><h1>Legenden sterben nie.</h1><p>Erlebe ihre Geschichten. Jeden Tag.</p><a href="app.html" class="btn">Login</a></div>
+</div>
+<script>
+const supabaseUrl = "https://aahsaqygohmykhagbihk.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E";
+const db = supabase.createClient(supabaseUrl, supabaseKey);
+async function checkStatus() {
+let isMaintenance = false;
+try { const { data } = await db.from("config").select("value").eq("key", "maintenance").single(); if (data) isMaintenance = (data.value === "true" || data.value === true); } catch (e) { console.log("Offline"); }
+document.getElementById("loading").classList.add("hidden");
+if (isMaintenance) document.getElementById("maintenance-view").classList.remove("hidden");
+else document.getElementById("live-view").classList.remove("hidden");
+}
+checkStatus();
+</script>
 </body>
 </html>

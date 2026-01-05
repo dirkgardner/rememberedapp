@@ -16,7 +16,6 @@
     </style>
 </head>
 <body class="p-6 md:p-12">
-
     <div id="login-overlay" class="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center">
         <h1 class="text-2xl font-bold mb-4">MISSION CONTROL</h1>
         <input type="password" id="password-input" placeholder="Passwort" class="bg-gray-800 text-white px-4 py-2 rounded mb-4 text-center">
@@ -29,7 +28,6 @@
             <h1 class="text-3xl font-black text-white">CONTROLLER</h1>
             <p class="text-green-500 font-bold">ONLINE ●</p>
         </header>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-gray-900 border border-gold p-8 rounded-xl">
                 <div class="flex justify-between items-center mb-4">
@@ -42,19 +40,16 @@
                 <p id="maintenance-status" class="text-2xl font-black text-white">LÄDT...</p>
                 <p class="text-gray-500 text-xs mt-2">Schaltet die Index-Seite live/offline.</p>
             </div>
-
             <div class="bg-gray-900 border border-gray-800 p-8 rounded-xl">
                 <h3 class="text-gray-400 font-bold mb-4">DATENBANK</h3>
                 <button onclick="initDB()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm w-full">Tabelle 'config' erstellen</button>
                 <p class="text-gray-500 text-xs mt-2">Klicken, falls der Schalter nicht geht.</p>
             </div>
         </div>
-
         <div class="text-center mt-12">
             <a href="index.html" class="text-gray-500 hover:text-white">Zurück zur Website</a>
         </div>
     </div>
-
     <script>
         const supabaseUrl = 'https://aahsaqygohmykhagbihk.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
@@ -74,22 +69,17 @@
             const { data, error } = await db.from('config').select('value').eq('key', 'maintenance').single();
             const toggle = document.getElementById('maintenance-toggle');
             const status = document.getElementById('maintenance-status');
-            
             if (data) {
                 const isOn = (data.value === 'true' || data.value === true);
                 toggle.checked = isOn;
                 updateUI(isOn);
-            } else {
-                status.innerText = "DB NICHT GEFUNDEN";
-            }
+            } else { status.innerText = "DB FEHLT (Klick rechts)"; }
         }
 
         async function toggleMaintenance() {
             const toggle = document.getElementById('maintenance-toggle');
             const newVal = toggle.checked;
             updateUI(newVal);
-            
-            // Speichern in DB
             const { error } = await db.from('config').upsert({ key: 'maintenance', value: newVal });
             if(error) alert("Fehler: " + error.message);
         }
@@ -104,10 +94,8 @@
         }
 
         async function initDB() {
-            // Versucht einen Dummy-Wert zu setzen, um die Tabelle zu testen/füllen
             const { error } = await db.from('config').insert([{ key: 'maintenance', value: false }]);
-            if(error) alert("SQL Fehler (Tabelle fehlt vermutlich): " + error.message);
-            else alert("Erfolgreich initialisiert!");
+            if(error) alert("Fehler: " + error.message); else alert("Initialisiert!");
         }
     </script>
 </body>

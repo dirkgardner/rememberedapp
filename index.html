@@ -3,30 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remembered App</title>
+    <title>Remembered - Legenden sterben nie</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>body { font-family: sans-serif; }</style>
-</head>
-<body class="bg-black text-white h-screen flex flex-col items-center justify-center p-4 text-center selection:bg-green-900">
-
-    <div class="max-w-md w-full animate-fade-in-up">
-        <div class="text-[#D4AF37] text-xs font-bold tracking-[0.3em] mb-4 uppercase">Quantum Groove Productions</div>
-        <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-6">REMEMBERED</h1>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body { font-family: sans-serif; }
         
-        <p class="text-gray-400 text-lg mb-8 leading-relaxed">
-            Deine Legende. Für immer gespeichert.<br>
-            <span class="text-sm opacity-50">App Access Currently Restricted.</span>
+        /* Custom Pulse für das Logo (sanftes Atmen) */
+        @keyframes softPulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(212, 175, 55, 0)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.3)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(212, 175, 55, 0)); }
+        }
+        
+        .logo-pulse {
+            animation: softPulse 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-black text-white selection:bg-[#D4AF37] selection:text-black min-h-screen flex flex-col">
+
+    <nav class="w-full max-w-6xl mx-auto p-6 flex justify-between items-center">
+        <div class="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase">
+            Quantum Groove Productions
+        </div>
+        
+        <a href="admin.html" class="border border-gray-800 hover:border-[#D4AF37] text-gray-400 hover:text-[#D4AF37] px-4 py-2 rounded-full text-xs font-bold transition-all uppercase tracking-wider">
+            Login
+        </a>
+    </nav>
+
+    <main class="flex-grow flex flex-col items-center justify-center text-center px-4 mt-10 md:mt-20 mb-24">
+        
+        <div class="mb-12 relative">
+            <img src="logo.png" alt="Remembered Logo" class="h-32 md:h-40 w-auto mx-auto logo-pulse object-contain rounded-2xl">
+        </div>
+
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-4 text-[#D4AF37] uppercase">
+            Legenden sterben nie.
+        </h1>
+        
+        <h2 class="text-xl md:text-2xl text-gray-300 font-medium mb-8">
+            Erlebe ihre Geschichten. Jeden Tag.
+        </h2>
+        
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10">
+            Tägliche Highlights, zeitlose Storys und die Momente, die unsere Welt geprägt haben.<br class="hidden md:block">
+            Direkt auf dein Handy.
         </p>
 
-        <div class="flex flex-col gap-4">
-            <button class="w-full bg-white text-black font-bold py-4 rounded-full hover:bg-gray-200 transition-transform active:scale-95">
-                Download App (Soon)
-            </button>
-            <a href="admin.html" class="text-gray-600 text-xs hover:text-gray-400 transition-colors mt-4">
-                Authorized Access Only
-            </a>
-        </div>
-    </div>
+        <button class="bg-[#D4AF37] text-black text-lg font-bold py-4 px-10 rounded-full hover:bg-white hover:scale-105 transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+            JETZT STARTEN
+        </button>
 
+        <p class="mt-4 text-xs text-gray-600">Verfügbar für iOS & Web</p>
+    </main>
+
+    <section class="bg-[#0a0a0a] border-t border-gray-900 w-full py-20 px-4">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
+            
+            <div class="group">
+                <div class="mb-4 inline-flex p-3 rounded-2xl bg-gray-900 group-hover:bg-[#D4AF37]/20 transition-colors">
+                    <i data-lucide="zap" class="w-8 h-8 text-[#D4AF37]"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 uppercase tracking-wide">Tägliche Inspiration</h3>
+                <p class="text-gray-400 leading-relaxed text-sm">
+                    Starte jeden Tag mit einem Zitat, einer Story oder einem Bild, das dich motiviert. Von Menschen, die Geschichte geschrieben haben.
+                </p>
+            </div>
+
+            <div class="group">
+                <div class="mb-4 inline-flex p-3 rounded-2xl bg-gray-900 group-hover:bg-[#D4AF37]/20 transition-colors">
+                    <i data-lucide="trophy" class="w-8 h-8 text-[#D4AF37]"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 uppercase tracking-wide">Hall of Fame</h3>
+                <p class="text-gray-400 leading-relaxed text-sm">
+                    Deine persönliche Sammlung der Größten aller Zeiten. Ob Sport, Musik oder Film – hier kommen sie alle zusammen.
+                </p>
+            </div>
+
+            <div class="group">
+                <div class="mb-4 inline-flex p-3 rounded-2xl bg-gray-900 group-hover:bg-[#D4AF37]/20 transition-colors">
+                    <i data-lucide="shield-check" class="w-8 h-8 text-[#D4AF37]"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 uppercase tracking-wide">Pur & Direkt</h3>
+                <p class="text-gray-400 leading-relaxed text-sm">
+                    Kein Abo-Fallen-Bullshit. Direkter Zugang, volle Kontrolle. Du bist Teil des Clubs.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="w-full text-center py-8 text-gray-600 text-xs border-t border-gray-900">
+        &copy; 2026 Quantum Groove Productions. All rights reserved.
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>

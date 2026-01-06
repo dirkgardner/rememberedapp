@@ -12,7 +12,7 @@
     <style>
         body { font-family: sans-serif; }
         
-        /* 🔥 DER KILLER MOVE: GOLD PULSE EFFECT 🔥 */
+        /* 🔥 GOLD PULSE EFFECT 🔥 */
         @keyframes softPulse {
             0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(212, 175, 55, 0)); }
             50% { transform: scale(1.05); filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.3)); }
@@ -26,16 +26,13 @@
 </head>
 <body class="bg-black text-white selection:bg-[#D4AF37] selection:text-black min-h-screen flex flex-col">
 
-    <nav class="w-full max-w-6xl mx-auto p-6 flex justify-between items-center">
-        <div class="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase">
-            Quantum Groove Productions
-        </div>
+    <nav class="w-full max-w-6xl mx-auto p-6 flex justify-end items-center">
         <a href="admin.html" class="border border-gray-800 hover:border-[#D4AF37] text-gray-400 hover:text-[#D4AF37] px-4 py-2 rounded-full text-xs font-bold transition-all uppercase tracking-wider">
             Login
         </a>
     </nav>
 
-    <main class="flex-grow flex flex-col items-center justify-center text-center px-4 mt-8 md:mt-16 mb-20">
+    <main class="flex-grow flex flex-col items-center justify-center text-center px-4 mt-4 md:mt-10 mb-20">
         
         <div class="mb-10 relative">
             <img src="logo.png" alt="Remembered Logo" class="h-32 md:h-40 w-auto mx-auto logo-pulse object-contain rounded-2xl">
@@ -49,7 +46,7 @@
             Experience their stories. Every day.
         </h2>
         
-        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10">
+        <p class="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed mb-10">
             Daily highlights, timeless stories and defining moments<br class="hidden md:block">
             that shaped our world.<br><br>
             Delivered directly to your device.
@@ -63,39 +60,26 @@
     </main>
 
     <section class="bg-[#0a0a0a] border-t border-gray-900 w-full py-20 px-4">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
             
-            <div class="group">
-                <div class="mb-4 inline-flex p-3 rounded-2xl bg-gray-900 group-hover:bg-[#D4AF37]/20 transition-colors">
-                    <i data-lucide="zap" class="w-8 h-8 text-[#D4AF37]"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3 uppercase tracking-wide">⚡ DAILY INSPIRATION</h3>
-                <p class="text-gray-400 leading-relaxed text-sm">
-                    Start every day with a quote, a story or a moment<br>that still matters.<br>
-                    From people who changed the world.
+            <div class="bg-[#111] border border-gray-800 p-8 rounded-2xl hover:border-[#D4AF37] transition-all group">
+                <h3 class="text-2xl font-black mb-4 uppercase tracking-wide text-[#D4AF37]">⚡ DAILY INSPIRATION</h3>
+                <p class="text-gray-400 leading-relaxed text-base">
+                    Start every day with a quote, a story or a moment that still matters. From people who changed the world.
                 </p>
             </div>
 
-            <div class="group">
-                <div class="mb-4 inline-flex p-3 rounded-2xl bg-gray-900 group-hover:bg-[#D4AF37]/20 transition-colors">
-                    <i data-lucide="trophy" class="w-8 h-8 text-[#D4AF37]"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3 uppercase tracking-wide">🏆 HALL OF FAME</h3>
-                <p class="text-gray-400 leading-relaxed text-sm">
-                    Your personal collection of the greatest minds, icons<br>and creators of all time.<br>
-                    From sports to music, film and culture.
+            <div class="bg-[#111] border border-gray-800 p-8 rounded-2xl hover:border-[#D4AF37] transition-all group">
+                <h3 class="text-2xl font-black mb-4 uppercase tracking-wide text-[#D4AF37]">🏆 HALL OF FAME</h3>
+                <p class="text-gray-400 leading-relaxed text-base">
+                    Your personal collection of the greatest minds, icons and creators of all time. From sports to music, film and culture.
                 </p>
             </div>
 
-            <div class="group">
-                <div class="mb-4 inline-flex p-3 rounded-2xl bg-gray-900 group-hover:bg-[#D4AF37]/20 transition-colors">
-                    <i data-lucide="shield-check" class="w-8 h-8 text-[#D4AF37]"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3 uppercase tracking-wide">🛡 PURE & DIRECT</h3>
-                <p class="text-gray-400 leading-relaxed text-sm">
-                    No subscription traps.<br>
-                    No algorithmic noise.<br>
-                    You stay in control. You are part of the circle.
+            <div class="bg-[#111] border border-gray-800 p-8 rounded-2xl hover:border-[#D4AF37] transition-all group">
+                <h3 class="text-2xl font-black mb-4 uppercase tracking-wide text-[#D4AF37]">🛡 PURE & DIRECT</h3>
+                <p class="text-gray-400 leading-relaxed text-base">
+                    No subscription traps. No algorithmic noise. You stay in control. You are part of the circle.
                 </p>
             </div>
 

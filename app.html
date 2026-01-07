@@ -8,15 +8,21 @@
     <title>Remembered - Legends App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
     <style>
         body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; }
         .text-gold { color: #EAB308; }
         .bg-gold { background-color: #EAB308; }
         .border-gold { border-color: #EAB308; }
-        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        
+        /* Hide Scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar { -ms-overflow-style: none;  scrollbar-width: none; }
+
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .pulse-red { animation: pulseRed 2s infinite; }
         @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
         .pulse-gold-slow { animation: pulseGold 3s infinite; }
@@ -25,24 +31,51 @@
 </head>
 <body class="min-h-screen pb-24 selection:bg-gold selection:text-black">
 
-    <header class="fixed top-0 w-full z-40 bg-black/80 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex justify-between items-center transition-all duration-300" id="main-header">
-        <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 bg-gradient-to-br from-white/20 to-transparent rounded border border-white/10 flex items-center justify-center">
-                <span class="text-xs font-bold text-white">R</span>
+    <!-- NEUE NAVIGATION (Wie auf dem Foto) -->
+    <header class="fixed top-0 w-full z-40 bg-black/90 backdrop-blur-xl border-b border-white/5 h-16 flex items-center justify-between px-4 md:px-8 transition-all duration-300" id="main-header">
+        
+        <!-- Linke Seite: Kategorien (Scrollbar auf Mobile) -->
+        <nav class="flex-1 overflow-x-auto no-scrollbar mask-linear-fade">
+            <div class="flex items-center space-x-6 md:space-x-8 pr-4">
+                <!-- "Alles" Button (verstecktes Home) -->
+                <button onclick="showHome()" class="text-sm md:text-base font-light text-white hover:text-gold uppercase tracking-widest whitespace-nowrap transition-colors">All</button>
+                
+                <!-- Kategorien -->
+                <button onclick="filterCategory('Musician')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Musician</button>
+                <button onclick="filterCategory('Actor')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Actor</button>
+                <button onclick="filterCategory('DJ')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">DJ & Producer</button>
+                <button onclick="filterCategory('Sport')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Sport Icon</button>
+                <button onclick="filterCategory('Visionary')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Visionary</button>
             </div>
-            <h1 class="text-sm font-bold tracking-[0.2em] text-white uppercase opacity-90">Remembered</h1>
-        </div>
-        <div onclick="showProfile()" class="relative w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10 cursor-pointer hover:border-gold/50 transition">
-            <span id="header-avatar" class="text-xs font-bold text-gold">ME</span>
-            <div id="header-notif-dot" class="hidden absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black animate-ping"></div>
-            <div id="header-notif-dot-static" class="hidden absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black"></div>
+        </nav>
+
+        <!-- Rechte Seite: Icons (Suche & Profil) -->
+        <div class="flex items-center space-x-5 pl-4 bg-black/90 shadow-[-10px_0_20px_#000]">
+            <!-- Suche Icon -->
+            <button onclick="toggleSearch()" class="text-gray-300 hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </button>
+
+            <!-- Profil Icon (Gelber Kreis mit Silhouette) -->
+            <button onclick="showProfile()" class="relative group">
+                <div class="w-8 h-8 rounded-full bg-gold flex items-center justify-center hover:scale-105 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-black" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <!-- Roter Punkt für Benachrichtigungen -->
+                <div id="header-notif-dot" class="hidden absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black animate-ping"></div>
+                <div id="header-notif-dot-static" class="hidden absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black"></div>
+            </button>
         </div>
     </header>
 
-    <div id="search-bar-container" class="hidden fixed top-0 w-full z-50 bg-black/95 backdrop-blur-xl border-b border-gold/20 px-4 py-3 shadow-2xl">
+    <div id="search-bar-container" class="hidden fixed top-16 w-full z-30 bg-black/95 backdrop-blur-xl border-b border-gold/20 px-4 py-3 shadow-2xl animate-in fade-in slide-in-from-top-2">
         <div class="relative max-w-7xl mx-auto flex items-center">
-            <input type="text" id="search-input" onkeyup="filterLegends()" placeholder="Suche..." class="w-full bg-white/10 border border-white/10 rounded-full py-3 pl-4 pr-4 text-white placeholder-gray-400 focus:outline-none focus:border-gold transition-all">
-            <button onclick="closeSearch()" class="ml-4 text-sm text-gray-400">Abbrechen</button>
+            <input type="text" id="search-input" onkeyup="filterLegends()" placeholder="Suche nach Namen..." class="w-full bg-white/10 border border-white/10 rounded-full py-3 pl-4 pr-4 text-white placeholder-gray-400 focus:outline-none focus:border-gold transition-all">
+            <button onclick="closeSearch()" class="ml-4 text-sm text-gray-400 hover:text-white">X</button>
         </div>
     </div>
 
@@ -66,7 +99,6 @@
         <div id="favorites-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
     </main>
 
-    <!-- NEU: View für angezündete Kerzen -->
     <main id="candles-view" class="hidden pt-24 px-4 max-w-7xl mx-auto fade-in h-screen">
         <div class="mb-8 flex items-center space-x-4">
             <button onclick="showProfile()" class="p-2 bg-white/5 rounded-full hover:bg-white/10"><svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
@@ -102,12 +134,10 @@
             <p class="text-gold text-xs tracking-[0.2em] uppercase mt-1 opacity-80">Mitglied seit 2026</p>
         </div>
         <div class="grid grid-cols-2 gap-4 mb-10">
-            <!-- Klick öffnet jetzt die Kerzen-Liste -->
             <div onclick="showCandlesView()" class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center cursor-pointer hover:bg-white/10 transition group">
                 <p id="profile-candle-count" class="text-2xl font-bold text-white group-hover:text-gold">0</p>
                 <p class="text-gray-500 text-[10px] uppercase mt-1 group-hover:text-white">Kerzen</p>
             </div>
-            
             <div onclick="showFavoritesView()" class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center cursor-pointer group">
                 <p id="profile-fav-count" class="text-2xl font-bold text-white group-hover:text-gold">0</p>
                 <p class="text-gray-500 text-[10px] uppercase mt-1 group-hover:text-white">Favoriten</p>
@@ -199,7 +229,7 @@
         async function loadLegends() { let { data: legends, error } = await db.from('legends').select('*').order('name'); if (!error) { allLegendsData = legends; setHero(legends); renderGrid(legends); loadUserData(); checkAnniversaries(); } }
 
         // UTILS
-        function loadUserData() { const n = localStorage.getItem('user_name'); if (n) { document.getElementById('profile-name').innerText=n; document.getElementById('profile-avatar').innerText=n.charAt(0).toUpperCase(); document.getElementById('header-avatar').innerText=n.charAt(0).toUpperCase(); document.getElementById('settings-name-input').value=n; } updatePushBtnState(); updateProfileStats(); }
+        function loadUserData() { const n = localStorage.getItem('user_name'); if (n) { document.getElementById('profile-name').innerText=n; document.getElementById('profile-avatar').innerText=n.charAt(0).toUpperCase(); document.getElementById('settings-name-input').value=n; } updatePushBtnState(); updateProfileStats(); }
         function saveSettings() { const n = document.getElementById('settings-name-input').value.trim(); if (n) { localStorage.setItem('user_name', n); loadUserData(); showProfile(); } }
         function resetApp() { if(confirm("Alles löschen?")) { localStorage.clear(); location.reload(); } }
         
@@ -216,7 +246,7 @@
         }
 
         function hideAllViews() { document.getElementById('home-view').classList.add('hidden'); document.getElementById('profile-view').classList.add('hidden'); document.getElementById('favorites-view').classList.add('hidden'); document.getElementById('candles-view').classList.add('hidden'); document.getElementById('settings-view').classList.add('hidden'); }
-        function showHome() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); updateNavColors('home'); closeSearch(); }
+        function showHome() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); updateNavColors('home'); closeSearch(); renderGrid(allLegendsData); }
         function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); closeSearch(); }
         
         function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); const g = document.getElementById('favorites-grid'); g.innerHTML = ''; const f = getFavorites(); const l = allLegendsData.filter(x => f.includes(x.id)); if(l.length) l.forEach(x => g.innerHTML += createCard(x)); else g.innerHTML = '<p class="col-span-2 text-gray-500">Keine Favoriten.</p>'; }
@@ -291,6 +321,24 @@
         function closeSearch() { document.getElementById('search-bar-container').classList.add('hidden'); document.getElementById('search-input').value=''; renderGrid(allLegendsData); }
         function filterLegends() { const q=document.getElementById('search-input').value.toLowerCase(); renderGrid(allLegendsData.filter(l=>l.name.toLowerCase().includes(q))); }
         
+        // NEUE FUNKTION: KATEGORIE FILTER
+        function filterCategory(cat) {
+            hideAllViews();
+            document.getElementById('home-view').classList.remove('hidden');
+            updateNavColors('home');
+            
+            // Filter logic
+            const filtered = allLegendsData.filter(l => {
+                if(!l.category) return false;
+                // Einfacher Check, ob der String enthalten ist (z.B. "Musician" in "Musician")
+                return l.category.toLowerCase().includes(cat.toLowerCase());
+            });
+            renderGrid(filtered);
+            
+            // Optional: Hero Section ausblenden bei Filter, oder lassen
+            // document.getElementById('hero-section').classList.add('hidden');
+        }
+
         function openDetail(id) { 
             const l=allLegendsData.find(x=>x.id===id); if(!l)return; 
             currentDetailId=id; 
@@ -302,7 +350,6 @@
             document.getElementById('detail-bio').innerText=l.bio||""; 
             
             const v=document.getElementById('video-container'); const f=document.getElementById('video-frame'); 
-            // REPARIERT: Syntaxfehler behoben
             if(l.trailer_url) { try { let i=l.trailer_url.split('v=')[1]; if(i) { i=i.split('&')[0]; f.src='https://www.youtube.com/embed/' + i; v.classList.remove('hidden'); } } catch(e){ v.classList.add('hidden'); } } else { v.classList.add('hidden'); f.src=""; } 
             const m=document.getElementById('music-btn'); if(l.music_url) { m.classList.remove('hidden'); m.onclick=()=>window.open(l.music_url,'_blank'); } else m.classList.add('hidden'); 
             

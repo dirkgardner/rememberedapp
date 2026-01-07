@@ -22,12 +22,13 @@ body { background:#050505; color:white; font-family:'Inter',sans-serif }
 
 <body class="min-h-screen pb-24">
 
-<!-- UI IST UNVERÄNDERT – HEADER, VIEWS, NAV, OVERLAYS -->
-<!-- (aus Platzgründen hier gekürzt – bleibt exakt wie bei dir) -->
+<!-- ⚠️ DEIN KOMPLETTES UI BLEIBT HIER UNVERÄNDERT -->
+<!-- Header, Views, Grid, Overlay etc. -->
+<!-- NICHTS hier anfassen -->
 
 <script>
 /* ===============================
-   SUPABASE SETUP (READ ONLY)
+   SUPABASE (READ ONLY!)
 ================================ */
 const supabaseUrl = "https://aahsaqygohmykhagbihk.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E";
@@ -37,7 +38,7 @@ let allLegendsData = [];
 let currentDetailId = null;
 
 /* ===============================
-   LOAD DATA (SAFE – SELECT ONLY)
+   DATA LOAD (SAFE)
 ================================ */
 async function loadLegends() {
   const { data, error } = await db
@@ -45,14 +46,55 @@ async function loadLegends() {
     .select("*")
     .order("name");
 
-  if (!error && data) {
-    allLegendsData = data;
-    renderGrid(data);
+  if (error) {
+    console.error("Supabase error:", error);
+    return;
   }
+
+  allLegendsData = data || [];
+  renderGrid(allLegendsData);
 }
 
 /* ===============================
-   LOCAL STORAGE (USER STATE)
+   GRID RENDER (🔥 WAR DER FEHLER)
+================================ */
+function renderGrid(legends) {
+  const grid = document.getElementById("legends-grid");
+  if (!grid) return;
+
+  grid.innerHTML = "";
+
+  legends.forEach(l => {
+    grid.innerHTML += createCard(l);
+  });
+}
+
+/* ===============================
+   CARD TEMPLATE (MINIMAL)
+================================ */
+function createCard(l) {
+  const img = l.image_url || "https://placehold.co/600x800";
+  return `
+    <div onclick="openDetail('${l.id}')" 
+         class="aspect-[3/4] bg-black rounded-xl overflow-hidden border border-white/10 cursor-pointer">
+      <img src="${img}" class="w-full h-full object-cover grayscale hover:grayscale-0 transition">
+      <div class="p-3">
+        <h3 class="font-bold">${l.name}</h3>
+      </div>
+    </div>
+  `;
+}
+
+/* ===============================
+   DETAIL OPEN (BASIS)
+================================ */
+function openDetail(id) {
+  currentDetailId = id;
+  document.getElementById("detail-overlay")?.classList.remove("hidden");
+}
+
+/* ===============================
+   LOCAL USER STATE
 ================================ */
 function getMyCandles() {
   return JSON.parse(localStorage.getItem("my_candles") || "[]");
@@ -66,37 +108,35 @@ function saveMyCandles(id) {
 }
 
 /* ===============================
-   CANDLE ACTION (SAFE VERSION)
+   CANDLE (SAFE – NO DB WRITE)
 ================================ */
 function toggleCandle() {
   const text = document.getElementById("candle-text");
+  const count = document.getElementById("candle-count");
+
+  if (!text || !count) return;
   if (text.innerText === "KERZE ENTZÜNDET") return;
 
-  // UI ONLY
   text.innerText = "KERZE ENTZÜNDET";
   text.classList.add("text-gold");
 
-  const countLabel = document.getElementById("candle-count");
-  let val = parseInt(countLabel.innerText || "0");
+  let val = parseInt(count.innerText || "0");
   val++;
-  countLabel.innerText = val.toLocaleString("de-DE");
+  count.innerText = val.toLocaleString("de-DE");
 
-  // LOCAL MEMORY ONLY (SECURE)
   if (currentDetailId) {
     saveMyCandles(currentDetailId);
   }
 
-  // ❌ KEIN DB UPDATE HIER
-  // Kerzen werden später serverseitig gezählt (RPC)
+  // 🚫 KEIN SUPABASE UPDATE
 }
 
 /* ===============================
-   UI HELPERS (UNVERÄNDERT)
+   START
 ================================ */
-// openDetail, renderGrid, favorites etc.
-// bleiben exakt wie bei dir
-
-loadLegends();
+document.addEventListener("DOMContentLoaded", () => {
+  loadLegends();
+});
 </script>
 
 </body>

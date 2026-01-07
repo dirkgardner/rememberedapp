@@ -109,6 +109,8 @@
         </div>
 
         <div id="search-results-header" class="hidden mb-6"><h2 class="text-xl font-bold text-white">Ergebnisse</h2></div>
+        
+        <!-- GRID -->
         <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
     </main>
 
@@ -250,20 +252,24 @@
 
         async function loadLegends() { let { data: legends, error } = await db.from('legends').select('*').order('name'); if (!error) { allLegendsData = legends; setHero(legends); renderGrid(legends); loadUserData(); checkAnniversaries(); } }
 
-        // NEU: Lade Club 27 Daten aus der separaten Tabelle
+        // NEU: Lade Club 27 Daten aus der separaten Tabelle (VERBESSERT)
         async function loadClub27Data() {
             let { data, error } = await db.from('club27').select('*');
-            if (!error) {
-                // Wir mappen die Daten so, dass sie zur App passen
+            if (error) {
+                console.error("Fehler beim Laden von Club27:", error);
+                // Fallback: Leeres Array, damit nichts abstürzt
+                club27Data = [];
+                return;
+            }
+            if (data) {
                 club27Data = data.map(item => ({
                     id: item.id,
                     name: item.name,
                     dates: item.lifespan,
-                    category: 'Club 27',
-                    // Hier bauen wir die Bild-URL aus dem Bucket zusammen:
-                    image_url: `https://aahsaqygohmykhagbihk.supabase.co/storage/v1/object/public/club27/${item.id}.jpg`,
+                    category: item.category || 'Club 27',
+                    image_url: item.image_url, // Nutze die URL direkt aus der neuen Spalte
                     bio: item.description || "Mitglied des Club 27.",
-                    candles: 0 // Default
+                    candles: 0 
                 }));
             }
         }
@@ -305,11 +311,21 @@
             document.getElementById('club27-header').classList.remove('hidden');
             updateNavColors('home');
             
+            // Grid leeren (optional Lade-Animation anzeigen)
+            const grid = document.getElementById('legends-grid');
+            grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-10">Lade Club 27...</p>';
+            
             // Lade Daten, falls noch nicht da
             if(club27Data.length === 0) {
                 await loadClub27Data();
             }
-            renderGrid(club27Data);
+            
+            // Wenn immer noch leer (z.B. wegen RLS Fehler), zeige Hinweis
+            if(club27Data.length === 0) {
+                grid.innerHTML = '<p class="text-red-500 col-span-full text-center py-10">Keine Daten empfangen. Bitte RLS Policy in Supabase prüfen!</p>';
+            } else {
+                renderGrid(club27Data);
+            }
         }
 
         function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); closeSearch(); }

@@ -9,15 +9,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <!-- Google Font für den Club 27 Look (Serif) -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
     <style>
         body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; }
+        .font-serif-custom { font-family: 'Playfair Display', serif; }
         .text-gold { color: #EAB308; }
         .bg-gold { background-color: #EAB308; }
         .border-gold { border-color: #EAB308; }
         
-        /* Hide Scrollbar for Chrome, Safari and Opera */
+        /* Hide Scrollbar */
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        /* Hide scrollbar for IE, Edge and Firefox */
         .no-scrollbar { -ms-overflow-style: none;  scrollbar-width: none; }
 
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
@@ -25,22 +28,22 @@
         
         .pulse-red { animation: pulseRed 2s infinite; }
         @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-        .pulse-gold-slow { animation: pulseGold 3s infinite; }
-        @keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.2); } 50% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); } 100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); } }
     </style>
 </head>
 <body class="min-h-screen pb-24 selection:bg-gold selection:text-black">
 
-    <!-- NEUE NAVIGATION (Wie auf dem Foto) -->
+    <!-- NAVIGATION -->
     <header class="fixed top-0 w-full z-40 bg-black/90 backdrop-blur-xl border-b border-white/5 h-16 flex items-center justify-between px-4 md:px-8 transition-all duration-300" id="main-header">
         
-        <!-- Linke Seite: Kategorien (Scrollbar auf Mobile) -->
         <nav class="flex-1 overflow-x-auto no-scrollbar mask-linear-fade">
             <div class="flex items-center space-x-6 md:space-x-8 pr-4">
-                <!-- "Alles" Button (verstecktes Home) -->
                 <button onclick="showHome()" class="text-sm md:text-base font-light text-white hover:text-gold uppercase tracking-widest whitespace-nowrap transition-colors">All</button>
                 
-                <!-- Kategorien -->
+                <!-- NEU: CLUB 27 -->
+                <button onclick="showClub27()" class="text-sm md:text-base font-light text-gray-300 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors group">
+                    Club <span class="text-red-600 font-bold group-hover:text-red-500 transition-colors">27</span>
+                </button>
+
                 <button onclick="filterCategory('Musician')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Musician</button>
                 <button onclick="filterCategory('Actor')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Actor</button>
                 <button onclick="filterCategory('DJ')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">DJ & Producer</button>
@@ -49,23 +52,14 @@
             </div>
         </nav>
 
-        <!-- Rechte Seite: Icons (Suche & Profil) -->
         <div class="flex items-center space-x-5 pl-4 bg-black/90 shadow-[-10px_0_20px_#000]">
-            <!-- Suche Icon -->
             <button onclick="toggleSearch()" class="text-gray-300 hover:text-white transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             </button>
-
-            <!-- Profil Icon (Gelber Kreis mit Silhouette) -->
             <button onclick="showProfile()" class="relative group">
                 <div class="w-8 h-8 rounded-full bg-gold flex items-center justify-center hover:scale-105 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-black" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-black" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>
                 </div>
-                <!-- Roter Punkt für Benachrichtigungen -->
                 <div id="header-notif-dot" class="hidden absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black animate-ping"></div>
                 <div id="header-notif-dot-static" class="hidden absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black"></div>
             </button>
@@ -80,6 +74,8 @@
     </div>
 
     <main id="home-view" class="pt-24 px-4 max-w-7xl mx-auto fade-in">
+        
+        <!-- STANDARD HERO (Wird ausgeblendet bei Club 27) -->
         <div id="hero-section" class="mb-12 transition-all duration-500">
             <h2 class="text-2xl font-bold text-white mb-1 tracking-tight">Für dich – Heute</h2>
             <p class="text-gray-400 text-sm mb-6 font-medium">Erinnere dich an Ikonen</p>
@@ -87,6 +83,27 @@
                 <div class="w-full h-full animate-pulse bg-gray-900 flex items-center justify-center"><p class="text-gold opacity-50">Lade...</p></div>
             </div>
         </div>
+
+        <!-- NEU: CLUB 27 HEADER (Standardmäßig versteckt) -->
+        <div id="club27-header" class="hidden mb-12 relative rounded-3xl overflow-hidden border border-red-900/30">
+            <!-- Hintergrund mit rötlichem Glow -->
+            <div class="absolute inset-0 bg-gradient-to-br from-black via-[#2a0505] to-black"></div>
+            <div class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-red-900/40 to-transparent blur-3xl"></div>
+            
+            <div class="relative z-10 p-8 md:p-12 flex flex-col md:flex-row items-end md:items-center justify-between min-h-[400px]">
+                <div class="max-w-2xl">
+                    <!-- Rose Graphic Placeholder (Emoji oder SVG) -->
+                    <div class="text-4xl mb-2 opacity-80">🥀</div>
+                    <h1 class="text-6xl md:text-8xl font-serif-custom text-white mb-6 leading-none">
+                        CLUB <span class="text-red-600 italic">27</span>
+                    </h1>
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed font-light max-w-lg border-l-2 border-red-600 pl-4">
+                        The 27 Club is one of music history’s darkest legends. It refers to iconic artists, mainly from rock and blues, who all died at the age of 27. Extraordinary talent, excess, and massive influence collide here their lives ended far too early, but their music became immortal.
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <div id="search-results-header" class="hidden mb-6"><h2 class="text-xl font-bold text-white">Ergebnisse</h2></div>
         <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
     </main>
@@ -246,7 +263,34 @@
         }
 
         function hideAllViews() { document.getElementById('home-view').classList.add('hidden'); document.getElementById('profile-view').classList.add('hidden'); document.getElementById('favorites-view').classList.add('hidden'); document.getElementById('candles-view').classList.add('hidden'); document.getElementById('settings-view').classList.add('hidden'); }
-        function showHome() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); updateNavColors('home'); closeSearch(); renderGrid(allLegendsData); }
+        
+        function showHome() { 
+            hideAllViews(); 
+            document.getElementById('home-view').classList.remove('hidden'); 
+            // Reset to standard hero
+            document.getElementById('hero-section').classList.remove('hidden');
+            document.getElementById('club27-header').classList.add('hidden');
+            updateNavColors('home'); 
+            closeSearch(); 
+            renderGrid(allLegendsData); 
+        }
+
+        // NEU: CLUB 27 VIEW
+        function showClub27() {
+            hideAllViews();
+            document.getElementById('home-view').classList.remove('hidden');
+            
+            // Hide standard hero, show Club 27 header
+            document.getElementById('hero-section').classList.add('hidden');
+            document.getElementById('club27-header').classList.remove('hidden');
+            
+            updateNavColors('home');
+            
+            // Filter for "27" in category
+            const clubMembers = allLegendsData.filter(l => l.category && l.category.includes('27'));
+            renderGrid(clubMembers);
+        }
+
         function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); closeSearch(); }
         
         function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); const g = document.getElementById('favorites-grid'); g.innerHTML = ''; const f = getFavorites(); const l = allLegendsData.filter(x => f.includes(x.id)); if(l.length) l.forEach(x => g.innerHTML += createCard(x)); else g.innerHTML = '<p class="col-span-2 text-gray-500">Keine Favoriten.</p>'; }
@@ -325,18 +369,18 @@
         function filterCategory(cat) {
             hideAllViews();
             document.getElementById('home-view').classList.remove('hidden');
+            
+            // Ensure standard hero is visible for normal categories
+            document.getElementById('hero-section').classList.remove('hidden');
+            document.getElementById('club27-header').classList.add('hidden');
+            
             updateNavColors('home');
             
-            // Filter logic
             const filtered = allLegendsData.filter(l => {
                 if(!l.category) return false;
-                // Einfacher Check, ob der String enthalten ist (z.B. "Musician" in "Musician")
                 return l.category.toLowerCase().includes(cat.toLowerCase());
             });
             renderGrid(filtered);
-            
-            // Optional: Hero Section ausblenden bei Filter, oder lassen
-            // document.getElementById('hero-section').classList.add('hidden');
         }
 
         function openDetail(id) { 

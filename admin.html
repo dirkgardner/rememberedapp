@@ -65,21 +65,15 @@
 
     <script>
         lucide.createIcons();
-        // ----------------------------------------------------
-        // CONFIG
-        // ----------------------------------------------------
-        const PASSWORD = "quantum2026"; // <--- HIER DEIN PASSWORT
+        const PASSWORD = "quantum2026"; 
         const SUPABASE_URL = 'https://aahsaqygohmykhagbihk.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E'; 
-        // ----------------------------------------------------
         
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // --- SECURITY LOGIC (Das fehlte vorher!) ---
         function checkLogin() {
             const input = document.getElementById('password-input').value;
             if(input === PASSWORD) {
-                // Das hier ist der Schlüssel! Damit merkt sich der Browser: "Du bist Admin"
                 localStorage.setItem('admin_logged_in', 'true');
                 document.getElementById('login-overlay').classList.add('hidden');
             } else {
@@ -88,11 +82,9 @@
             }
         }
 
-        // Prüfen beim Laden: War ich schon eingeloggt?
         if(localStorage.getItem('admin_logged_in') === 'true') {
             document.getElementById('login-overlay').classList.add('hidden');
         }
-        // -------------------------------------------
 
         async function loadMaintenanceStatus() {
             const { data } = await db.from('config').select('value').eq('key', 'maintenance').single();

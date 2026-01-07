@@ -23,12 +23,12 @@ body { background:#050505; color:white; font-family:'Inter',sans-serif }
 <body class="min-h-screen pb-24 fade-in">
 
 <!-- HEADER -->
-<header class="p-4 border-b border-white/10 text-center font-black tracking-widest">
+<header class="fixed top-0 w-full z-40 bg-black/80 backdrop-blur border-b border-white/10 p-4 text-center font-black tracking-widest">
   REMEMBERED
 </header>
 
-<!-- GRID -->
-<main class="p-4">
+<!-- MAIN GRID -->
+<main class="pt-20 px-4 max-w-7xl mx-auto">
   <div id="legends-grid"
        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
     <!-- cards injected -->
@@ -44,10 +44,10 @@ body { background:#050505; color:white; font-family:'Inter',sans-serif }
     ← Zurück
   </button>
 
-  <h2 id="detail-name" class="text-3xl font-black mb-4"></h2>
+  <h2 id="detail-name" class="text-4xl font-black mb-6"></h2>
 
   <button onclick="toggleCandle()"
-          class="mt-6 flex items-center gap-3">
+          class="flex items-center gap-4">
     <span id="candle-text"
           class="uppercase text-xs tracking-widest text-gray-400">
       Zünde eine Kerze an
@@ -63,7 +63,6 @@ body { background:#050505; color:white; font-family:'Inter',sans-serif }
 ================================ */
 const supabaseUrl = "https://aahsaqygohmykhagbihk.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E";
-
 const db = supabase.createClient(supabaseUrl, supabaseKey);
 
 let allLegendsData = [];
@@ -156,7 +155,6 @@ function toggleCandle() {
 
   text.innerText = "KERZE ENTZÜNDET";
   text.classList.add("text-gold");
-
   count.innerText = "1";
 
   if (currentDetailId) {
@@ -171,6 +169,9 @@ function toggleCandle() {
 ================================ */
 document.addEventListener("DOMContentLoaded", loadLegends);
 </script>
+
+<!-- 🔥 DAS WAR DER FEHLENDE TEIL -->
+<script src="js/guard.js"></script>
 
 </body>
 </html>

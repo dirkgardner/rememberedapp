@@ -1,3 +1,4 @@
+cat << 'EOF' > index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +26,13 @@
             overflow-x: hidden;
         }
 
-        /* --- NAV --- */
+        /* ANIMATION */
+        @keyframes pulse-glow {
+            0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(230, 194, 101, 0)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 15px rgba(230, 194, 101, 0.3)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(230, 194, 101, 0)); }
+        }
+
         nav {
             display: flex;
             justify-content: flex-end;
@@ -47,7 +54,6 @@
         }
         .login-btn:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
 
-        /* --- HERO --- */
         .hero {
             text-align: center;
             padding: 60px 20px 100px;
@@ -57,14 +63,13 @@
         }
 
         .logo-container {
-            width: 80px;
-            height: 80px;
             margin-bottom: 30px;
         }
         
-        .logo-placeholder {
-            font-size: 3rem;
-            color: var(--accent-gold);
+        .logo-img {
+            width: 100px; /* Größe anpassen */
+            height: auto;
+            animation: pulse-glow 3s infinite ease-in-out;
         }
 
         .tagline {
@@ -117,7 +122,6 @@
             font-size: 0.7rem;
         }
 
-        /* --- VISION --- */
         .vision {
             text-align: center;
             padding: 80px 20px;
@@ -146,7 +150,6 @@
             color: var(--text-muted);
         }
 
-        /* --- FEATURES CARDS --- */
         .features {
             display: flex;
             justify-content: center;
@@ -182,7 +185,6 @@
             line-height: 1.6;
         }
 
-        /* --- PROMISE SECTION --- */
         .promise-container {
             display: flex;
             flex-wrap: wrap;
@@ -254,7 +256,6 @@
             text-transform: uppercase;
         }
 
-        /* --- FOOTER / WAITLIST --- */
         .waitlist {
             text-align: center;
             padding: 100px 20px;
@@ -323,7 +324,7 @@
 
     <header class="hero">
         <div class="logo-container">
-            <div class="logo-placeholder">🦅</div> 
+            <img src="logo.png" alt="Remembered Logo" class="logo-img">
         </div>
         <div class="tagline">The World's First AI-Powered Digital Legacy Vault</div>
         <h1>LEGENDS NEVER <span>DIE.</span></h1>
@@ -399,3 +400,4 @@
 
 </body>
 </html>
+EOF

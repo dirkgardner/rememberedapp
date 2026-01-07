@@ -28,18 +28,18 @@
         .pulse-red { animation: pulseRed 2s infinite; }
         @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
-        /* NEU: Erzwungener Glass-Effekt für alle Browser */
+        /* Glass Header */
         .glass-header {
-            background-color: rgba(0, 0, 0, 0.3); /* Mehr Transparenz (30%) */
-            backdrop-filter: blur(20px);          /* Starker Blur */
-            -webkit-backdrop-filter: blur(20px);  /* WICHTIG für iPhones/Safari */
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* Feine Linie unten */
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
     </style>
 </head>
 <body class="min-h-screen pb-24 selection:bg-gold selection:text-black">
 
-    <!-- NAVIGATION (Jetzt mit .glass-header Klasse) -->
+    <!-- NAVIGATION -->
     <header class="fixed top-0 w-full z-40 glass-header h-16 flex items-center justify-between px-4 md:px-8 transition-all duration-300" id="main-header">
         
         <nav class="flex-1 overflow-x-auto no-scrollbar mask-linear-fade">
@@ -212,6 +212,7 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
         const db = supabase.createClient(supabaseUrl, supabaseKey);
         let allLegendsData = [];
+        let club27Data = []; // Neue Liste für Club 27
         let currentDetailId = null;
 
         // PUSH
@@ -249,6 +250,24 @@
 
         async function loadLegends() { let { data: legends, error } = await db.from('legends').select('*').order('name'); if (!error) { allLegendsData = legends; setHero(legends); renderGrid(legends); loadUserData(); checkAnniversaries(); } }
 
+        // NEU: Lade Club 27 Daten aus der separaten Tabelle
+        async function loadClub27Data() {
+            let { data, error } = await db.from('club27').select('*');
+            if (!error) {
+                // Wir mappen die Daten so, dass sie zur App passen
+                club27Data = data.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    dates: item.lifespan,
+                    category: 'Club 27',
+                    // Hier bauen wir die Bild-URL aus dem Bucket zusammen:
+                    image_url: `https://aahsaqygohmykhagbihk.supabase.co/storage/v1/object/public/club27/${item.id}.jpg`,
+                    bio: item.description || "Mitglied des Club 27.",
+                    candles: 0 // Default
+                }));
+            }
+        }
+
         // UTILS
         function loadUserData() { const n = localStorage.getItem('user_name'); if (n) { document.getElementById('profile-name').innerText=n; document.getElementById('profile-avatar').innerText=n.charAt(0).toUpperCase(); document.getElementById('settings-name-input').value=n; } updatePushBtnState(); updateProfileStats(); }
         function saveSettings() { const n = document.getElementById('settings-name-input').value.trim(); if (n) { localStorage.setItem('user_name', n); loadUserData(); showProfile(); } }
@@ -271,7 +290,6 @@
         function showHome() { 
             hideAllViews(); 
             document.getElementById('home-view').classList.remove('hidden'); 
-            // Reset to standard hero
             document.getElementById('hero-section').classList.remove('hidden');
             document.getElementById('club27-header').classList.add('hidden');
             updateNavColors('home'); 
@@ -279,20 +297,19 @@
             renderGrid(allLegendsData); 
         }
 
-        // NEU: CLUB 27 VIEW
-        function showClub27() {
+        // NEU: CLUB 27 VIEW (Lädt Daten aus separater Tabelle)
+        async function showClub27() {
             hideAllViews();
             document.getElementById('home-view').classList.remove('hidden');
-            
-            // Hide standard hero, show Club 27 header
             document.getElementById('hero-section').classList.add('hidden');
             document.getElementById('club27-header').classList.remove('hidden');
-            
             updateNavColors('home');
             
-            // Filter for "27" in category
-            const clubMembers = allLegendsData.filter(l => l.category && l.category.includes('27'));
-            renderGrid(clubMembers);
+            // Lade Daten, falls noch nicht da
+            if(club27Data.length === 0) {
+                await loadClub27Data();
+            }
+            renderGrid(club27Data);
         }
 
         function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); closeSearch(); }
@@ -388,7 +405,10 @@
         }
 
         function openDetail(id) { 
-            const l=allLegendsData.find(x=>x.id===id); if(!l)return; 
+            // Suche in beiden Listen (Standard und Club 27)
+            const l = allLegendsData.find(x => x.id === id) || club27Data.find(x => x.id === id);
+            if(!l) return; 
+            
             currentDetailId=id; 
             document.getElementById('detail-img').src=l.image_url; 
             document.getElementById('detail-name').innerText=l.name; 
@@ -460,12 +480,15 @@
                 saveMyCandles(myCandles);
             }
 
-            // Save to Database
+            // Save to Database (Check if it's a normal legend or Club 27)
             if(currentDetailId) {
                 const legend = allLegendsData.find(x => x.id === currentDetailId);
                 if(legend) {
                     legend.candles = newVal; 
                     await db.from('legends').update({ candles: newVal }).eq('id', currentDetailId);
+                } else {
+                    // Falls es ein Club 27 Mitglied ist (noch keine Spalte 'candles' in deiner Tabelle, aber für die Zukunft vorbereitet)
+                    // await db.from('club27').update({ candles: newVal }).eq('id', currentDetailId);
                 }
             }
         }

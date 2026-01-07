@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remembered – The World’s First AI-Powered Digital Legacy Vault</title>
-    <meta name="description" content="Preserve stories, memories and cultural moments. Built for the future.">
+    <meta name="description" content="Preserve stories, memories and cultural moments. Secure. Private. App only.">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -18,24 +18,47 @@
             50% { transform: scale(1.05); filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.3)); }
             100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(212, 175, 55, 0)); }
         }
-        
-        .logo-pulse {
-            animation: softPulse 3s infinite ease-in-out;
+        .logo-pulse { animation: softPulse 3s infinite ease-in-out; }
+
+        /* 🔒 HARDCORE PROTECTION CSS 🔒 */
+        .no-select {
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        img {
+            -webkit-user-drag: none;
+            user-drag: none;
+            pointer-events: none;
+        }
+        /* Overlay für Bilder */
+        .protected-image-container {
+            position: relative;
+        }
+        .protected-image-container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.1) 100%);
+            pointer-events: none;
         }
     </style>
 </head>
-<body class="bg-black text-white selection:bg-[#D4AF37] selection:text-black min-h-screen flex flex-col">
+<body class="bg-black text-white selection:bg-[#D4AF37] selection:text-black min-h-screen flex flex-col no-select" oncontextmenu="return false;">
 
-    <nav class="w-full max-w-6xl mx-auto p-6 flex justify-end items-center">
-        <a href="admin.html" class="border border-gray-800 hover:border-[#D4AF37] text-gray-400 hover:text-[#D4AF37] px-4 py-2 rounded-full text-xs font-bold transition-all uppercase tracking-wider">
+    <nav class="w-full max-w-6xl mx-auto p-6 flex justify-between items-center">
+        <div class="text-[#D4AF37] text-xs font-bold tracking-[0.2em] uppercase cursor-default">
+            Quantum Groove Productions
+        </div>
+        <a href="admin.html" class="border border-gray-800 hover:border-[#D4AF37] text-gray-400 hover:text-[#D4AF37] px-4 py-2 rounded-full text-xs font-bold transition-all uppercase tracking-wider pointer-events-auto">
             Login
         </a>
     </nav>
 
-    <main class="flex-grow flex flex-col items-center justify-center text-center px-4 mt-4 md:mt-10 mb-20">
+    <main class="flex-grow flex flex-col items-center justify-center text-center px-4 mt-8 md:mt-16 mb-20">
         
-        <div class="mb-10 relative">
-            <img src="logo.png" alt="Remembered Logo" class="h-32 md:h-40 w-auto mx-auto logo-pulse object-contain rounded-2xl">
+        <div class="mb-10 relative protected-image-container">
+            <img src="logo.png" alt="Remembered Logo" class="h-32 md:h-40 w-auto mx-auto logo-pulse object-contain rounded-2xl pointer-events-auto">
         </div>
 
         <div class="mb-6 px-4 py-1.5 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/5 backdrop-blur-md inline-block">
@@ -48,56 +71,69 @@
             LEGENDS NEVER <span class="text-[#D4AF37]">DIE.</span>
         </h1>
         
-        <h2 class="text-xl md:text-2xl text-gray-300 font-medium mb-8">
-            Experience their stories. Every day.
+        <h2 class="text-xl md:text-2xl text-gray-300 font-medium mb-8 max-w-2xl mx-auto">
+            Experience their stories. Preserve your own.<br>
+            <span class="text-gray-500 text-lg">Secure. Private. App Only.</span>
         </h2>
-        
-        <p class="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed mb-10">
-            Daily highlights, timeless stories and defining moments<br class="hidden md:block">
-            that shaped our world.<br><br>
-            Delivered directly to your device.
-        </p>
 
-        <button class="bg-[#D4AF37] text-black text-lg font-bold py-4 px-10 rounded-full hover:bg-white hover:scale-105 transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+        <button onclick="document.getElementById('join-list').scrollIntoView({behavior: 'smooth'})" class="bg-[#D4AF37] text-black text-lg font-bold py-4 px-10 rounded-full hover:bg-white hover:scale-105 transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] pointer-events-auto mb-4">
             JOIN EARLY ACCESS
         </button>
-
-        <p class="mt-4 text-xs text-gray-600">Available on iOS & Web</p>
+        
+        <p class="text-xs text-gray-600">Coming soon to iOS & Android</p>
     </main>
 
-    <section class="bg-[#0a0a0a] border-t border-gray-900 w-full py-20 px-4">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-            
-            <div class="bg-[#111] border border-gray-800 p-8 rounded-2xl hover:border-[#D4AF37] transition-all group">
-                <h3 class="text-2xl font-black mb-4 uppercase tracking-wide text-[#D4AF37]">⚡ DAILY INSPIRATION</h3>
-                <p class="text-gray-400 leading-relaxed text-base">
-                    Start every day with a quote, a story or a moment that still matters. From people who changed the world.
-                </p>
-            </div>
-
-            <div class="bg-[#111] border border-gray-800 p-8 rounded-2xl hover:border-[#D4AF37] transition-all group">
-                <h3 class="text-2xl font-black mb-4 uppercase tracking-wide text-[#D4AF37]">🏆 HALL OF FAME</h3>
-                <p class="text-gray-400 leading-relaxed text-base">
-                    Your personal collection of the greatest minds, icons and creators of all time. From sports to music, film and culture.
-                </p>
-            </div>
-
-            <div class="bg-[#111] border border-gray-800 p-8 rounded-2xl hover:border-[#D4AF37] transition-all group">
-                <h3 class="text-2xl font-black mb-4 uppercase tracking-wide text-[#D4AF37]">🛡 PURE & DIRECT</h3>
-                <p class="text-gray-400 leading-relaxed text-base">
-                    No subscription traps. No algorithmic noise. You stay in control. You are part of the circle.
-                </p>
-            </div>
-
+    <section class="bg-[#050505] border-t border-gray-900 w-full py-20 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h3 class="text-[#D4AF37] text-sm font-bold uppercase tracking-[0.2em] mb-4">The Vision</h3>
+            <h2 class="text-3xl md:text-4xl font-black mb-6">More than a database.<br>A sanctuary for stories.</h2>
+            <p class="text-gray-400 text-lg leading-relaxed max-w-2xl mx-auto">
+                The open web forgets. It copies, distorts, and dilutes. 
+                Remembered is a closed vault designed to protect the sanctity of history 
+                and the privacy of your personal legacy.
+            </p>
         </div>
     </section>
 
-    <section class="w-full py-20 px-4 bg-black border-t border-gray-900 text-center">
+    <section class="bg-black border-t border-gray-900 w-full py-20 px-4">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="text-left">
+                <h3 class="text-[#D4AF37] text-sm font-bold uppercase tracking-[0.2em] mb-4">Our Promise</h3>
+                <h2 class="text-3xl font-black mb-6">Culture is Free.<br>Legacy is Personal.</h2>
+                <div class="space-y-6">
+                    <div class="flex gap-4">
+                        <div class="bg-gray-800 p-3 rounded-lg h-fit"><i data-lucide="globe" class="text-white w-6 h-6"></i></div>
+                        <div>
+                            <h4 class="text-white font-bold mb-1">Cultural Heritage</h4>
+                            <p class="text-gray-400 text-sm">Legends, history, and public memories remain forever free.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="bg-[#D4AF37]/20 p-3 rounded-lg h-fit"><i data-lucide="lock" class="text-[#D4AF37] w-6 h-6"></i></div>
+                        <div>
+                            <h4 class="text-white font-bold mb-1">Your Personal Legacy</h4>
+                            <p class="text-gray-400 text-sm">Paid features are strictly for your private vault.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-[#111] border border-gray-800 rounded-2xl p-8 aspect-square flex items-center justify-center relative overflow-hidden protected-image-container">
+                <div class="absolute inset-0 bg-gradient-to-tr from-black via-transparent to-[#D4AF37]/10"></div>
+                <i data-lucide="shield-check" class="w-32 h-32 text-[#D4AF37]/20"></i>
+                <div class="absolute bottom-6 text-center w-full text-gray-600 text-xs font-mono uppercase">
+                    Secured by Remembered AI
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="join-list" class="w-full py-20 px-4 bg-[#0a0a0a] border-t border-gray-900 text-center">
         <div class="max-w-2xl mx-auto">
             <h3 class="text-2xl font-bold mb-2 uppercase text-[#D4AF37]">Be Part of the First Chapter</h3>
             <p class="text-gray-400 text-sm mb-8">Join the early access list to receive updates, insights and first access invitations.</p>
             
-            <form onsubmit="event.preventDefault(); alert('Thank you. You are on the list.');" class="flex flex-col md:flex-row gap-4 justify-center">
+            <form onsubmit="event.preventDefault(); alert('Thank you. You are on the list.');" class="flex flex-col md:flex-row gap-4 justify-center pointer-events-auto">
                 <input type="email" placeholder="Enter your email" required class="bg-[#111] border border-gray-700 text-white px-6 py-3 rounded-full w-full md:w-80 focus:outline-none focus:border-[#D4AF37] transition-colors">
                 <button type="submit" class="bg-white text-black font-bold px-8 py-3 rounded-full hover:bg-gray-200 transition-colors uppercase tracking-wider text-sm">
                     Join List
@@ -108,27 +144,37 @@
     </section>
 
     <footer class="w-full bg-[#050505] py-12 px-4 border-t border-gray-900 text-center flex flex-col items-center gap-6">
-        
-        <div class="flex flex-wrap justify-center gap-4 text-gray-500 text-sm font-medium">
+        <div class="flex flex-wrap justify-center gap-4 text-gray-500 text-sm font-medium pointer-events-auto">
             <a href="#" class="hover:text-[#D4AF37] transition-colors">Privacy Policy</a>
             <span class="text-gray-800">·</span>
             <a href="#" class="hover:text-[#D4AF37] transition-colors">Terms of Service</a>
             <span class="text-gray-800">·</span>
             <a href="#" class="hover:text-[#D4AF37] transition-colors">Imprint</a>
         </div>
-
         <div class="text-gray-400 text-xs">
             © 2026 Legacy Global Ventures Ltd. · Limassol, Cyprus
         </div>
-
-        <div class="text-[10px] text-gray-700 uppercase tracking-widest">
-            Pre-Launch · Features subject to change
-        </div>
-
     </footer>
 
     <script>
         lucide.createIcons();
+
+        // 🔒 BLOCK RIGHT CLICK
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // 🔒 BLOCK SHORTCUTS
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.key === 'u') || 
+                (e.ctrlKey && e.key === 's') || 
+                (e.ctrlKey && e.key === 'c') ||
+                (e.metaKey && e.key === 'u') || 
+                (e.metaKey && e.key === 's') || 
+                (e.metaKey && e.key === 'c')) { 
+                e.preventDefault();
+                return false;
+            }
+        });
     </script>
 </body>
 </html>

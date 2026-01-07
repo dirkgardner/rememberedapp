@@ -27,12 +27,20 @@
         
         .pulse-red { animation: pulseRed 2s infinite; }
         @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+        /* NEU: Erzwungener Glass-Effekt für alle Browser */
+        .glass-header {
+            background-color: rgba(0, 0, 0, 0.3); /* Mehr Transparenz (30%) */
+            backdrop-filter: blur(20px);          /* Starker Blur */
+            -webkit-backdrop-filter: blur(20px);  /* WICHTIG für iPhones/Safari */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* Feine Linie unten */
+        }
     </style>
 </head>
 <body class="min-h-screen pb-24 selection:bg-gold selection:text-black">
 
-    <!-- NAVIGATION (Sticky, 50% Transparent, Blur) -->
-    <header class="fixed top-0 w-full z-40 bg-black/50 backdrop-blur-xl border-b border-white/5 h-16 flex items-center justify-between px-4 md:px-8 transition-all duration-300" id="main-header">
+    <!-- NAVIGATION (Jetzt mit .glass-header Klasse) -->
+    <header class="fixed top-0 w-full z-40 glass-header h-16 flex items-center justify-between px-4 md:px-8 transition-all duration-300" id="main-header">
         
         <nav class="flex-1 overflow-x-auto no-scrollbar mask-linear-fade">
             <div class="flex items-center space-x-6 md:space-x-8 pr-4">
@@ -47,7 +55,6 @@
                 <button onclick="filterCategory('DJ')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">DJ & Producer</button>
                 <button onclick="filterCategory('Sport')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Sport Icon</button>
                 <button onclick="filterCategory('Visionary')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Visionary</button>
-                <!-- NEU: ROYAL -->
                 <button onclick="filterCategory('Royal')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Royal</button>
             </div>
         </nav>

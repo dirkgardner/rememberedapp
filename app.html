@@ -66,6 +66,15 @@
         <div id="favorites-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
     </main>
 
+    <!-- NEU: View für angezündete Kerzen -->
+    <main id="candles-view" class="hidden pt-24 px-4 max-w-7xl mx-auto fade-in h-screen">
+        <div class="mb-8 flex items-center space-x-4">
+            <button onclick="showProfile()" class="p-2 bg-white/5 rounded-full hover:bg-white/10"><svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
+            <h2 class="text-2xl font-bold text-white">Deine Kerzen</h2>
+        </div>
+        <div id="candles-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
+    </main>
+
     <main id="settings-view" class="hidden pt-24 px-6 max-w-lg mx-auto fade-in h-screen">
         <div class="mb-8 flex items-center space-x-4">
             <button onclick="showProfile()" class="p-2 bg-white/5 rounded-full hover:bg-white/10"><svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
@@ -93,9 +102,9 @@
             <p class="text-gold text-xs tracking-[0.2em] uppercase mt-1 opacity-80">Mitglied seit 2026</p>
         </div>
         <div class="grid grid-cols-2 gap-4 mb-10">
-            <!-- REPARIERT: Kerzen-Karte ist jetzt klickbar -->
-            <div onclick="alert('Hier Funktion für Kerzen-Liste einfügen')" class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center cursor-pointer hover:bg-white/10 transition group">
-                <p id="profile-candle-count" class="text-2xl font-bold text-white group-hover:text-gold">12</p>
+            <!-- Klick öffnet jetzt die Kerzen-Liste -->
+            <div onclick="showCandlesView()" class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center cursor-pointer hover:bg-white/10 transition group">
+                <p id="profile-candle-count" class="text-2xl font-bold text-white group-hover:text-gold">0</p>
                 <p class="text-gray-500 text-[10px] uppercase mt-1 group-hover:text-white">Kerzen</p>
             </div>
             
@@ -193,13 +202,27 @@
         function loadUserData() { const n = localStorage.getItem('user_name'); if (n) { document.getElementById('profile-name').innerText=n; document.getElementById('profile-avatar').innerText=n.charAt(0).toUpperCase(); document.getElementById('header-avatar').innerText=n.charAt(0).toUpperCase(); document.getElementById('settings-name-input').value=n; } updatePushBtnState(); updateProfileStats(); }
         function saveSettings() { const n = document.getElementById('settings-name-input').value.trim(); if (n) { localStorage.setItem('user_name', n); loadUserData(); showProfile(); } }
         function resetApp() { if(confirm("Alles löschen?")) { localStorage.clear(); location.reload(); } }
+        
+        // STORAGE HELPERS
         function getFavorites() { return JSON.parse(localStorage.getItem('my_favorites') || '[]'); }
         function saveFavorites(arr) { localStorage.setItem('my_favorites', JSON.stringify(arr)); updateProfileStats(); checkAnniversaries(); }
-        function updateProfileStats() { document.getElementById('profile-fav-count').innerText = getFavorites().length; }
-        function hideAllViews() { document.getElementById('home-view').classList.add('hidden'); document.getElementById('profile-view').classList.add('hidden'); document.getElementById('favorites-view').classList.add('hidden'); document.getElementById('settings-view').classList.add('hidden'); }
+        
+        function getMyCandles() { return JSON.parse(localStorage.getItem('my_candles') || '[]'); }
+        function saveMyCandles(arr) { localStorage.setItem('my_candles', JSON.stringify(arr)); updateProfileStats(); }
+
+        function updateProfileStats() { 
+            document.getElementById('profile-fav-count').innerText = getFavorites().length; 
+            document.getElementById('profile-candle-count').innerText = getMyCandles().length;
+        }
+
+        function hideAllViews() { document.getElementById('home-view').classList.add('hidden'); document.getElementById('profile-view').classList.add('hidden'); document.getElementById('favorites-view').classList.add('hidden'); document.getElementById('candles-view').classList.add('hidden'); document.getElementById('settings-view').classList.add('hidden'); }
         function showHome() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); updateNavColors('home'); closeSearch(); }
         function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); closeSearch(); }
+        
         function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); const g = document.getElementById('favorites-grid'); g.innerHTML = ''; const f = getFavorites(); const l = allLegendsData.filter(x => f.includes(x.id)); if(l.length) l.forEach(x => g.innerHTML += createCard(x)); else g.innerHTML = '<p class="col-span-2 text-gray-500">Keine Favoriten.</p>'; }
+        
+        function showCandlesView() { hideAllViews(); document.getElementById('candles-view').classList.remove('hidden'); const g = document.getElementById('candles-grid'); g.innerHTML = ''; const c = getMyCandles(); const l = allLegendsData.filter(x => c.includes(x.id)); if(l.length) l.forEach(x => g.innerHTML += createCard(x)); else g.innerHTML = '<p class="col-span-2 text-gray-500">Noch keine Kerzen angezündet.</p>'; }
+
         function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
         function updateNavColors(active) { const b="flex flex-col items-center space-y-1 text-gray-500 hover:text-white group transition-all duration-300 transform active:scale-95"; const a="flex flex-col items-center space-y-1 text-gold group transition-all duration-300 transform active:scale-95"; document.getElementById('nav-home').className=b; document.getElementById('nav-search').className=b; document.getElementById('nav-profile').className=b; if(active==='home') document.getElementById('nav-home').className=a; if(active==='search') document.getElementById('nav-search').className=a; if(active==='profile') document.getElementById('nav-profile').className=a; }
         
@@ -287,10 +310,22 @@
             
             // UI Reset
             const icon = document.getElementById('candle-icon'); const circle = document.getElementById('candle-circle'); const glow = document.getElementById('candle-glow'); const text = document.getElementById('candle-text'); const countLabel = document.getElementById('candle-count');
-            icon.setAttribute('fill', 'none'); icon.setAttribute('stroke', 'currentColor'); icon.classList.add('text-gray-500'); icon.classList.remove('text-black', 'fill-black'); icon.setAttribute('stroke', 'currentColor');
-            circle.classList.remove('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); 
-            glow.classList.remove('opacity-40'); glow.classList.add('opacity-0'); 
-            text.innerText = "ZÜNDE EINE KERZE AN"; text.classList.remove('text-gold'); 
+            
+            // Check if user already lit this candle
+            const myCandles = getMyCandles();
+            const alreadyLit = myCandles.includes(id);
+
+            if (alreadyLit) {
+                icon.classList.remove('text-gray-500'); icon.setAttribute('stroke', '#EAB308'); icon.setAttribute('fill', '#EAB308'); 
+                circle.classList.add('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); 
+                glow.classList.remove('opacity-0'); glow.classList.add('opacity-40'); 
+                text.innerText = "KERZE ENTZÜNDET"; text.classList.add('text-gold'); 
+            } else {
+                icon.setAttribute('fill', 'none'); icon.setAttribute('stroke', 'currentColor'); icon.classList.add('text-gray-500'); icon.classList.remove('text-black', 'fill-black'); icon.setAttribute('stroke', 'currentColor');
+                circle.classList.remove('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); 
+                glow.classList.remove('opacity-40'); glow.classList.add('opacity-0'); 
+                text.innerText = "ZÜNDE EINE KERZE AN"; text.classList.remove('text-gold'); 
+            }
             
             // Zahl laden
             const realCount = l.candles || 0; 
@@ -312,12 +347,25 @@
         async function toggleCandle() { 
             const text = document.getElementById('candle-text');
             if(text.innerText === "KERZE ENTZÜNDET") return;
+            
+            // UI Animation
             const icon = document.getElementById('candle-icon'); const circle = document.getElementById('candle-circle'); const glow = document.getElementById('candle-glow'); const countLabel = document.getElementById('candle-count'); 
             icon.classList.remove('text-gray-500'); icon.setAttribute('stroke', '#EAB308'); icon.setAttribute('fill', '#EAB308'); circle.classList.add('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); glow.classList.remove('opacity-0'); glow.classList.add('opacity-40'); text.innerText = "KERZE ENTZÜNDET"; text.classList.add('text-gold'); 
+            
+            // Local Count Update
             let currentVal = parseInt(countLabel.innerText.replace(/\./g, '')) || 0;
             const newVal = currentVal + 1;
             countLabel.innerText = newVal.toLocaleString('de-DE'); 
             countLabel.classList.remove('opacity-60'); countLabel.classList.add('opacity-100', 'font-bold'); 
+            
+            // Save to Local Storage (My Candles)
+            let myCandles = getMyCandles();
+            if(!myCandles.includes(currentDetailId)) {
+                myCandles.push(currentDetailId);
+                saveMyCandles(myCandles);
+            }
+
+            // Save to Database
             if(currentDetailId) {
                 const legend = allLegendsData.find(x => x.id === currentDetailId);
                 if(legend) {

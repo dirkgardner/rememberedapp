@@ -20,25 +20,57 @@ body { background:#050505; color:white; font-family:'Inter',sans-serif }
 </style>
 </head>
 
-<body class="min-h-screen pb-24">
+<body class="min-h-screen pb-24 fade-in">
 
-<!-- ⚠️ DEIN KOMPLETTES UI BLEIBT HIER UNVERÄNDERT -->
-<!-- Header, Views, Grid, Overlay etc. -->
-<!-- NICHTS hier anfassen -->
+<!-- HEADER -->
+<header class="p-4 border-b border-white/10 text-center font-black tracking-widest">
+  REMEMBERED
+</header>
+
+<!-- GRID -->
+<main class="p-4">
+  <div id="legends-grid"
+       class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <!-- cards injected -->
+  </div>
+</main>
+
+<!-- DETAIL OVERLAY -->
+<div id="detail-overlay"
+     class="hidden fixed inset-0 bg-black/95 z-50 p-6 overflow-y-auto">
+
+  <button onclick="closeDetail()"
+          class="mb-6 text-sm text-gray-400 hover:text-white">
+    ← Zurück
+  </button>
+
+  <h2 id="detail-name" class="text-3xl font-black mb-4"></h2>
+
+  <button onclick="toggleCandle()"
+          class="mt-6 flex items-center gap-3">
+    <span id="candle-text"
+          class="uppercase text-xs tracking-widest text-gray-400">
+      Zünde eine Kerze an
+    </span>
+    <span id="candle-count"
+          class="text-gold font-mono text-sm">0</span>
+  </button>
+</div>
 
 <script>
 /* ===============================
-   SUPABASE (READ ONLY!)
+   SUPABASE (READ ONLY)
 ================================ */
 const supabaseUrl = "https://aahsaqygohmykhagbihk.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E";
+
 const db = supabase.createClient(supabaseUrl, supabaseKey);
 
 let allLegendsData = [];
 let currentDetailId = null;
 
 /* ===============================
-   DATA LOAD (SAFE)
+   LOAD DATA
 ================================ */
 async function loadLegends() {
   const { data, error } = await db
@@ -56,12 +88,10 @@ async function loadLegends() {
 }
 
 /* ===============================
-   GRID RENDER (🔥 WAR DER FEHLER)
+   GRID
 ================================ */
 function renderGrid(legends) {
   const grid = document.getElementById("legends-grid");
-  if (!grid) return;
-
   grid.innerHTML = "";
 
   legends.forEach(l => {
@@ -69,15 +99,13 @@ function renderGrid(legends) {
   });
 }
 
-/* ===============================
-   CARD TEMPLATE (MINIMAL)
-================================ */
 function createCard(l) {
-  const img = l.image_url || "https://placehold.co/600x800";
+  const img = l.image_url || "https://placehold.co/600x800?text=Legend";
   return `
-    <div onclick="openDetail('${l.id}')" 
-         class="aspect-[3/4] bg-black rounded-xl overflow-hidden border border-white/10 cursor-pointer">
-      <img src="${img}" class="w-full h-full object-cover grayscale hover:grayscale-0 transition">
+    <div onclick="openDetail('${l.id}')"
+         class="cursor-pointer border border-white/10 rounded-xl overflow-hidden hover:border-yellow-500 transition">
+      <img src="${img}"
+           class="w-full h-60 object-cover grayscale hover:grayscale-0 transition">
       <div class="p-3">
         <h3 class="font-bold">${l.name}</h3>
       </div>
@@ -86,19 +114,32 @@ function createCard(l) {
 }
 
 /* ===============================
-   DETAIL OPEN (BASIS)
+   DETAIL
 ================================ */
 function openDetail(id) {
+  const legend = allLegendsData.find(l => l.id === id);
+  if (!legend) return;
+
   currentDetailId = id;
-  document.getElementById("detail-overlay")?.classList.remove("hidden");
+  document.getElementById("detail-name").innerText = legend.name;
+
+  const candles = getMyCandles().includes(id) ? 1 : 0;
+  document.getElementById("candle-count").innerText = candles;
+
+  document.getElementById("detail-overlay").classList.remove("hidden");
+}
+
+function closeDetail() {
+  document.getElementById("detail-overlay").classList.add("hidden");
 }
 
 /* ===============================
-   LOCAL USER STATE
+   LOCAL CANDLES (SAFE)
 ================================ */
 function getMyCandles() {
   return JSON.parse(localStorage.getItem("my_candles") || "[]");
 }
+
 function saveMyCandles(id) {
   const c = getMyCandles();
   if (!c.includes(id)) {
@@ -107,36 +148,28 @@ function saveMyCandles(id) {
   }
 }
 
-/* ===============================
-   CANDLE (SAFE – NO DB WRITE)
-================================ */
 function toggleCandle() {
   const text = document.getElementById("candle-text");
   const count = document.getElementById("candle-count");
 
-  if (!text || !count) return;
   if (text.innerText === "KERZE ENTZÜNDET") return;
 
   text.innerText = "KERZE ENTZÜNDET";
   text.classList.add("text-gold");
 
-  let val = parseInt(count.innerText || "0");
-  val++;
-  count.innerText = val.toLocaleString("de-DE");
+  count.innerText = "1";
 
   if (currentDetailId) {
     saveMyCandles(currentDetailId);
   }
 
-  // 🚫 KEIN SUPABASE UPDATE
+  // ❌ KEIN DB WRITE
 }
 
 /* ===============================
    START
 ================================ */
-document.addEventListener("DOMContentLoaded", () => {
-  loadLegends();
-});
+document.addEventListener("DOMContentLoaded", loadLegends);
 </script>
 
 </body>

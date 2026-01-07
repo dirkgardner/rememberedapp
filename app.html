@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="robots" content="noindex, nofollow">
     
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Remembered - Legends App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
-    <!-- Google Font für den Club 27 Look (Serif) -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <style>
@@ -32,14 +31,13 @@
 </head>
 <body class="min-h-screen pb-24 selection:bg-gold selection:text-black">
 
-    <!-- NAVIGATION -->
-    <header class="fixed top-0 w-full z-40 bg-black/90 backdrop-blur-xl border-b border-white/5 h-16 flex items-center justify-between px-4 md:px-8 transition-all duration-300" id="main-header">
+    <!-- NAVIGATION (Sticky, 50% Transparent, Blur) -->
+    <header class="fixed top-0 w-full z-40 bg-black/50 backdrop-blur-xl border-b border-white/5 h-16 flex items-center justify-between px-4 md:px-8 transition-all duration-300" id="main-header">
         
         <nav class="flex-1 overflow-x-auto no-scrollbar mask-linear-fade">
             <div class="flex items-center space-x-6 md:space-x-8 pr-4">
                 <button onclick="showHome()" class="text-sm md:text-base font-light text-white hover:text-gold uppercase tracking-widest whitespace-nowrap transition-colors">All</button>
                 
-                <!-- NEU: CLUB 27 -->
                 <button onclick="showClub27()" class="text-sm md:text-base font-light text-gray-300 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors group">
                     Club <span class="text-red-600 font-bold group-hover:text-red-500 transition-colors">27</span>
                 </button>
@@ -49,10 +47,12 @@
                 <button onclick="filterCategory('DJ')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">DJ & Producer</button>
                 <button onclick="filterCategory('Sport')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Sport Icon</button>
                 <button onclick="filterCategory('Visionary')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Visionary</button>
+                <!-- NEU: ROYAL -->
+                <button onclick="filterCategory('Royal')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Royal</button>
             </div>
         </nav>
 
-        <div class="flex items-center space-x-5 pl-4 bg-black/90 shadow-[-10px_0_20px_#000]">
+        <div class="flex items-center space-x-5 pl-4 shadow-[-10px_0_20px_rgba(0,0,0,0.5)]">
             <button onclick="toggleSearch()" class="text-gray-300 hover:text-white transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             </button>
@@ -75,7 +75,7 @@
 
     <main id="home-view" class="pt-24 px-4 max-w-7xl mx-auto fade-in">
         
-        <!-- STANDARD HERO (Wird ausgeblendet bei Club 27) -->
+        <!-- STANDARD HERO -->
         <div id="hero-section" class="mb-12 transition-all duration-500">
             <h2 class="text-2xl font-bold text-white mb-1 tracking-tight">Für dich – Heute</h2>
             <p class="text-gray-400 text-sm mb-6 font-medium">Erinnere dich an Ikonen</p>
@@ -84,15 +84,12 @@
             </div>
         </div>
 
-        <!-- NEU: CLUB 27 HEADER (Standardmäßig versteckt) -->
+        <!-- CLUB 27 HEADER -->
         <div id="club27-header" class="hidden mb-12 relative rounded-3xl overflow-hidden border border-red-900/30">
-            <!-- Hintergrund mit rötlichem Glow -->
             <div class="absolute inset-0 bg-gradient-to-br from-black via-[#2a0505] to-black"></div>
             <div class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-red-900/40 to-transparent blur-3xl"></div>
-            
             <div class="relative z-10 p-8 md:p-12 flex flex-col md:flex-row items-end md:items-center justify-between min-h-[400px]">
                 <div class="max-w-2xl">
-                    <!-- Rose Graphic Placeholder (Emoji oder SVG) -->
                     <div class="text-4xl mb-2 opacity-80">🥀</div>
                     <h1 class="text-6xl md:text-8xl font-serif-custom text-white mb-6 leading-none">
                         CLUB <span class="text-red-600 italic">27</span>

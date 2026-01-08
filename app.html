@@ -19,7 +19,9 @@
         /* BASE DESIGN */
         body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; }
         .font-serif-custom { font-family: 'Playfair Display', serif; }
-        .text-gold { color: #EAB308; }
+        
+        /* BRIGHTER GOLD DEFINITION */
+        .text-gold { color: #FFD700; } /* Echtes Gold, heller als vorher */
         .bg-gold { background-color: #EAB308; }
         .border-gold { border-color: #EAB308; }
         
@@ -256,7 +258,7 @@
         <button onclick="showProfile()" id="nav-profile" class="flex flex-col items-center space-y-1 text-gray-500"><span class="text-[9px] font-bold uppercase">Profile</span></button>
     </nav>
 
-    <!-- DETAIL VIEW (MIT VELVET ROPE & CANDLE FIX) -->
+    <!-- DETAIL VIEW -->
     <div id="detail-overlay" class="hidden fixed inset-0 z-50 bg-black text-white overflow-y-auto animate-in fade-in duration-300">
         <div class="fixed top-6 right-6 z-[60] flex space-x-3">
             <button id="music-btn" class="hidden bg-black/50 p-3 rounded-full border border-white/20 hover:border-gold text-white hover:text-gold"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-2v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-2"/></svg></button>
@@ -459,14 +461,14 @@
             const is27 = l.category && l.category.includes('27');
             const style = is27 ? "opacity-90 group-hover:opacity-100 border-red-900/20 hover:border-red-500/50" : "grayscale group-hover:grayscale-0 border-white/5 hover:border-gold/30";
             
-            // NEW: Restored Category Label & Golden Text Style
+            // MODIFIED FOR HARDCODED GOLD
             return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden border ${style} transition-all duration-500">
                 <img src="${i}" class="w-full h-full object-cover ${is27?'':'grayscale group-hover:grayscale-0'} transition-all duration-700">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-90"></div>
                 <div class="absolute bottom-0 left-0 p-4 w-full">
                     <h2 class="text-white font-bold text-lg leading-tight mb-1 group-hover:text-gold transition-colors">${l.name}</h2>
-                    <p class="${is27 ? 'text-red-500' : 'text-yellow-500'} text-[10px] font-mono leading-tight mb-1.5 opacity-90 break-words">${d}</p>
-                    <p class="text-yellow-500 text-[9px] font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors opacity-80">${l.category || 'LEGEND'}</p>
+                    <p class="${is27 ? 'text-red-500' : 'text-[#FFD700]'} text-[10px] font-mono leading-tight mb-1.5 opacity-100 break-words">${d}</p>
+                    <p class="text-[#FFD700] text-[9px] font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors opacity-100">${l.category || 'LEGEND'}</p>
                 </div>
             </div>`; 
         }

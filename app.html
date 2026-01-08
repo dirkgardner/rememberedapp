@@ -44,7 +44,7 @@
         .gate-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); z-index: 20; }
         .gate-badge { border: 1px solid rgba(234, 179, 8, 0.5); background: rgba(0, 0, 0, 0.8); color: #EAB308; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 9999px; margin-bottom: 0.5rem; box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); }
     
-        /* CANDLE GLOW FIX (Kein Kasten mehr) */
+        /* CANDLE GLOW FIX */
         .candle-glow-active {
             box-shadow: 0 0 30px 5px rgba(234, 179, 8, 0.4), inset 0 0 10px rgba(234, 179, 8, 0.2);
             border-color: #EAB308;
@@ -97,16 +97,26 @@
                 <div class="w-full h-full animate-pulse bg-gray-900 flex items-center justify-center"><p class="text-gold opacity-50">Loading...</p></div>
             </div>
         </div>
-        <div id="club27-header" class="hidden mb-12 relative rounded-3xl overflow-hidden border border-red-900/30">
+        
+        <!-- FIXED CLUB 27 HEADER -->
+        <div id="club27-header" class="hidden mb-12 relative rounded-3xl overflow-hidden border border-red-900/30 min-h-[400px]">
             <div class="absolute inset-0 bg-gradient-to-br from-black via-[#2a0505] to-black"></div>
-            <div class="relative z-10 p-8 md:p-12 flex flex-col justify-end min-h-[350px]">
+            <div class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-red-900/40 to-transparent blur-3xl"></div>
+            
+            <div class="relative z-10 p-8 md:p-12 flex flex-col justify-center h-full min-h-[400px]">
                 <div class="max-w-2xl">
-                    <h1 class="text-6xl md:text-8xl font-serif-custom text-white mb-4 leading-none">CLUB <span class="text-red-600 italic">27</span></h1>
-                    <p class="text-gray-300 text-sm md:text-base leading-relaxed font-light max-w-lg border-l-2 border-red-600 pl-4">The 27 Club is one of music history’s darkest legends. Extraordinary talent gone too soon.</p>
+                    <div class="text-5xl mb-4 opacity-90 animate-pulse">🥀</div>
+                    <h1 class="text-6xl md:text-8xl font-serif-custom text-white mb-6 leading-none">
+                        CLUB <span class="text-red-600 italic font-serif-custom">27</span>
+                    </h1>
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed font-light max-w-lg border-l-2 border-red-600 pl-6">
+                        The 27 Club is one of music history’s darkest legends. It refers to iconic artists, mainly from rock and blues, who all died at the age of 27. Extraordinary talent, excess, and massive influence collide here – their lives ended far too early, but their music became immortal.
+                    </p>
                 </div>
             </div>
         </div>
-        <!-- HEADER FOR CATEGORY (Optional display) -->
+
+        <!-- HEADER FOR CATEGORY -->
         <h2 id="category-title" class="hidden text-xl font-bold text-white mb-6 uppercase tracking-widest pl-1"></h2>
         
         <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
@@ -443,7 +453,7 @@
         function renderGrid(d) { const g=document.getElementById('legends-grid'); g.innerHTML=''; d.forEach(l => g.innerHTML+=createCard(l)); g.innerHTML+=`<div onclick="openSuggestModal()" class="relative group aspect-[3/4] bg-white/5 rounded-xl border-2 border-dashed border-white/20 hover:border-gold flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-white/10"><div class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center mb-4 group-hover:bg-gold text-gold group-hover:text-black transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></div><p class="text-white font-bold text-sm">Forgotten someone?</p><p class="text-gray-400 text-xs mt-1">Suggest an Icon</p></div>`; }
         function renderGridSubset(elId, ids) { const g=document.getElementById(elId); g.innerHTML=''; const sub = allLegendsData.filter(x => ids.includes(x.id)); if(sub.length) sub.forEach(l=>g.innerHTML+=createCard(l)); else g.innerHTML='<p class="col-span-2 text-gray-500">Nothing here yet.</p>'; }
         function createCard(l) { const i=l.image_url||'https://placehold.co/600x800'; const d=getCardDate(l.dates, l.death_date); const is27=l.category&&l.category.includes('27'); const style=is27 ? "opacity-90 group-hover:opacity-100 border-red-900/20 hover:border-red-500/50" : "grayscale group-hover:grayscale-0 border-white/5 hover:border-gold/30"; return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden border ${style} transition-all duration-500"><img src="${i}" class="w-full h-full object-cover ${is27?'':'grayscale group-hover:grayscale-0'}"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div><div class="absolute bottom-0 left-0 p-4 w-full"><h2 class="text-white font-bold text-lg leading-tight mb-1 group-hover:text-gold">${l.name}</h2><p class="text-[10px] font-mono opacity-90 ${is27?'text-red-500':'text-gold'}">${d}</p></div></div>`; }
-        function setHero(d) { const c=document.getElementById('hero-container'); if(d.length && c) { const r=d[Math.floor(Math.random()*d.length)]; c.innerHTML=`<div onclick="openDetail('${r.id}')" class="relative w-full h-full"><img src="${r.image_url}" class="absolute inset-0 w-full h-full object-cover object-top grayscale"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div><div class="absolute bottom-8 left-8"><span class="bg-gold text-black text-[10px] font-bold px-2 py-1 uppercase">Highlight</span><h2 class="text-4xl font-black mt-2 text-white">${r.name}</h2></div></div>`; } }
+        function setHero(d) { const c=document.getElementById('hero-container'); if(d.length && c) { const r=d[Math.floor(Math.random()*d.length)]; c.innerHTML=`<div onclick="openDetail('${r.id}')" class="relative w-full h-full"><img src="${r.image_url}" class="absolute inset-0 w-full h-full object-cover object-[50%_20%] grayscale"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div><div class="absolute bottom-8 left-8"><span class="bg-gold text-black text-[10px] font-bold px-2 py-1 uppercase">Highlight</span><h2 class="text-4xl font-black mt-2 text-white">${r.name}</h2></div></div>`; } }
         function toggleSearch() { const s=document.getElementById('search-bar-container'); if(s.classList.contains('hidden')) { s.classList.remove('hidden'); document.getElementById('search-input').focus(); } else document.getElementById('search-bar-container').classList.add('hidden'); }
         function filterLegends() { const q=document.getElementById('search-input').value.toLowerCase(); renderGrid(allLegendsData.filter(l=>l.name.toLowerCase().includes(q))); }
         function loadUserData() { const n=localStorage.getItem('user_name'); if(n) { document.getElementById('profile-name').innerText=n; document.getElementById('profile-avatar').innerText=n[0]; } }

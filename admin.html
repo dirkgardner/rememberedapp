@@ -3,122 +3,426 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controller</title>
+    <title>Mission Control - Remembered Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        .toggle-checkbox:checked { right: 0; border-color: #10B981; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #10B981; }
+        body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; }
+        .text-gold { color: #EAB308; }
+        .bg-gold { background-color: #EAB308; }
+        .border-gold { border-color: #EAB308; }
+        
+        /* Sidebar Active State */
+        .nav-item.active { background-color: rgba(234, 179, 8, 0.1); border-left: 4px solid #EAB308; color: #EAB308; }
+        
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Table Styles */
+        th { text-align: left; padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #9CA3AF; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+        td { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        tr:hover td { background-color: rgba(255,255,255,0.02); }
     </style>
 </head>
-<body class="bg-black text-white font-sans selection:bg-green-900 min-h-screen p-4 md:p-8">
+<body class="h-screen flex overflow-hidden selection:bg-gold selection:text-black">
 
-    <div id="login-overlay" class="fixed inset-0 bg-black z-50 flex items-center justify-center p-4">
-        <div class="max-w-sm w-full bg-[#111] border border-gray-800 p-8 rounded-xl text-center">
-            <h2 class="text-xl font-bold mb-4 uppercase tracking-widest text-amber-500">Security Check</h2>
-            <input type="password" id="password-input" placeholder="Passwort eingeben" class="w-full bg-black border border-gray-700 text-white px-4 py-3 rounded-lg mb-4 text-center focus:border-green-500 focus:outline-none transition-colors">
-            <button onclick="checkLogin()" class="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-transform active:scale-95">UNLOCK</button>
-            <p id="error-msg" class="text-red-500 text-xs mt-4 hidden">ZUGRIFF VERWEIGERT</p>
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-black border-r border-white/10 flex flex-col">
+        <div class="h-16 flex items-center px-8 border-b border-white/10">
+            <span class="text-gold font-bold tracking-[0.2em] text-sm">MISSION CONTROL</span>
         </div>
-    </div>
 
-    <div class="max-w-4xl mx-auto flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
-        <h1 class="text-3xl font-black tracking-tighter uppercase">Controller</h1>
-        <div class="flex items-center gap-2">
-            <span class="text-gray-400 text-sm font-bold">ADMIN</span>
-            <span class="relative flex h-3 w-3">
-                <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-            </span>
-        </div>
-    </div>
+        <nav class="flex-1 py-6 space-y-1">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item active w-full flex items-center px-8 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+                <i class="fas fa-chart-line w-6"></i>
+                <span class="text-sm font-medium">Dashboard</span>
+            </button>
+            <button onclick="switchTab('inbox')" id="nav-inbox" class="nav-item w-full flex items-center px-8 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+                <i class="fas fa-inbox w-6"></i>
+                <span class="text-sm font-medium">Suggestions</span>
+                <span id="badge-count" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+            </button>
+            <button onclick="switchTab('monetization')" id="nav-monetization" class="nav-item w-full flex items-center px-8 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+                <i class="fas fa-coins w-6"></i>
+                <span class="text-sm font-medium">Monetization</span>
+            </button>
+            <button onclick="window.open('https://supabase.com/dashboard', '_blank')" class="nav-item w-full flex items-center px-8 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+                <i class="fas fa-database w-6"></i>
+                <span class="text-sm font-medium">Supabase DB</span>
+            </button>
+        </nav>
 
-    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <div class="bg-[#111] border border-gray-800 rounded-xl p-8 relative overflow-hidden hover:border-gray-700 transition-colors">
-            <div class="flex justify-between items-start mb-4">
-                <span class="text-amber-400 font-bold tracking-wider text-sm uppercase">Wartungsmodus</span>
-                <div class="relative inline-block w-14 h-7 align-middle select-none transition duration-200 ease-in">
-                    <input type="checkbox" name="toggle" id="maintenance-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-700 appearance-none cursor-pointer transition-all duration-300 top-1 left-1 checked:left-7" onclick="toggleMaintenance()"/>
-                    <label for="maintenance-toggle" class="toggle-label block overflow-hidden h-7 rounded-full bg-gray-700 cursor-pointer transition-colors duration-300"></label>
+        <div class="p-4 border-t border-white/10">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-gold flex items-center justify-center text-black font-bold text-xs">AD</div>
+                <div>
+                    <p class="text-xs text-white font-bold">Admin User</p>
+                    <p class="text-[10px] text-gray-500">Root Access</p>
                 </div>
             </div>
-            <h2 id="status-text" class="text-3xl font-bold mb-2 leading-tight">Lädt...</h2>
-            <p class="text-gray-500 text-sm">Schaltet die App live/offline.</p>
         </div>
+    </aside>
 
-        <div class="bg-[#111] border border-gray-800 rounded-xl p-8 flex flex-col justify-center gap-4 hover:border-gray-700 transition-colors">
-            <span class="text-gray-400 font-bold tracking-wider text-sm uppercase mb-2">Navigation</span>
-            
-            <a href="dashboard.html" class="w-full py-4 px-4 bg-gray-800 hover:bg-gray-700 text-white font-bold rounded-lg transition-all active:scale-95 flex items-center justify-between group">
-                <span>Mission Control öffnen</span>
-                <i data-lucide="bar-chart-2" class="text-[#D4AF37] group-hover:scale-110 transition-transform"></i>
-            </a>
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 bg-[#050505] overflow-y-auto relative">
+        
+        <!-- HEADER -->
+        <header class="h-16 bg-black/50 backdrop-blur border-b border-white/5 flex items-center justify-between px-8 sticky top-0 z-30">
+            <h1 id="page-title" class="text-xl font-bold text-white">System Overview</h1>
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-2 text-xs font-mono text-green-500 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    SYSTEM OPERATIONAL
+                </span>
+                <button onclick="logout()" class="text-xs text-red-500 hover:text-red-400 font-bold uppercase tracking-wider">Logout</button>
+            </div>
+        </header>
 
-            <a href="index.html" class="w-full py-4 px-4 border border-gray-800 hover:border-gray-600 text-gray-400 hover:text-white font-medium rounded-lg transition-all flex items-center justify-between">
-                <span>Zur Landing Page</span>
-                <i data-lucide="external-link" class="w-4 h-4"></i>
-            </a>
+        <div class="p-8 max-w-7xl mx-auto">
+
+            <!-- TAB: DASHBOARD -->
+            <div id="tab-dashboard" class="fade-in">
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-gray-900 border border-white/10 p-6 rounded-2xl">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-gray-400 text-xs uppercase tracking-wider font-bold">Total Legends</p>
+                                <h3 id="stat-legends" class="text-3xl font-bold text-white mt-1">--</h3>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gold"><i class="fas fa-users"></i></div>
+                        </div>
+                        <p class="text-xs text-gray-500">Live in App Store</p>
+                    </div>
+
+                    <div class="bg-gray-900 border border-white/10 p-6 rounded-2xl">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-gray-400 text-xs uppercase tracking-wider font-bold">Suggestions</p>
+                                <h3 id="stat-suggestions" class="text-3xl font-bold text-white mt-1">--</h3>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-purple-400"><i class="fas fa-envelope-open-text"></i></div>
+                        </div>
+                        <p class="text-xs text-gray-500">Pending Review</p>
+                    </div>
+
+                    <div class="bg-gray-900 border border-white/10 p-6 rounded-2xl">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-gray-400 text-xs uppercase tracking-wider font-bold">Candles Lit</p>
+                                <h3 id="stat-candles" class="text-3xl font-bold text-white mt-1">--</h3>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-orange-500"><i class="fas fa-fire"></i></div>
+                        </div>
+                        <p class="text-xs text-gray-500">Total Engagement</p>
+                    </div>
+                </div>
+
+                <!-- Wartungsmodus & Quick Actions -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Wartungsmodus PRO -->
+                    <div class="bg-gray-900 border border-white/10 rounded-2xl p-6 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-3xl -mr-10 -mt-10 transition-all group-hover:bg-green-500/20"></div>
+                        
+                        <h3 class="text-lg font-bold text-white mb-2">App Status</h3>
+                        <p class="text-gray-400 text-sm mb-6">Control public access to the application.</p>
+                        
+                        <div class="flex items-center justify-between bg-black/50 p-4 rounded-xl border border-white/5">
+                            <div class="flex items-center gap-3">
+                                <div id="status-dot" class="w-3 h-3 bg-green-500 rounded-full shadow-[0_0_10px_#22c55e]"></div>
+                                <div>
+                                    <p id="status-text" class="text-white font-bold text-sm">LIVE (Online)</p>
+                                    <p class="text-xs text-gray-500">Version 1.0.2 stable</p>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="maintenance-toggle" class="sr-only peer" checked onchange="toggleMaintenance()">
+                                <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="bg-gray-900 border border-white/10 rounded-2xl p-6">
+                        <h3 class="text-lg font-bold text-white mb-4">Quick Actions</h3>
+                        <div class="space-y-3">
+                            <a href="app.html" target="_blank" class="block w-full text-left p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition flex justify-between items-center group">
+                                <span class="text-sm font-medium text-gray-300 group-hover:text-white">Open App Simulator</span>
+                                <i class="fas fa-external-link-alt text-gray-600 group-hover:text-gold"></i>
+                            </a>
+                            <a href="index.html" target="_blank" class="block w-full text-left p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition flex justify-between items-center group">
+                                <span class="text-sm font-medium text-gray-300 group-hover:text-white">Open Landing Page</span>
+                                <i class="fas fa-globe text-gray-600 group-hover:text-gold"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: INBOX (SUGGESTIONS) -->
+            <div id="tab-inbox" class="hidden fade-in">
+                <div class="bg-gray-900 border border-white/10 rounded-2xl overflow-hidden">
+                    <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-white">Community Suggestions</h3>
+                        <button onclick="loadSuggestions()" class="text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded text-white transition"><i class="fas fa-sync-alt mr-1"></i> Refresh</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Reason</th>
+                                    <th>Date</th>
+                                    <th class="text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="suggestions-table-body">
+                                <tr><td colspan="5" class="text-center text-gray-500 py-10">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: MONETIZATION -->
+            <div id="tab-monetization" class="hidden fade-in">
+                
+                <!-- Investor Statement -->
+                <div class="mb-8 p-6 bg-gradient-to-r from-gray-900 to-black border-l-4 border-gold rounded-r-xl">
+                    <h3 class="text-gold font-bold mb-2"><i class="fas fa-brain mr-2"></i> Core Philosophy</h3>
+                    <p class="text-xl text-white italic font-serif leading-relaxed">
+                        "Remembered monetarisiert Nähe, nicht Erinnerung. <br>
+                        Unsere Nutzer zahlen, um tiefer zu verbinden – nicht um Zugang zu bekommen."
+                    </p>
+                </div>
+
+                <!-- Pricing Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <!-- FREE -->
+                    <div class="bg-gray-900 border border-white/10 rounded-2xl p-6 flex flex-col">
+                        <div class="mb-4">
+                            <span class="bg-green-500/20 text-green-500 text-[10px] font-bold px-2 py-1 rounded uppercase">Entry</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">FREE</h3>
+                        <p class="text-3xl font-bold text-white mt-2">0 € <span class="text-sm text-gray-500 font-normal">/ immer</span></p>
+                        <p class="text-gray-400 text-sm mt-4 mb-6">Der kulturelle Auftrag. Erinnern darf kein Luxus sein.</p>
+                        <ul class="space-y-3 text-sm text-gray-300 mb-8 flex-1">
+                            <li class="flex gap-2"><i class="fas fa-check text-green-500"></i> Ikonen entdecken</li>
+                            <li class="flex gap-2"><i class="fas fa-check text-green-500"></i> Biografien lesen</li>
+                            <li class="flex gap-2"><i class="fas fa-check text-green-500"></i> Kerzen (1 pro Tag)</li>
+                        </ul>
+                    </div>
+
+                    <!-- SUPPORTER -->
+                    <div class="bg-gray-900 border border-gold rounded-2xl p-6 flex flex-col relative shadow-[0_0_30px_rgba(234,179,8,0.1)]">
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase">Sweet Spot</div>
+                        <div class="mb-4">
+                            <span class="bg-gold/20 text-gold text-[10px] font-bold px-2 py-1 rounded uppercase">Popular</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">SUPPORTER</h3>
+                        <p class="text-3xl font-bold text-white mt-2">1,99 € <span class="text-sm text-gray-500 font-normal">/ Monat</span></p>
+                        <p class="text-gray-400 text-sm mt-4 mb-6">Für Fans, die mehr Tiefe wollen und die Idee unterstützen.</p>
+                        <ul class="space-y-3 text-sm text-gray-300 mb-8 flex-1">
+                            <li class="flex gap-2"><i class="fas fa-check text-gold"></i> Unbegrenzte Kerzen</li>
+                            <li class="flex gap-2"><i class="fas fa-check text-gold"></i> Werbefrei</li>
+                            <li class="flex gap-2"><i class="fas fa-check text-gold"></i> Eigene Sammlungen</li>
+                            <li class="flex gap-2"><i class="fas fa-check text-gold"></i> Supporter Badge</li>
+                        </ul>
+                    </div>
+
+                    <!-- LEGACY+ -->
+                    <div class="bg-gradient-to-b from-blue-900/20 to-gray-900 border border-blue-500/30 rounded-2xl p-6 flex flex-col">
+                        <div class="mb-4">
+                            <span class="bg-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-1 rounded uppercase">Premium</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">LEGACY+</h3>
+                        <p class="text-3xl font-bold text-white mt-2">4,99 € <span class="text-sm text-gray-500 font-normal">/ Monat</span></p>
+                        <p class="text-gray-400 text-sm mt-4 mb-6">Bewahre, was bleiben soll. Eigene Erinnerungen anlegen.</p>
+                        <ul class="space-y-3 text-sm text-gray-300 mb-8 flex-1">
+                            <li class="flex gap-2"><i class="fas fa-check text-blue-400"></i> Alles aus Supporter</li>
+                            <li class="flex gap-2"><i class="fas fa-check text-blue-400"></i> Eigene Ikonen erstellen</li>
+                            <li class="flex gap-2"><i class="fas fa-check text-blue-400"></i> Private Gedenkseiten</li>
+                            <li class="flex gap-2"><i class="fas fa-check text-blue-400"></i> KI-Zusammenfassungen</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Comparison Table -->
+                <div class="bg-gray-900 border border-white/10 rounded-2xl overflow-hidden">
+                    <div class="p-6 border-b border-white/10">
+                        <h3 class="text-lg font-bold text-white">Feature Matrix</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr>
+                                    <th class="w-1/3">Feature</th>
+                                    <th class="text-center">Free</th>
+                                    <th class="text-center text-gold">Supporter</th>
+                                    <th class="text-center text-blue-400">Legacy+</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-300">
+                                <tr>
+                                    <td>Ikonen entdecken</td>
+                                    <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                    <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                    <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>Kerzen entzünden</td>
+                                    <td class="text-center text-gray-500">Limit (1/Tag)</td>
+                                    <td class="text-center font-bold text-white">Unbegrenzt</td>
+                                    <td class="text-center font-bold text-white">Unbegrenzt</td>
+                                </tr>
+                                <tr>
+                                    <td>Eigene Sammlungen</td>
+                                    <td class="text-center text-red-500"><i class="fas fa-times"></i></td>
+                                    <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                    <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>Private Gedenkseiten</td>
+                                    <td class="text-center text-red-500"><i class="fas fa-times"></i></td>
+                                    <td class="text-center text-red-500"><i class="fas fa-times"></i></td>
+                                    <td class="text-center"><i class="fas fa-check text-green-500"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
-
-    </div>
+    </main>
 
     <script>
-        lucide.createIcons();
-        const PASSWORD = "quantum2026"; 
-        const SUPABASE_URL = 'https://aahsaqygohmykhagbihk.supabase.co'; 
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E'; 
-        
-        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // SUPABASE SETUP (Copy-Paste from app.html)
+        const supabaseUrl = 'https://aahsaqygohmykhagbihk.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
+        const db = supabase.createClient(supabaseUrl, supabaseKey);
 
-        function checkLogin() {
-            const input = document.getElementById('password-input').value;
-            if(input === PASSWORD) {
-                localStorage.setItem('admin_logged_in', 'true');
-                document.getElementById('login-overlay').classList.add('hidden');
-            } else {
-                document.getElementById('error-msg').classList.remove('hidden');
-                document.getElementById('password-input').value = '';
-            }
+        // NAVIGATION LOGIC
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.getElementById('tab-dashboard').classList.add('hidden');
+            document.getElementById('tab-inbox').classList.add('hidden');
+            document.getElementById('tab-monetization').classList.add('hidden');
+            
+            // Remove active styles
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+            // Show selected tab & active nav
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            document.getElementById('nav-' + tabName).classList.add('active');
+
+            // Update Header Title
+            const titles = {
+                'dashboard': 'System Overview',
+                'inbox': 'Suggestions Inbox',
+                'monetization': 'Revenue & Plans'
+            };
+            document.getElementById('page-title').innerText = titles[tabName];
+
+            if (tabName === 'inbox') loadSuggestions();
         }
 
-        if(localStorage.getItem('admin_logged_in') === 'true') {
-            document.getElementById('login-overlay').classList.add('hidden');
-        }
-
-        async function loadMaintenanceStatus() {
-            const { data } = await db.from('config').select('value').eq('key', 'maintenance').single();
-            if (data) {
-                const isOn = (data.value === 'true' || data.value === true);
-                updateUI(isOn);
-            } else {
-                await db.from('config').insert([{ key: 'maintenance', value: false }]);
-                updateUI(false);
-            }
-        }
-
-        async function toggleMaintenance() {
-            const toggle = document.getElementById('maintenance-toggle');
-            const newVal = toggle.checked;
-            updateUI(newVal);
-            const { error } = await db.from('config').upsert({ key: 'maintenance', value: newVal });
-            if(error) console.error("Fehler:", error);
-        }
-
-        function updateUI(isOn) {
+        // MAINTENANCE LOGIC
+        function toggleMaintenance() {
+            const checkbox = document.getElementById('maintenance-toggle');
+            const statusDot = document.getElementById('status-dot');
             const statusText = document.getElementById('status-text');
-            const toggle = document.getElementById('maintenance-toggle');
-            toggle.checked = isOn;
-            if(isOn) {
-                statusText.innerText = "WARTUNG AKTIV";
-                statusText.className = "text-3xl font-bold mb-2 leading-tight text-amber-500";
+
+            if (checkbox.checked) {
+                statusDot.classList.replace('bg-red-500', 'bg-green-500');
+                statusDot.classList.add('shadow-[0_0_10px_#22c55e]');
+                statusText.innerText = "LIVE (Online)";
+                statusText.classList.replace('text-red-500', 'text-white');
             } else {
-                statusText.innerText = "LIVE (SYSTEM ON)";
-                statusText.className = "text-3xl font-bold mb-2 leading-tight text-green-500";
+                statusDot.classList.replace('bg-green-500', 'bg-red-500');
+                statusDot.classList.remove('shadow-[0_0_10px_#22c55e]');
+                statusText.innerText = "MAINTENANCE MODE";
+                statusText.classList.replace('text-white', 'text-red-500');
+                alert("Warning: App is now in Maintenance Mode. Users cannot access content.");
             }
         }
-        
-        loadMaintenanceStatus();
+
+        // LOAD STATS
+        async function loadStats() {
+            // Count Legends
+            const { count: legendsCount } = await db.from('legends').select('*', { count: 'exact', head: true });
+            document.getElementById('stat-legends').innerText = legendsCount || 0;
+
+            // Count Suggestions
+            const { count: suggestionsCount } = await db.from('suggestions').select('*', { count: 'exact', head: true });
+            document.getElementById('stat-suggestions').innerText = suggestionsCount || 0;
+            
+            // Badge Update
+            if (suggestionsCount > 0) {
+                const badge = document.getElementById('badge-count');
+                badge.innerText = suggestionsCount;
+                badge.classList.remove('hidden');
+            }
+
+            // Count Candles (Summing up - Simplified for now)
+            // Real summing needs a postgres function or loop, here we mock fetch or sum locally if small
+            let { data } = await db.from('legends').select('candles');
+            let totalCandles = 0;
+            if(data) data.forEach(l => totalCandles += (l.candles || 0));
+            document.getElementById('stat-candles').innerText = totalCandles.toLocaleString();
+        }
+
+        // LOAD SUGGESTIONS (INBOX)
+        async function loadSuggestions() {
+            const tbody = document.getElementById('suggestions-table-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-10"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+
+            const { data, error } = await db.from('suggestions').select('*').order('created_at', { ascending: false });
+
+            if (error || !data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-10">No suggestions found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            data.forEach(item => {
+                const date = new Date(item.created_at).toLocaleDateString();
+                const row = `
+                    <tr class="group">
+                        <td class="font-bold text-white">${item.name || 'Unknown'}</td>
+                        <td><span class="bg-white/10 px-2 py-1 rounded text-xs">${item.category || '-'}</span></td>
+                        <td class="text-gray-400 max-w-xs truncate">${item.reason || '-'}</td>
+                        <td class="text-gray-500 text-xs">${date}</td>
+                        <td class="text-right">
+                            <button onclick="deleteSuggestion(${item.id})" class="text-gray-500 hover:text-red-500 transition px-2"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        async function deleteSuggestion(id) {
+            if(confirm("Delete this suggestion?")) {
+                await db.from('suggestions').delete().eq('id', id);
+                loadSuggestions(); // Reload
+                loadStats(); // Update badge
+            }
+        }
+
+        function logout() {
+            alert("Logging out...");
+            window.location.href = "index.html";
+        }
+
+        // Initialize
+        loadStats();
     </script>
 </body>
 </html>

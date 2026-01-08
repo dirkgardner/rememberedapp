@@ -116,8 +116,8 @@
             </div>
         </div>
 
-        <!-- HEADER FOR CATEGORY -->
-        <h2 id="category-title" class="hidden text-xl font-bold text-white mb-6 uppercase tracking-widest pl-1"></h2>
+        <!-- HEADER FOR CATEGORY (Jetzt fett und weiß wie im Bild) -->
+        <h2 id="category-title" class="hidden text-3xl font-black text-white mb-8 uppercase tracking-tight pl-1"></h2>
         
         <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
     </main>
@@ -452,7 +452,25 @@
         function showVelvetRopeToast(msg) { const div = document.createElement('div'); div.className = "fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-gray-900 border border-gold/30 text-gold px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest shadow-2xl z-[70] animate-in fade-in slide-in-from-bottom-4"; div.innerHTML = `<span class="opacity-70 mr-2">🔒</span> ${msg}`; document.body.appendChild(div); setTimeout(() => div.remove(), 3000); }
         function renderGrid(d) { const g=document.getElementById('legends-grid'); g.innerHTML=''; d.forEach(l => g.innerHTML+=createCard(l)); g.innerHTML+=`<div onclick="openSuggestModal()" class="relative group aspect-[3/4] bg-white/5 rounded-xl border-2 border-dashed border-white/20 hover:border-gold flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-white/10"><div class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center mb-4 group-hover:bg-gold text-gold group-hover:text-black transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></div><p class="text-white font-bold text-sm">Forgotten someone?</p><p class="text-gray-400 text-xs mt-1">Suggest an Icon</p></div>`; }
         function renderGridSubset(elId, ids) { const g=document.getElementById(elId); g.innerHTML=''; const sub = allLegendsData.filter(x => ids.includes(x.id)); if(sub.length) sub.forEach(l=>g.innerHTML+=createCard(l)); else g.innerHTML='<p class="col-span-2 text-gray-500">Nothing here yet.</p>'; }
-        function createCard(l) { const i=l.image_url||'https://placehold.co/600x800'; const d=getCardDate(l.dates, l.death_date); const is27=l.category&&l.category.includes('27'); const style=is27 ? "opacity-90 group-hover:opacity-100 border-red-900/20 hover:border-red-500/50" : "grayscale group-hover:grayscale-0 border-white/5 hover:border-gold/30"; return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden border ${style} transition-all duration-500"><img src="${i}" class="w-full h-full object-cover ${is27?'':'grayscale group-hover:grayscale-0'}"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div><div class="absolute bottom-0 left-0 p-4 w-full"><h2 class="text-white font-bold text-lg leading-tight mb-1 group-hover:text-gold">${l.name}</h2><p class="text-[10px] font-mono opacity-90 ${is27?'text-red-500':'text-gold'}">${d}</p></div></div>`; }
+        
+        function createCard(l) { 
+            const i = l.image_url || 'https://placehold.co/600x800'; 
+            const d = getCardDate(l.dates, l.death_date); 
+            const is27 = l.category && l.category.includes('27');
+            const style = is27 ? "opacity-90 group-hover:opacity-100 border-red-900/20 hover:border-red-500/50" : "grayscale group-hover:grayscale-0 border-white/5 hover:border-gold/30";
+            
+            // NEW: Restored Category Label & Golden Text Style
+            return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden border ${style} transition-all duration-500">
+                <img src="${i}" class="w-full h-full object-cover ${is27?'':'grayscale group-hover:grayscale-0'} transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+                <div class="absolute bottom-0 left-0 p-4 w-full">
+                    <h2 class="text-white font-bold text-lg leading-tight mb-1 group-hover:text-gold transition-colors">${l.name}</h2>
+                    <p class="${is27 ? 'text-red-500' : 'text-gold'} text-[10px] font-mono leading-tight mb-1.5 opacity-90 break-words">${d}</p>
+                    <p class="text-gray-400 text-[9px] font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors">${l.category || 'LEGEND'}</p>
+                </div>
+            </div>`; 
+        }
+
         function setHero(d) { const c=document.getElementById('hero-container'); if(d.length && c) { const r=d[Math.floor(Math.random()*d.length)]; c.innerHTML=`<div onclick="openDetail('${r.id}')" class="relative w-full h-full"><img src="${r.image_url}" class="absolute inset-0 w-full h-full object-cover object-[50%_20%] grayscale"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div><div class="absolute bottom-8 left-8"><span class="bg-gold text-black text-[10px] font-bold px-2 py-1 uppercase">Highlight</span><h2 class="text-4xl font-black mt-2 text-white">${r.name}</h2></div></div>`; } }
         function toggleSearch() { const s=document.getElementById('search-bar-container'); if(s.classList.contains('hidden')) { s.classList.remove('hidden'); document.getElementById('search-input').focus(); } else document.getElementById('search-bar-container').classList.add('hidden'); }
         function filterLegends() { const q=document.getElementById('search-input').value.toLowerCase(); renderGrid(allLegendsData.filter(l=>l.name.toLowerCase().includes(q))); }

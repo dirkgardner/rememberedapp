@@ -4,17 +4,20 @@
     <meta charset="UTF-8">
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
     <title>Remembered - Legends App</title>
     
-    <!-- 1. EXTERNE SKRIPTE (Reihenfolge korrigiert!) -->
+    <!-- 1. EXTERNE SKRIPTE (Reihenfolge ist wichtig!) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase MUSS vor dem eigenen Code geladen werden -->
+    <!-- Supabase SDK muss VOR dem App-Code geladen werden -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <!-- FONTS -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <style>
+        /* BASIS DESIGN */
         body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; }
         .font-serif-custom { font-family: 'Playfair Display', serif; }
         .text-gold { color: #EAB308; }
@@ -37,22 +40,48 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* NEU: VELVET ROPE STYLES (Für gesperrte Features) */
-        .gate-blur { filter: blur(12px); pointer-events: none; user-select: none; transform: scale(1.05); }
-        .gate-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); z-index: 20; }
-        .gate-badge { border: 1px solid rgba(234, 179, 8, 0.5); background: rgba(0, 0, 0, 0.8); color: #EAB308; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 9999px; margin-bottom: 0.5rem; box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); }
+        /* VELVET ROPE (FEATURE GATES) STYLES */
+        /* Macht das Element unscharf (Milchglas-Effekt) */
+        .gate-blur {
+            filter: blur(12px);
+            pointer-events: none;
+            user-select: none;
+            transform: scale(1.05); /* Zoom, damit Ränder sauber bleiben */
+        }
+        /* Das Overlay mit dem Schloss-Icon */
+        .gate-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 20;
+        }
+        /* Das Badge "SUPPORTER ONLY" */
+        .gate-badge {
+            border: 1px solid rgba(234, 179, 8, 0.5);
+            background: rgba(0, 0, 0, 0.8);
+            color: #EAB308;
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.2);
+        }
     </style>
 </head>
 <body class="min-h-screen pb-24 selection:bg-gold selection:text-black">
 
-    <!-- NAVIGATION (Deine Originale Navigation) -->
+    <!-- NAVIGATION -->
     <header class="fixed top-0 w-full z-40 glass-header h-16 flex items-center justify-between px-4 md:px-8 transition-all duration-300" id="main-header">
         <nav class="flex-1 overflow-x-auto no-scrollbar mask-linear-fade">
             <div class="flex items-center space-x-6 md:space-x-8 pr-4">
                 <button onclick="showHome()" class="text-sm md:text-base font-light text-white hover:text-gold uppercase tracking-widest whitespace-nowrap transition-colors">All</button>
-                <button onclick="showClub27()" class="text-sm md:text-base font-light text-gray-300 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors group">
-                    Club <span class="text-red-600 font-bold group-hover:text-red-500 transition-colors">27</span>
-                </button>
+                <button onclick="showClub27()" class="text-sm md:text-base font-light text-gray-300 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors group">Club <span class="text-red-600 font-bold group-hover:text-red-500 transition-colors">27</span></button>
                 <button onclick="filterCategory('Musician')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Musician</button>
                 <button onclick="filterCategory('Actor')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Actor</button>
                 <button onclick="filterCategory('DJ')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">DJ & Producer</button>
@@ -61,11 +90,8 @@
                 <button onclick="filterCategory('Royal')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Royal</button>
             </div>
         </nav>
-
         <div class="flex items-center space-x-5 pl-4 shadow-[-10px_0_20px_rgba(0,0,0,0.5)]">
-            <button onclick="toggleSearch()" class="text-gray-300 hover:text-white transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-            </button>
+            <button onclick="toggleSearch()" class="text-gray-300 hover:text-white transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></button>
             <button onclick="showProfile()" class="relative group">
                 <div class="w-8 h-8 rounded-full bg-gold flex items-center justify-center hover:scale-105 transition-transform">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-black" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg>
@@ -76,6 +102,7 @@
         </div>
     </header>
 
+    <!-- SEARCH OVERLAY -->
     <div id="search-bar-container" class="hidden fixed top-16 w-full z-30 bg-black/95 backdrop-blur-xl border-b border-gold/20 px-4 py-3 shadow-2xl animate-in fade-in slide-in-from-top-2">
         <div class="relative max-w-7xl mx-auto flex items-center">
             <input type="text" id="search-input" onkeyup="filterLegends()" placeholder="Search name..." class="w-full bg-white/10 border border-white/10 rounded-full py-3 pl-4 pr-4 text-white placeholder-gray-400 focus:outline-none focus:border-gold transition-all">
@@ -83,8 +110,9 @@
         </div>
     </div>
 
+    <!-- HOME VIEW -->
     <main id="home-view" class="pt-24 px-4 max-w-7xl mx-auto fade-in">
-        <!-- STANDARD HERO -->
+        <!-- HERO SECTION -->
         <div id="hero-section" class="mb-12 transition-all duration-500">
             <h2 class="text-2xl font-bold text-white mb-1 tracking-tight">For You – Today</h2>
             <p class="text-gray-400 text-sm mb-6 font-medium">Remember the Icons</p>
@@ -93,44 +121,22 @@
             </div>
         </div>
 
-        <!-- CLUB 27 HEADER -->
+        <!-- CLUB 27 HEADER (Hidden initially) -->
         <div id="club27-header" class="hidden mb-12 relative rounded-3xl overflow-hidden border border-red-900/30">
             <div class="absolute inset-0 bg-gradient-to-br from-black via-[#2a0505] to-black"></div>
-            <div class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-red-900/40 to-transparent blur-3xl"></div>
-            <div class="relative z-10 p-8 md:p-12 flex flex-col md:flex-row items-end md:items-center justify-between min-h-[400px]">
+            <div class="relative z-10 p-8 md:p-12 flex flex-col justify-end min-h-[350px]">
                 <div class="max-w-2xl">
-                    <div class="text-4xl mb-2 opacity-80">🥀</div>
-                    <h1 class="text-6xl md:text-8xl font-serif-custom text-white mb-6 leading-none">
-                        CLUB <span class="text-red-600 italic">27</span>
-                    </h1>
-                    <p class="text-gray-300 text-sm md:text-base leading-relaxed font-light max-w-lg border-l-2 border-red-600 pl-4">
-                        The 27 Club is one of music history’s darkest legends. It refers to iconic artists, mainly from rock and blues, who all died at the age of 27. Extraordinary talent, excess, and massive influence collide here their lives ended far too early, but their music became immortal.
-                    </p>
+                    <h1 class="text-6xl md:text-8xl font-serif-custom text-white mb-4 leading-none">CLUB <span class="text-red-600 italic">27</span></h1>
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed font-light max-w-lg border-l-2 border-red-600 pl-4">The 27 Club is one of music history’s darkest legends. Extraordinary talent gone too soon.</p>
                 </div>
             </div>
         </div>
 
-        <div id="search-results-header" class="hidden mb-6"><h2 class="text-xl font-bold text-white">Results</h2></div>
-        
-        <!-- GRID -->
+        <!-- THE GRID -->
         <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
     </main>
 
-    <!-- SUGGEST OVERLAY -->
-    <div id="suggest-overlay" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
-        <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
-            <button onclick="closeSuggest()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
-            <h2 class="text-xl font-bold text-white mb-1">Suggest an Icon</h2>
-            <p class="text-gray-400 text-xs mb-6">Who are we missing?</p>
-            <div class="space-y-4">
-                <div><label class="block text-gray-500 text-xs uppercase font-bold tracking-wider mb-2">Name of Legend</label><input type="text" id="suggest-name" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:border-gold focus:outline-none transition-colors" placeholder="e.g. David Bowie"></div>
-                <div><label class="block text-gray-500 text-xs uppercase font-bold tracking-wider mb-2">Category</label><select id="suggest-category" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:border-gold focus:outline-none transition-colors appearance-none"><option value="Musician">Musician</option><option value="Actor">Actor</option><option value="DJ & Producer">DJ & Producer</option><option value="Sport Icon">Sport Icon</option><option value="Visionary">Visionary</option><option value="Royal">Royal</option><option value="Club 27">Club 27</option><option value="Other">Other</option></select></div>
-                <div><label class="block text-gray-500 text-xs uppercase font-bold tracking-wider mb-2">Why? (Optional)</label><textarea id="suggest-reason" rows="3" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:border-gold focus:outline-none transition-colors" placeholder="Tell us why they belong here..."></textarea></div>
-                <button onclick="submitSuggestion()" id="submit-suggest-btn" class="w-full bg-gold text-black font-bold py-3 rounded-xl hover:bg-yellow-400 transition-colors mt-2">SEND SUGGESTION</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- OTHER VIEWS -->
     <main id="favorites-view" class="hidden pt-24 px-4 max-w-7xl mx-auto fade-in h-screen">
         <div class="mb-8 flex items-center space-x-4"><button onclick="showProfile()" class="p-2 bg-white/5 rounded-full hover:bg-white/10"><svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button><h2 class="text-2xl font-bold text-white">Your Favorites</h2></div>
         <div id="favorites-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
@@ -160,7 +166,7 @@
                 <div class="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden"><span id="profile-avatar" class="text-3xl font-bold text-white">ME</span></div>
             </div>
             <h2 id="profile-name" class="text-2xl font-bold text-white">My Profile</h2>
-            <!-- Neuer Label für den Plan Status -->
+            <!-- DYNAMISCHER PLAN STATUS -->
             <p id="plan-label" class="text-gold text-xs tracking-[0.2em] uppercase mt-1 opacity-80">Free Member</p>
         </div>
         <div class="grid grid-cols-2 gap-4 mb-10">
@@ -174,17 +180,34 @@
         </div>
     </section>
 
+    <!-- SUGGEST OVERLAY -->
+    <div id="suggest-overlay" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
+        <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+            <button onclick="closeSuggest()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+            <h2 class="text-xl font-bold text-white mb-1">Suggest an Icon</h2>
+            <p class="text-gray-400 text-xs mb-6">Who are we missing?</p>
+            <div class="space-y-4">
+                <div><label class="block text-gray-500 text-xs uppercase font-bold tracking-wider mb-2">Name of Legend</label><input type="text" id="suggest-name" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:border-gold focus:outline-none transition-colors" placeholder="e.g. David Bowie"></div>
+                <div><label class="block text-gray-500 text-xs uppercase font-bold tracking-wider mb-2">Category</label><select id="suggest-category" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:border-gold focus:outline-none transition-colors appearance-none"><option value="Musician">Musician</option><option value="Actor">Actor</option><option value="DJ & Producer">DJ & Producer</option><option value="Sport Icon">Sport Icon</option><option value="Visionary">Visionary</option><option value="Royal">Royal</option><option value="Club 27">Club 27</option><option value="Other">Other</option></select></div>
+                <div><label class="block text-gray-500 text-xs uppercase font-bold tracking-wider mb-2">Why? (Optional)</label><textarea id="suggest-reason" rows="3" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:border-gold focus:outline-none transition-colors" placeholder="Tell us why they belong here..."></textarea></div>
+                <button onclick="submitSuggestion()" id="submit-suggest-btn" class="w-full bg-gold text-black font-bold py-3 rounded-xl hover:bg-yellow-400 transition-colors mt-2">SEND SUGGESTION</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPOTIFY FAB -->
     <a href="https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M" target="_blank" id="radio-fab" class="fixed bottom-24 right-4 z-30 bg-black/80 backdrop-blur border border-gold/50 text-gold p-3 rounded-full shadow-lg shadow-gold/10 hover:bg-gold hover:text-black hover:scale-105 transition-all duration-300 group pulse-gold-slow flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-2v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-2" /></svg>
     </a>
 
+    <!-- BOTTOM NAV -->
     <nav class="fixed bottom-0 w-full z-40 bg-black/90 backdrop-blur-xl border-t border-white/5 px-6 py-4 flex justify-around items-center pb-8 safe-area-pb">
         <button onclick="showHome()" id="nav-home" class="flex flex-col items-center space-y-1 text-gold"><span class="text-[9px] font-bold uppercase">Home</span></button>
         <button onclick="toggleSearch()" id="nav-search" class="flex flex-col items-center space-y-1 text-gray-500"><span class="text-[9px] font-bold uppercase">Search</span></button>
         <button onclick="showProfile()" id="nav-profile" class="flex flex-col items-center space-y-1 text-gray-500"><span class="text-[9px] font-bold uppercase">Profile</span></button>
     </nav>
 
-    <!-- DETAIL VIEW MIT VELVET ROPE UI -->
+    <!-- DETAIL VIEW (MIT VELVET ROPE) -->
     <div id="detail-overlay" class="hidden fixed inset-0 z-50 bg-black text-white overflow-y-auto animate-in fade-in duration-300">
         <div class="fixed top-6 right-6 z-[60] flex space-x-3">
             <button id="music-btn" class="hidden bg-black/50 p-3 rounded-full border border-white/20 hover:border-gold text-white hover:text-gold"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-2v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-2"/></svg></button>
@@ -202,11 +225,11 @@
                 <div class="border-l-4 border-gold pl-6 mb-10 py-1"><h3 id="detail-headline" class="text-2xl font-bold text-white mb-3 italic"></h3><p id="detail-quote" class="text-gray-400 italic text-lg leading-relaxed"></p></div>
                 <div class="prose prose-invert prose-lg mb-12"><p id="detail-bio" class="text-gray-300 leading-loose font-light text-lg text-left"></p></div>
                 
-                <!-- MODIFIED VIDEO CONTAINER FOR GATES -->
+                <!-- INTELLIGENT VIDEO CONTAINER -->
                 <div id="video-container" class="hidden mb-16">
                     <h3 class="text-xl font-bold text-white mb-4">OFFICIAL TRAILER</h3>
                     <div id="video-wrapper" class="aspect-video w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black relative">
-                        <!-- Iframe or Gate overlay will be injected here -->
+                        <!-- Content injected via JS based on Permissions -->
                     </div>
                 </div>
 
@@ -223,160 +246,134 @@
         // Supabase wird jetzt sicher geladen sein
         const db = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // --- FEATURE GATES (PERMISSIONS) ---
+        // --- 1. INTELLIGENTES PERMISSIONS SYSTEM (DATABASE) ---
         const Permissions = {
             caps: ['read_content', 'search'], 
-            
-            // HIER SIMULIEREN WIR DEN PLAN
-            // Ändere dies zu 'SUPPORTER' oder 'LEGACY+' um Funktionen freizuschalten
-            currentPlan: 'FREE', 
+            currentPlan: 'FREE', // Fallback
 
-            init() {
-                console.log("Current Plan initialized:", this.currentPlan);
-                if (this.currentPlan === 'SUPPORTER') {
+            async init() {
+                // A. User Check
+                const { data: { session } } = await db.auth.getSession();
+                
+                if (!session) {
+                    console.log("Gast-Modus: FREE Plan");
+                    this.updateUI();
+                    return; 
+                }
+
+                const userId = session.user.id;
+                console.log("Eingeloggt:", session.user.email);
+
+                // B. Subscription Check
+                const { data: sub } = await db.from('user_subscriptions').select('plan_id').eq('user_id', userId).maybeSingle();
+
+                if (!sub) {
+                    console.log("Kein Abo gefunden -> FREE");
+                    this.updateUI();
+                    return;
+                }
+
+                // C. Plan Check
+                const { data: plan } = await db.from('plans').select('key, name').eq('id', sub.plan_id).single();
+
+                if (plan) {
+                    console.log("Plan aktiv:", plan.name);
+                    this.currentPlan = plan.name;
+                    this.setCapabilities(plan.key);
+                }
+                
+                this.updateUI();
+            },
+
+            setCapabilities(planKey) {
+                // Mapping DB Key -> App Feature
+                if (planKey === 'supporter') {
                     this.caps.push('view_trailers');
-                } else if (this.currentPlan === 'LEGACY+') {
+                } 
+                else if (planKey === 'legacy') { 
                     this.caps.push('view_trailers', 'enable_push');
                 }
+            },
+
+            updateUI() {
                 const label = document.getElementById('plan-label');
                 if(label) label.innerText = `${this.currentPlan} MEMBER`;
             },
+
             can(feature) { return this.caps.includes(feature); }
         };
 
+        // --- DEV TOOLS (Zum Testen über Konsole) ---
+        window.devLogin = async (email, password) => {
+            console.log("Login versuch...");
+            const { error } = await db.auth.signInWithPassword({ email, password });
+            if (error) alert(error.message); else location.reload();
+        };
+        window.devLogout = async () => { await db.auth.signOut(); location.reload(); };
+
+        // --- APP LOGIC ---
         let allLegendsData = [];
         let club27Data = [];
         let currentDetailId = null;
 
-        // PUSH (MODIFIZIERT FÜR GATE)
+        // PUSH GATE
         function enablePush() {
-            // Check Gate
             if (!Permissions.can('enable_push')) {
                 showVelvetRopeToast("Requires LEGACY+ Plan");
                 return;
             }
-
-            if (!("Notification" in window)) { alert("Your browser does not support push notifications."); return; }
-            Notification.requestPermission().then(permission => {
-                if (permission === "granted") { document.getElementById('push-btn-text').innerText = "Push Enabled ✅"; new Notification("Remembered", { body: "Notifications active!", icon: "https://placehold.co/100x100/gold/black?text=R" }); }
-                else { alert("Push notifications blocked."); }
+            if (!("Notification" in window)) return;
+            Notification.requestPermission().then(p => {
+                if (p === "granted") { 
+                    document.getElementById('push-btn-text').innerText = "Push Enabled ✅"; 
+                    document.getElementById('push-btn').classList.add('text-gold', 'border-gold');
+                    new Notification("Remembered", { body: "Welcome to the Inner Circle." }); 
+                }
             });
         }
-        function updatePushBtnState() { if ("Notification" in window && Notification.permission === "granted") { document.getElementById('push-btn-text').innerText = "Push Enabled ✅"; document.getElementById('push-btn').classList.add('text-gold', 'border-gold'); } }
 
-        // CHECK ANNIVERSARY
+        // ANNIVERSARY
         function checkAnniversaries() {
-            const today = new Date(); const currentMonth = today.getMonth() + 1; const currentDay = today.getDate(); const favIds = getFavorites(); let hit = null; let yearsGone = 0;
-            allLegendsData.forEach(legend => {
-                if (legend.death_date && favIds.includes(legend.id)) {
+            const today = new Date(); const m = today.getMonth() + 1; const d = today.getDate(); const favIds = getFavorites(); let hit = null; let y = 0;
+            allLegendsData.forEach(l => {
+                if (l.death_date && favIds.includes(l.id)) {
                     let dDay, dMonth, dYear;
-                    if (legend.death_date.includes('.')) { const p = legend.death_date.split('.'); dDay = parseInt(p[0]); dMonth = parseInt(p[1]); dYear = parseInt(p[2]); } 
-                    else { const p = legend.death_date.split('-'); dYear = parseInt(p[0]); dMonth = parseInt(p[1]); dDay = parseInt(p[2]); }
-                    if (dMonth === currentMonth && dDay === currentDay) { hit = legend; yearsGone = today.getFullYear() - dYear; }
+                    if (l.death_date.includes('.')) { const p=l.death_date.split('.'); dDay=parseInt(p[0]); dMonth=parseInt(p[1]); dYear=parseInt(p[2]); } 
+                    else { const p=l.death_date.split('-'); dYear=parseInt(p[0]); dMonth=parseInt(p[1]); dDay=parseInt(p[2]); }
+                    if (dMonth === m && dDay === d) { hit = l; y = today.getFullYear() - dYear; }
                 }
             });
-            const btn=document.getElementById('notif-btn'); const txt=document.getElementById('notif-text'); const bdg=document.getElementById('notif-badge'); const d1=document.getElementById('header-notif-dot'); const d2=document.getElementById('header-notif-dot-static');
+            const btn=document.getElementById('notif-btn'); const txt=document.getElementById('notif-text'); const bdg=document.getElementById('notif-badge');
             if (hit) {
-                btn.onclick = function() { openDetail(hit.id); }; btn.classList.remove('bg-white/5'); btn.classList.add('bg-red-500/10', 'border-red-500/50', 'pulse-red');
-                txt.innerHTML = `<span class="text-red-400 font-bold">🕊️ ${hit.name}: ${yearsGone} years gone</span>`;
-                bdg.classList.remove('hidden'); d1.classList.remove('hidden'); d2.classList.remove('hidden');
-                if ("Notification" in window && Notification.permission === "granted" && !sessionStorage.getItem('notified_' + hit.id)) {
-                    new Notification(`🕊️ Remembering ${hit.name}`, { body: `Today marks ${yearsGone} years.`, icon: hit.image_url });
-                    sessionStorage.setItem('notified_' + hit.id, 'true');
-                }
-            } else { btn.onclick=null; txt.innerText="No new messages"; btn.classList.remove('bg-red-500/10','border-red-500/50','pulse-red'); btn.classList.add('bg-white/5'); bdg.classList.add('hidden'); d1.classList.add('hidden'); d2.classList.add('hidden'); }
+                btn.onclick = () => openDetail(hit.id); 
+                btn.classList.add('bg-red-500/10', 'pulse-red');
+                txt.innerHTML = `<span class="text-red-400 font-bold">🕊️ ${hit.name}: ${y} years</span>`;
+                bdg.classList.remove('hidden');
+            }
         }
 
         async function loadLegends() { 
-            Permissions.init(); // Init Permissions
+            await Permissions.init(); // 1. Rechte prüfen
             let { data: legends, error } = await db.from('legends').select('*').order('name'); 
             if (!error) { allLegendsData = legends; setHero(legends); renderGrid(legends); loadUserData(); checkAnniversaries(); } 
         }
 
         async function loadClub27Data() {
-            let { data, error } = await db.from('club27').select('*');
-            if (error) { console.error("Error loading Club27:", error); club27Data = []; return; }
+            let { data } = await db.from('club27').select('*');
             if (data) {
-                club27Data = data.map(item => ({
-                    id: item.id, name: item.name, dates: item.lifespan, category: item.category || 'CLUB 27',
-                    image_url: item.image_url, bio: item.description || "Member of the 27 Club.", candles: 0 
+                club27Data = data.map(i => ({
+                    id: i.id, name: i.name, dates: i.lifespan, category: 'CLUB 27',
+                    image_url: i.image_url, bio: i.description, candles: 0 
                 }));
             }
         }
 
-        // UTILS
-        function loadUserData() { const n = localStorage.getItem('user_name'); if (n) { document.getElementById('profile-name').innerText=n; document.getElementById('profile-avatar').innerText=n.charAt(0).toUpperCase(); document.getElementById('settings-name-input').value=n; } updatePushBtnState(); updateProfileStats(); }
-        function saveSettings() { const n = document.getElementById('settings-name-input').value.trim(); if (n) { localStorage.setItem('user_name', n); loadUserData(); showProfile(); } }
-        function resetApp() { if(confirm("Delete all data?")) { localStorage.clear(); location.reload(); } }
-        function getFavorites() { return JSON.parse(localStorage.getItem('my_favorites') || '[]'); }
-        function saveFavorites(arr) { localStorage.setItem('my_favorites', JSON.stringify(arr)); updateProfileStats(); checkAnniversaries(); }
-        function getMyCandles() { return JSON.parse(localStorage.getItem('my_candles') || '[]'); }
-        function saveMyCandles(arr) { localStorage.setItem('my_candles', JSON.stringify(arr)); updateProfileStats(); }
-        function updateProfileStats() { document.getElementById('profile-fav-count').innerText = getFavorites().length; document.getElementById('profile-candle-count').innerText = getMyCandles().length; }
-        function hideAllViews() { document.getElementById('home-view').classList.add('hidden'); document.getElementById('profile-view').classList.add('hidden'); document.getElementById('favorites-view').classList.add('hidden'); document.getElementById('candles-view').classList.add('hidden'); document.getElementById('settings-view').classList.add('hidden'); }
-        
-        function showHome() { 
-            hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.remove('hidden'); document.getElementById('club27-header').classList.add('hidden'); updateNavColors('home'); closeSearch(); renderGrid(allLegendsData); 
-        }
-
-        async function showClub27() {
-            hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.add('hidden'); document.getElementById('club27-header').classList.remove('hidden'); updateNavColors('home');
-            const grid = document.getElementById('legends-grid'); grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-10">Loading Club 27...</p>';
-            if(club27Data.length === 0) await loadClub27Data();
-            if(club27Data.length === 0) grid.innerHTML = '<p class="text-red-500 col-span-full text-center py-10">No data received. Check RLS Policy!</p>'; else renderGrid(club27Data);
-        }
-
-        function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); closeSearch(); }
-        function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); const g = document.getElementById('favorites-grid'); g.innerHTML = ''; const f = getFavorites(); const l = allLegendsData.filter(x => f.includes(x.id)); if(l.length) l.forEach(x => g.innerHTML += createCard(x)); else g.innerHTML = '<p class="col-span-2 text-gray-500">No Favorites yet.</p>'; }
-        function showCandlesView() { hideAllViews(); document.getElementById('candles-view').classList.remove('hidden'); const g = document.getElementById('candles-grid'); g.innerHTML = ''; const c = getMyCandles(); const l = allLegendsData.filter(x => c.includes(x.id)); if(l.length) l.forEach(x => g.innerHTML += createCard(x)); else g.innerHTML = '<p class="col-span-2 text-gray-500">No candles lit yet.</p>'; }
-        function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
-        function updateNavColors(active) { const b="flex flex-col items-center space-y-1 text-gray-500 hover:text-white group transition-all duration-300 transform active:scale-95"; const a="flex flex-col items-center space-y-1 text-gold group transition-all duration-300 transform active:scale-95"; document.getElementById('nav-home').className=b; document.getElementById('nav-search').className=b; document.getElementById('nav-profile').className=b; if(active==='home') document.getElementById('nav-home').className=a; if(active==='search') document.getElementById('nav-search').className=a; if(active==='profile') document.getElementById('nav-profile').className=a; }
-        
-        function openSuggestModal() { document.getElementById('suggest-overlay').classList.remove('hidden'); }
-        function closeSuggest() { document.getElementById('suggest-overlay').classList.add('hidden'); }
-        async function submitSuggestion() {
-            const name = document.getElementById('suggest-name').value;
-            const category = document.getElementById('suggest-category').value;
-            const reason = document.getElementById('suggest-reason').value;
-            const btn = document.getElementById('submit-suggest-btn');
-            if(!name) { alert("Please enter a name."); return; }
-            btn.innerText = "SENDING...";
-            const { error } = await db.from('suggestions').insert([{ name: name, category: category, reason: reason }]);
-            if(error) { alert("Error sending: " + error.message); btn.innerText = "SEND SUGGESTION"; } else { btn.innerText = "SENT! 🚀"; btn.classList.remove('bg-gold', 'text-black'); btn.classList.add('bg-green-500', 'text-white'); setTimeout(() => { closeSuggest(); document.getElementById('suggest-name').value = ''; document.getElementById('suggest-reason').value = ''; btn.innerText = "SEND SUGGESTION"; btn.classList.add('bg-gold', 'text-black'); btn.classList.remove('bg-green-500', 'text-white'); }, 1500); }
-        }
-
-        function getCardDate(datesStr, deathDateStr) { if (!datesStr) return ''; let birthYear = datesStr.substr(-4); const match = datesStr.match(/(\d{4})/); if (match) birthYear = match[0]; let deathYear = ''; if (deathDateStr) { deathYear = deathDateStr.split('-')[0]; } if(deathYear) return `${birthYear} – ${deathYear}`; return datesStr; }
-        function getDetailDate(datesStr, deathDateStr) { if (!datesStr) return ''; if (!deathDateStr) return datesStr; let birthPart = datesStr.split('–')[0].trim(); if(datesStr.includes('-')) birthPart = datesStr.split('-')[0].trim(); let niceDeathDate = deathDateStr; if (deathDateStr.includes('-')) { const parts = deathDateStr.split('-'); if(parts.length === 3) { niceDeathDate = `${parts[2]}.${parts[1]}.${parts[0]}`; } } return `${birthPart} – ${niceDeathDate}`; }
-
-        function createCard(l) { 
-            const i = l.image_url || 'https://placehold.co/600x800'; 
-            const displayDate = getCardDate(l.dates, l.death_date); 
-            const isClub27 = l.category && l.category.includes('27');
-            const normalStyle = "grayscale group-hover:grayscale-0 border-white/5 hover:border-gold/30";
-            const club27Style = "opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-transform duration-700 border-red-900/20 hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)]";
-            const imgClass = "w-full h-full object-cover transition-all duration-700";
-            const cardClass = isClub27 ? club27Style : normalStyle;
-            const textHover = isClub27 ? "group-hover:text-red-500" : "group-hover:text-gold";
-            return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden border ${cardClass} transition-all duration-500"><img src="${i}" class="${imgClass} ${isClub27 ? '' : 'grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100'}"><div class="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent opacity-90"></div><div class="absolute bottom-0 left-0 p-4 w-full"><h2 class="text-white font-bold text-lg leading-tight mb-1 ${textHover} transition-colors">${l.name}</h2><p class="${isClub27 ? 'text-red-500' : 'text-gold'} text-[10px] font-mono leading-tight mb-1.5 opacity-90 break-words">${displayDate}</p><p class="text-gray-400 text-[9px] font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors">${l.category || 'LEGEND'}</p></div></div>`; 
-        }
-
-        function renderGrid(legends) { 
-            const g=document.getElementById('legends-grid'); g.innerHTML=''; 
-            legends.forEach(l => g.innerHTML+=createCard(l));
-            g.innerHTML += `<div onclick="openSuggestModal()" class="relative group aspect-[3/4] bg-white/5 rounded-xl border-2 border-dashed border-white/20 hover:border-gold flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-white/10"><div class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center mb-4 group-hover:bg-gold text-gold group-hover:text-black transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></div><p class="text-white font-bold text-sm text-center px-4">Forgotten someone?</p><p class="text-gray-400 text-xs text-center mt-1">Suggest an Icon</p></div>`;
-        }
-        
-        function setHero(legends) { const c=document.getElementById('hero-container'); if(legends.length && c) { const r=legends[Math.floor(Math.random() * legends.length)]; c.innerHTML=`<div onclick="openDetail('${r.id}')" class="relative w-full h-full"><img src="${r.image_url}" class="absolute inset-0 w-full h-full object-cover object-top grayscale"><div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div><div class="absolute bottom-0 left-0 p-8"><span class="bg-gold text-black text-[10px] font-bold px-2 py-1 uppercase">Highlight</span><h2 class="text-4xl font-black mt-2 text-white">${r.name}</h2></div></div>`; } }
-        function toggleSearch() { const s=document.getElementById('search-bar-container'); if(s.classList.contains('hidden')) { s.classList.remove('hidden'); setTimeout(()=>document.getElementById('search-input').focus(),100); } else closeSearch(); }
-        function closeSearch() { document.getElementById('search-bar-container').classList.add('hidden'); document.getElementById('search-input').value=''; renderGrid(allLegendsData); }
-        function filterLegends() { const q=document.getElementById('search-input').value.toLowerCase(); renderGrid(allLegendsData.filter(l=>l.name.toLowerCase().includes(q))); }
-        function filterCategory(cat) { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.remove('hidden'); document.getElementById('club27-header').classList.add('hidden'); updateNavColors('home'); const filtered = allLegendsData.filter(l => { if(!l.category) return false; return l.category.toLowerCase().includes(cat.toLowerCase()); }); renderGrid(filtered); }
-        
-        // MODIFIZIERTES OPEN DETAIL MIT VIDEO GATE
+        // UI HELPERS
         function openDetail(id) { 
             const l = allLegendsData.find(x => x.id === id) || club27Data.find(x => x.id === id); 
             if(!l) return; 
             currentDetailId=id; 
+            
             document.getElementById('detail-img').src=l.image_url; 
             document.getElementById('detail-name').innerText=l.name; 
             document.getElementById('detail-dates').innerText = getDetailDate(l.dates, l.death_date); 
@@ -389,65 +386,36 @@
             
             if(l.trailer_url) { 
                 v.classList.remove('hidden');
-                
-                // --- GATE CHECK ---
+                // GATE CHECK
                 if (Permissions.can('view_trailers')) {
-                    // ERLAUBT: Video anzeigen
-                    let i = "";
-                    try { i=l.trailer_url.split('v=')[1].split('&')[0]; } catch(e){}
-                    if(i) wrapper.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${i}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                    let i = ""; try { i=l.trailer_url.split('v=')[1].split('&')[0]; } catch(e){}
+                    if(i) wrapper.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${i}" frameborder="0" allowfullscreen></iframe>`;
                 } else {
-                    // GESPERRT: Velvet Rope anzeigen
-                    let i = "";
-                    try { i=l.trailer_url.split('v=')[1].split('&')[0]; } catch(e){}
+                    let i = ""; try { i=l.trailer_url.split('v=')[1].split('&')[0]; } catch(e){}
                     const thumb = i ? `https://img.youtube.com/vi/${i}/hqdefault.jpg` : l.image_url;
                     wrapper.innerHTML = `
                         <img src="${thumb}" class="w-full h-full object-cover gate-blur opacity-50">
                         <div class="gate-overlay">
                             <div class="gate-badge">🔒 SUPPORTER ONLY</div>
                             <p class="text-white text-xs font-light tracking-widest uppercase">Video Locked</p>
-                        </div>
-                    `;
+                        </div>`;
                     wrapper.onclick = () => showVelvetRopeToast("Become a Supporter to watch.");
                 }
-            } else { 
-                v.classList.add('hidden'); 
-            } 
+            } else { v.classList.add('hidden'); } 
             
             const m=document.getElementById('music-btn'); 
             if(l.music_url) { m.classList.remove('hidden'); m.onclick=()=>window.open(l.music_url,'_blank'); } else m.classList.add('hidden'); 
             updateFavBtnState(id); 
             
-            // Candle logic
             const countLabel = document.getElementById('candle-count'); 
-            const myCandles = getMyCandles(); const alreadyLit = myCandles.includes(id); 
-            const icon = document.getElementById('candle-icon');
-            const text = document.getElementById('candle-text');
-            const circle = document.getElementById('candle-circle');
-            const glow = document.getElementById('candle-glow');
-
-            if (alreadyLit) { 
-                icon.classList.remove('text-gray-500'); icon.setAttribute('stroke', '#EAB308'); icon.setAttribute('fill', '#EAB308'); 
-                circle.classList.add('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); glow.classList.remove('opacity-0'); glow.classList.add('opacity-40'); 
-                text.innerText = "CANDLE LIT"; text.classList.add('text-gold'); 
-            } else { 
-                icon.setAttribute('fill', 'none'); icon.setAttribute('stroke', 'currentColor'); icon.classList.add('text-gray-500'); icon.classList.remove('text-black', 'fill-black'); 
-                circle.classList.remove('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); glow.classList.remove('opacity-40'); glow.classList.add('opacity-0'); 
-                text.innerText = "LIGHT A CANDLE"; text.classList.remove('text-gold'); 
-            } 
-            const realCount = l.candles || 0; countLabel.innerText = realCount.toLocaleString('de-DE'); 
-            if(realCount > 0) { countLabel.classList.add('opacity-100', 'font-bold'); countLabel.classList.remove('opacity-60'); } else { countLabel.classList.add('opacity-60'); countLabel.classList.remove('opacity-100', 'font-bold'); } 
+            countLabel.innerText = (l.candles || 0).toLocaleString('de-DE');
             
             document.getElementById('detail-overlay').classList.remove('hidden'); 
-            document.getElementById('radio-fab').classList.add('hidden'); 
+            document.getElementById('radio-fab').classList.add('hidden');
         }
 
         function closeDetail() { document.getElementById('detail-overlay').classList.add('hidden'); document.getElementById('video-wrapper').innerHTML=""; document.getElementById('radio-fab').classList.remove('hidden'); }
-        function toggleFavorite() { if(!currentDetailId)return; let f=getFavorites(); if(f.includes(currentDetailId)) f=f.filter(i=>i!==currentDetailId); else f.push(currentDetailId); saveFavorites(f); updateFavBtnState(currentDetailId); }
-        function updateFavBtnState(id) { const f=getFavorites(); const i=document.getElementById('fav-icon'); if(f.includes(id)) { i.setAttribute('fill','currentColor'); i.classList.add('text-red-500'); } else { i.setAttribute('fill','none'); i.classList.remove('text-red-500'); } }
-        async function toggleCandle() { const text = document.getElementById('candle-text'); if(text.innerText === "CANDLE LIT") return; const icon = document.getElementById('candle-icon'); const circle = document.getElementById('candle-circle'); const glow = document.getElementById('candle-glow'); const countLabel = document.getElementById('candle-count'); icon.classList.remove('text-gray-500'); icon.setAttribute('stroke', '#EAB308'); icon.setAttribute('fill', '#EAB308'); circle.classList.add('bg-gold/10', 'border-gold', 'shadow-[0_0_40px_rgba(234,179,8,0.3)]'); glow.classList.remove('opacity-0'); glow.classList.add('opacity-40'); text.innerText = "CANDLE LIT"; text.classList.add('text-gold'); let currentVal = parseInt(countLabel.innerText.replace(/\./g, '')) || 0; const newVal = currentVal + 1; countLabel.innerText = newVal.toLocaleString('de-DE'); countLabel.classList.remove('opacity-60'); countLabel.classList.add('opacity-100', 'font-bold'); let myCandles = getMyCandles(); if(!myCandles.includes(currentDetailId)) { myCandles.push(currentDetailId); saveMyCandles(myCandles); } if(currentDetailId) { const legend = allLegendsData.find(x => x.id === currentDetailId); if(legend) { legend.candles = newVal; await db.from('legends').update({ candles: newVal }).eq('id', currentDetailId); } else {  } } }
-
-        // UX HELPER: Gentle Toast
+        
         function showVelvetRopeToast(msg) {
             const div = document.createElement('div');
             div.className = "fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-gray-900 border border-gold/30 text-gold px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest shadow-2xl z-[70] animate-in fade-in slide-in-from-bottom-4";
@@ -456,7 +424,66 @@
             setTimeout(() => div.remove(), 3000);
         }
 
+        function getDetailDate(d1, d2) { if(!d2) return d1; return `${d1 ? d1.split('–')[0].trim() : ''} – ${d2}`; }
+        function getCardDate(d1, d2) { if(!d1) return ''; let b=d1.match(/(\d{4})/); b=b?b[0]:''; let d=d2?d2.split('-')[0]:''; return d ? `${b} – ${d}` : d1; }
+
+        function hideAllViews() { ['home-view','profile-view','favorites-view','candles-view','settings-view'].forEach(id=>document.getElementById(id).classList.add('hidden')); }
+        function showHome() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.remove('hidden'); document.getElementById('club27-header').classList.add('hidden'); renderGrid(allLegendsData); updateNavColors('home'); }
+        async function showClub27() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.add('hidden'); document.getElementById('club27-header').classList.remove('hidden'); if(!club27Data.length) await loadClub27Data(); renderGrid(club27Data); updateNavColors('home'); }
+        function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); }
+        function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
+        function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); renderGridSubset('favorites-grid', getFavorites()); }
+        function showCandlesView() { hideAllViews(); document.getElementById('candles-view').classList.remove('hidden'); renderGridSubset('candles-grid', getMyCandles()); }
+        
+        function renderGrid(data) {
+            const g=document.getElementById('legends-grid'); g.innerHTML=''; 
+            data.forEach(l => g.innerHTML+=createCard(l));
+            g.innerHTML += `<div onclick="openSuggestModal()" class="relative group aspect-[3/4] bg-white/5 rounded-xl border-2 border-dashed border-white/20 hover:border-gold flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-white/10"><div class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center mb-4 group-hover:bg-gold text-gold group-hover:text-black transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></div><p class="text-white font-bold text-sm text-center px-4">Forgotten someone?</p><p class="text-gray-400 text-xs text-center mt-1">Suggest an Icon</p></div>`;
+        }
+        function renderGridSubset(elId, ids) {
+            const g=document.getElementById(elId); g.innerHTML='';
+            const sub = allLegendsData.filter(x => ids.includes(x.id));
+            if(sub.length) sub.forEach(l=>g.innerHTML+=createCard(l)); else g.innerHTML='<p class="col-span-2 text-gray-500">Nothing here yet.</p>';
+        }
+
+        function createCard(l) { 
+            const i=l.image_url||'https://placehold.co/600x800'; const d=getCardDate(l.dates, l.death_date); const is27=l.category&&l.category.includes('27'); 
+            const style=is27 ? "opacity-90 group-hover:opacity-100 border-red-900/20 hover:border-red-500/50" : "grayscale group-hover:grayscale-0 border-white/5 hover:border-gold/30";
+            return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden border ${style} transition-all duration-500"><img src="${i}" class="w-full h-full object-cover ${is27?'':'grayscale group-hover:grayscale-0'}"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div><div class="absolute bottom-0 left-0 p-4 w-full"><h2 class="text-white font-bold text-lg leading-tight mb-1 group-hover:text-gold">${l.name}</h2><p class="text-[10px] font-mono opacity-90 ${is27?'text-red-500':'text-gold'}">${d}</p></div></div>`; 
+        }
+        
+        function setHero(d) { const c=document.getElementById('hero-container'); if(d.length && c) { const r=d[Math.floor(Math.random()*d.length)]; c.innerHTML=`<div onclick="openDetail('${r.id}')" class="relative w-full h-full"><img src="${r.image_url}" class="absolute inset-0 w-full h-full object-cover object-top grayscale"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div><div class="absolute bottom-8 left-8"><span class="bg-gold text-black text-[10px] font-bold px-2 py-1 uppercase">Highlight</span><h2 class="text-4xl font-black mt-2 text-white">${r.name}</h2></div></div>`; } }
+        
+        function toggleSearch() { const s=document.getElementById('search-bar-container'); if(s.classList.contains('hidden')) { s.classList.remove('hidden'); document.getElementById('search-input').focus(); } else document.getElementById('search-bar-container').classList.add('hidden'); }
+        function filterLegends() { const q=document.getElementById('search-input').value.toLowerCase(); renderGrid(allLegendsData.filter(l=>l.name.toLowerCase().includes(q))); }
+        function filterCategory(c) { showHome(); renderGrid(allLegendsData.filter(l => l.category && l.category.includes(c))); }
+        
+        function loadUserData() { const n=localStorage.getItem('user_name'); if(n) { document.getElementById('profile-name').innerText=n; document.getElementById('profile-avatar').innerText=n[0]; } }
+        function saveSettings() { const n=document.getElementById('settings-name-input').value; if(n) localStorage.setItem('user_name', n); showProfile(); }
+        function resetApp() { if(confirm("Reset?")) { localStorage.clear(); location.reload(); } }
+        function getFavorites() { return JSON.parse(localStorage.getItem('my_favorites') || '[]'); }
+        function getMyCandles() { return JSON.parse(localStorage.getItem('my_candles') || '[]'); }
+        function saveFavorites(a) { localStorage.setItem('my_favorites', JSON.stringify(a)); }
+        function saveMyCandles(a) { localStorage.setItem('my_candles', JSON.stringify(a)); }
+        function toggleFavorite() { if(!currentDetailId)return; let f=getFavorites(); if(f.includes(currentDetailId)) f=f.filter(i=>i!==currentDetailId); else f.push(currentDetailId); saveFavorites(f); updateFavBtnState(currentDetailId); }
+        function updateFavBtnState(id) { const i=document.getElementById('fav-icon'); if(getFavorites().includes(id)) { i.setAttribute('fill','currentColor'); i.classList.add('text-red-500'); } else { i.setAttribute('fill','none'); i.classList.remove('text-red-500'); } }
+        function toggleCandle() { const t=document.getElementById('candle-text'); if(t.innerText==="CANDLE LIT") return; t.innerText="CANDLE LIT"; t.classList.add('text-gold'); let c=getMyCandles(); if(!c.includes(currentDetailId)) { c.push(currentDetailId); saveMyCandles(c); } document.getElementById('candle-count').innerText = getMyCandles().length; }
+
+        function updateNavColors(active) { const b="flex flex-col items-center space-y-1 text-gray-500"; const a="flex flex-col items-center space-y-1 text-gold"; ['nav-home','nav-search','nav-profile'].forEach(id=>document.getElementById(id).className=b); if(active==='home')document.getElementById('nav-home').className=a; if(active==='profile')document.getElementById('nav-profile').className=a; }
+
+        function openSuggestModal() { document.getElementById('suggest-overlay').classList.remove('hidden'); }
+        function closeSuggest() { document.getElementById('suggest-overlay').classList.add('hidden'); }
+        async function submitSuggestion() {
+            const n=document.getElementById('suggest-name').value; const c=document.getElementById('suggest-category').value; const r=document.getElementById('suggest-reason').value;
+            if(!n)return; 
+            document.getElementById('submit-suggest-btn').innerText="SENDING...";
+            await db.from('suggestions').insert([{name:n, category:c, reason:r}]);
+            closeSuggest(); alert("Sent!");
+        }
+
+        // START
         loadLegends();
+
     </script>
 </body>
 </html>

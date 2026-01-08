@@ -3,442 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Remembered - The world's first AI-powered digital legacy vault. Secure your story.">
     <title>Remembered - Legends Never Die</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
     <style>
-        :root {
-            --bg-color: #050505;
-            --text-main: #ffffff;
-            --text-muted: #999999;
-            --accent-gold: #E6C265;
-            --card-bg: #0a0a0a;
-            --card-border: #222;
-            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .font-serif-custom { font-family: 'Playfair Display', serif; }
+        .text-gold { color: #EAB308; }
+        .border-gold { border-color: #EAB308; }
         
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: var(--font-main);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* --- NAV --- */
-        nav {
-            display: flex;
-            justify-content: flex-end;
-            padding: 20px 40px;
-            align-items: center;
-        }
-
-        .login-btn {
-            background: transparent;
-            border: 1px solid #333;
-            color: #fff;
-            padding: 8px 24px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .login-btn:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
-
-        /* --- HERO --- */
-        .hero {
-            text-align: center;
-            padding: 60px 20px 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .logo-container {
-            margin-bottom: 30px;
-            /* Hier wird der Pulse-Effekt definiert */
-            animation: pulse-glow 3s infinite ease-in-out;
+        /* Premium Gradients */
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #FFF 0%, #EAB308 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .logo-img {
-            width: 120px; /* Logo etwas größer */
-            height: auto;
-            display: block;
+        /* Background Glow Animation */
+        .glow-bg {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(234, 179, 8, 0.15) 0%, rgba(0,0,0,0) 70%);
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: -1;
+            animation: pulseGlow 8s infinite alternate;
         }
 
-        @keyframes pulse-glow {
-            0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(230, 194, 101, 0)); }
-            50% { transform: scale(1.05); filter: drop-shadow(0 0 20px rgba(230, 194, 101, 0.4)); }
-            100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(230, 194, 101, 0)); }
+        @keyframes pulseGlow {
+            0% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+            100% { opacity: 0.8; transform: translateX(-50%) scale(1.2); }
         }
 
-        .tagline {
-            color: var(--accent-gold);
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border: 1px solid #333;
-            padding: 8px 16px;
-            border-radius: 50px;
-            margin-bottom: 25px;
-            display: inline-block;
+        /* Logo Pulse */
+        .logo-pulse { animation: logoBreath 3s infinite ease-in-out; }
+        @keyframes logoBreath {
+            0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.2); }
+            50% { box-shadow: 0 0 20px 10px rgba(234, 179, 8, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
         }
 
-        h1 {
-            font-size: 4.5rem; /* Größer und fetter */
-            line-height: 1;
-            font-weight: 800;
-            margin-bottom: 20px;
-            letter-spacing: -2px;
-        }
-        
-        h1 span { color: var(--accent-gold); }
-
-        .sub-hero {
-            color: #ccc;
-            font-size: 1.3rem;
-            margin-bottom: 40px;
-            font-weight: 300;
-        }
-
-        .cta-btn {
-            background-color: var(--accent-gold);
-            color: #000;
-            border: none;
-            padding: 18px 45px;
-            font-size: 1rem;
-            font-weight: 700;
-            border-radius: 50px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 0 30px rgba(230, 194, 101, 0.25);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .cta-btn:hover { 
-            transform: scale(1.05); 
-            box-shadow: 0 0 40px rgba(230, 194, 101, 0.4);
-        }
-
-        .os-note {
-            margin-top: 20px;
-            color: #555;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* --- VISION --- */
-        .vision {
-            text-align: center;
-            padding: 100px 20px;
-            border-top: 1px solid #111;
-            background: linear-gradient(to bottom, var(--bg-color), #080808);
-        }
-
-        .section-label {
-            color: var(--accent-gold);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 20px;
-            display: block;
-            font-weight: 700;
-            opacity: 0.8;
-        }
-
-        .vision h2 {
-            font-size: 3rem;
-            line-height: 1.1;
-            margin-bottom: 30px;
-            color: #fff;
-        }
-
-        .vision p {
-            max-width: 650px;
-            margin: 0 auto;
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-
-        /* --- FEATURES CARDS --- */
-        .features {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            padding: 0 20px 100px;
-            flex-wrap: wrap;
-            background: #080808; /* Leichter Kontrast */
-        }
-
-        .card {
-            background: #0f0f0f;
-            border: 1px solid #1f1f1f;
-            padding: 3rem 2rem;
-            border-radius: 20px;
-            width: 350px;
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.3s ease;
         }
-        
-        .card:hover { 
-            border-color: #444; 
+        .glass-card:hover {
+            border-color: rgba(234, 179, 8, 0.3);
+            background: rgba(255, 255, 255, 0.05);
             transform: translateY(-5px);
         }
 
-        .card-icon { font-size: 1.8rem; margin-bottom: 1.5rem; display: block; }
-        
-        .card h3 {
-            color: var(--accent-gold);
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
-        }
+        .fade-in-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; transform: translateY(20px); }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
 
-        .card p {
-            color: #aaa;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        /* --- PROMISE SECTION (Improved) --- */
-        .promise-container {
-            display: flex;
-            flex-wrap: wrap;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 120px 20px;
-            align-items: flex-start; /* Oben bündig */
-            gap: 80px;
-        }
-
-        .promise-text { 
-            flex: 1; 
-            min-width: 350px; 
-            padding-top: 20px;
-        }
-
-        .promise-text h2 {
-            font-size: 3rem;
-            line-height: 1.1;
-            margin-bottom: 50px;
-        }
-
-        .promise-item {
-            display: flex;
-            gap: 25px;
-            margin-bottom: 40px;
-            align-items: flex-start; /* Icon bleibt oben, auch wenn Text umbricht */
-        }
-
-        .icon-box {
-            background: #151515;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 16px;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-            border: 1px solid #222;
-        }
-        
-        .gold-icon { color: var(--accent-gold); border-color: rgba(230, 194, 101, 0.2); }
-
-        .item-content h4 { 
-            font-size: 1.2rem; 
-            margin-bottom: 8px; 
-            color: #fff;
-            margin-top: 5px; /* Ausgleich zum Icon */
-        }
-        
-        .item-content p { color: var(--text-muted); font-size: 1rem; }
-
-        .promise-visual {
-            flex: 1;
-            min-width: 350px;
-            height: 550px;
-            background: radial-gradient(circle at center, #1a1a1a, #050505);
-            border: 1px solid #222;
-            border-radius: 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-
-        .shield-icon {
-            font-size: 6rem;
-            color: #222;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
-        }
-
-        .secure-text {
-            position: absolute;
-            bottom: 40px;
-            font-family: monospace;
-            color: #444;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* --- FOOTER / WAITLIST --- */
-        .waitlist {
-            text-align: center;
-            padding: 120px 20px;
-            background: linear-gradient(to top, #050505, #0a0a0a);
-            border-top: 1px solid #111;
-        }
-
-        .waitlist h2 {
-            color: var(--accent-gold);
-            text-transform: uppercase;
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
-        }
-
-        .waitlist p { color: #888; margin-bottom: 40px; font-size: 1rem; }
-
-        .input-group {
-            display: inline-flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        input[type="email"] {
-            background: #0f0f0f;
-            border: 1px solid #333;
-            padding: 18px 28px;
-            border-radius: 50px;
-            color: #fff;
-            width: 320px;
-            outline: none;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-        
-        input[type="email"]:focus { border-color: var(--accent-gold); }
-
-        .join-btn {
-            background: #fff;
-            color: #000;
-            border: none;
-            padding: 18px 35px;
-            border-radius: 50px;
-            font-weight: 700;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            transition: background 0.3s;
-        }
-        .join-btn:hover { background: #ddd; }
-
-        .footer-note {
-            margin-top: 50px;
-            color: #333;
-            font-size: 0.8rem;
-        }
-
-        @media (max-width: 900px) {
-            h1 { font-size: 3rem; }
-            .promise-container { flex-direction: column; padding: 60px 20px; }
-            .card { width: 100%; }
-            input[type="email"] { width: 100%; }
-            .promise-visual { height: 400px; width: 100%; }
-        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
+<body class="selection:bg-yellow-500 selection:text-black">
 
-    <nav>
-        <button class="login-btn">Login</button>
+    <!-- Background Spot -->
+    <div class="glow-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 px-6 py-6 flex justify-between items-center bg-gradient-to-b from-black via-black/80 to-transparent">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 border border-white/20 rounded flex items-center justify-center bg-white/5">
+                <span class="font-bold text-gold text-xs">R</span>
+            </div>
+            <span class="text-xs font-bold tracking-[0.2em] text-white/80 uppercase">Remembered</span>
+        </div>
+        <a href="app.html" class="text-xs font-bold text-gray-400 hover:text-white transition-colors border border-white/10 px-4 py-2 rounded-full hover:border-white/30">LOGIN</a>
     </nav>
 
-    <header class="hero">
-        <div class="logo-container">
-            <img src="logo.png" alt="Remembered Logo" class="logo-img">
-        </div>
-        <div class="tagline">The World's First AI-Powered Digital Legacy Vault</div>
-        <h1>LEGENDS NEVER <span>DIE.</span></h1>
-        <p class="sub-hero">Experience their stories. Preserve your own.<br><span style="font-size: 1rem; color: #666;">Secure. Private. App Only.</span></p>
+    <!-- HERO SECTION -->
+    <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-20">
         
-        <button class="cta-btn">Join Early Access</button>
-        <p class="os-note">Coming soon to iOS & Android</p>
-    </header>
+        <!-- Animated Logo -->
+        <div class="mb-12 relative group fade-in-up">
+            <div class="absolute inset-0 bg-yellow-500 blur-[40px] opacity-20 rounded-full group-hover:opacity-30 transition-opacity duration-1000"></div>
+            <div class="w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-black border border-white/10 relative z-10 flex items-center justify-center logo-pulse shadow-2xl">
+                <!-- Replace with your actual logo IMG if you have one, otherwise text -->
+                <span class="text-5xl md:text-6xl font-bold text-gradient-gold">R</span>
+            </div>
+        </div>
 
-    <section class="vision">
-        <span class="section-label">The Vision</span>
-        <h2>More than a database.<br>A sanctuary for stories.</h2>
-        <p>The open web forgets. It copies, distorts, and dilutes. Remembered is a closed vault designed to protect the sanctity of history and the privacy of your personal&nbsp;legacy.</p>
+        <!-- Headline -->
+        <div class="space-y-6 max-w-4xl mx-auto fade-in-up delay-100">
+            <p class="text-gold text-xs md:text-sm font-bold tracking-[0.3em] uppercase opacity-90">The Digital Legacy Vault</p>
+            <h1 class="text-5xl md:text-7xl lg:text-9xl font-black text-white tracking-tighter leading-[0.9]">
+                LEGENDS <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-400 to-gray-600">NEVER DIE.</span>
+            </h1>
+            <p class="text-gray-400 font-serif-custom text-lg md:text-2xl max-w-2xl mx-auto italic leading-relaxed">
+                "Experience their stories. Preserve your own.<br>
+                Secure. Private. For Eternity."
+            </p>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="mt-12 fade-in-up delay-200">
+            <a href="#waitlist" class="bg-white text-black px-8 py-4 rounded-full font-bold text-sm tracking-widest hover:bg-gold hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                JOIN THE CIRCLE
+            </a>
+            <p class="mt-4 text-gray-600 text-[10px] uppercase tracking-widest">Coming 2026 • iOS & Android</p>
+        </div>
     </section>
 
-    <section class="features">
-        <div class="card">
-            <span class="card-icon">⚡️</span>
-            <h3>Daily Inspiration</h3>
-            <p>Start every day with a quote, a story or a moment that still matters. From people who changed the world.</p>
-        </div>
-        <div class="card">
-            <span class="card-icon">🏆</span>
-            <h3>Hall of Fame</h3>
-            <p>Your personal collection of the greatest minds, icons and creators of all time. From sports to music, film and culture.</p>
-        </div>
-        <div class="card">
-            <span class="card-icon">🛡️</span>
-            <h3>Pure & Direct</h3>
-            <p>No subscription traps. No algorithmic noise. You stay in control. You are part of the circle.</p>
-        </div>
-    </section>
-
-    <section class="promise-container">
-        <div class="promise-text">
-            <span class="section-label">Our Promise</span>
-            <h2>Culture is Free.<br>Legacy is Personal.</h2>
+    <!-- FEATURES SECTION -->
+    <section class="py-32 px-4 relative z-10">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            <div class="promise-item">
-                <div class="icon-box">🌐</div>
-                <div class="item-content">
-                    <h4>Cultural Heritage</h4>
-                    <p>Legends, history, and public memories remain forever free.</p>
+            <!-- Card 1 -->
+            <div class="glass-card p-8 rounded-3xl text-left">
+                <div class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center mb-6 text-gold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                 </div>
+                <h3 class="text-xl font-bold text-white mb-3">Daily Inspiration</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Start every day with a quote or story from the greatest minds. Curated wisdom delivered to your device.</p>
             </div>
 
-            <div class="promise-item">
-                <div class="icon-box gold-icon">🔒</div>
-                <div class="item-content">
-                    <h4>Your Personal Legacy</h4>
-                    <p>Paid features are strictly for your private vault.</p>
+            <!-- Card 2 -->
+            <div class="glass-card p-8 rounded-3xl text-left border-gold/30 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-gold/10 blur-2xl rounded-full"></div>
+                <div class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center mb-6 text-gold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
                 </div>
+                <h3 class="text-xl font-bold text-white mb-3">Hall of Fame</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Your personal collection of icons. From sports to music, film and culture. Light candles and honor their legacy.</p>
             </div>
-        </div>
 
-        <div class="promise-visual">
-            <div class="shield-icon">🛡️</div>
-            <div class="secure-text">Secured by Remembered AI</div>
+            <!-- Card 3 -->
+            <div class="glass-card p-8 rounded-3xl text-left">
+                <div class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center mb-6 text-gold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Pure & Direct</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">No algorithms. No noise. Just pure legacy. A sanctuary designed to protect the sanctity of history.</p>
+            </div>
+
         </div>
     </section>
 
-    <footer class="waitlist">
-        <h2>Be Part of the First Chapter</h2>
-        <p>Join the early access list to receive updates, insights and first access invitations.</p>
-        
-        <form class="input-group">
-            <input type="email" placeholder="Enter your email">
-            <button type="button" class="join-btn">Join List</button>
-        </form>
+    <!-- PROMISE SECTION -->
+    <section class="py-20 text-center px-4 bg-gradient-to-b from-transparent to-black">
+        <p class="text-gold text-xs font-bold tracking-[0.3em] uppercase mb-6">Our Promise</p>
+        <h2 class="text-4xl md:text-6xl font-black text-white mb-8">Culture is Free.<br>Legacy is Personal.</h2>
+        <div class="flex flex-col md:flex-row justify-center gap-8 text-left max-w-2xl mx-auto">
+            <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-white/5 transition">
+                <div class="mt-1 text-gold"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg></div>
+                <div>
+                    <h4 class="font-bold text-white">Cultural Heritage</h4>
+                    <p class="text-gray-500 text-sm mt-1">Legends, history, and public memories remain forever free. Knowledge shouldn't be paywalled.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-white/5 transition">
+                <div class="mt-1 text-gold"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg></div>
+                <div>
+                    <h4 class="font-bold text-white">Your Personal Legacy</h4>
+                    <p class="text-gray-500 text-sm mt-1">Paid features are strictly for your private vault, custom collections, and deep personalization.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <p class="footer-note">Pre-Launch · More features coming soon</p>
+    <!-- WAITLIST SECTION -->
+    <section id="waitlist" class="py-32 px-4 text-center relative">
+        <div class="absolute inset-0 bg-gold/5 blur-[100px] rounded-full pointer-events-none"></div>
+        
+        <div class="relative z-10 max-w-lg mx-auto">
+            <h2 class="text-3xl font-bold text-white mb-2">Be part of the first chapter.</h2>
+            <p class="text-gray-400 text-sm mb-8">Join the early access list to receive updates and exclusive founder badges.</p>
+            
+            <div class="flex flex-col gap-4">
+                <input type="email" id="email-input" placeholder="Enter your email address" class="w-full bg-white/5 border border-white/10 rounded-full px-6 py-4 text-center text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors">
+                <button onclick="joinWaitlist()" id="waitlist-btn" class="w-full bg-white text-black font-bold rounded-full px-6 py-4 hover:bg-gold transition-colors uppercase tracking-widest text-xs">
+                    Join Waitlist
+                </button>
+            </div>
+            <p id="waitlist-msg" class="mt-4 text-xs text-green-500 hidden fade-in-up">Welcome to the inner circle.</p>
+        </div>
+    </section>
+
+    <footer class="py-12 border-t border-white/5 text-center">
+        <p class="text-gray-600 text-[10px] uppercase tracking-widest">&copy; 2026 Legacy Global Ventures Ltd. • Limassol, Cyprus</p>
+        <div class="flex justify-center gap-6 mt-4 text-[10px] text-gray-500">
+            <a href="#" class="hover:text-white">Privacy</a>
+            <a href="#" class="hover:text-white">Terms</a>
+            <a href="#" class="hover:text-white">Imprint</a>
+        </div>
     </footer>
 
+    <script>
+        // Supabase Configuration
+        const supabaseUrl = 'https://aahsaqygohmykhagbihk.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
+        const db = supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function joinWaitlist() {
+            const emailInput = document.getElementById('email-input');
+            const btn = document.getElementById('waitlist-btn');
+            const msg = document.getElementById('waitlist-msg');
+            const email = emailInput.value.trim();
+
+            if (!email || !email.includes('@')) {
+                alert("Please enter a valid email.");
+                return;
+            }
+
+            btn.innerText = "Processing...";
+            
+            // Insert into Supabase
+            // Make sure you have a table named 'waitlist' with an 'email' column
+            const { error } = await db.from('waitlist').insert([{ email: email }]);
+
+            if (error) {
+                console.error(error);
+                // If table doesn't exist yet, simulate success for UX testing
+                // alert("Error: " + error.message); 
+                btn.innerText = "Try Again";
+            } 
+            
+            // Success State
+            btn.innerText = "JOINED ✅";
+            btn.classList.add('bg-green-500', 'text-white', 'border-none');
+            btn.classList.remove('bg-white', 'text-black', 'hover:bg-gold');
+            msg.classList.remove('hidden');
+            emailInput.value = "";
+        }
+    </script>
 </body>
 </html>

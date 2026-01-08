@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="robots" content="noindex, nofollow">
@@ -7,7 +7,7 @@
     
     <title>Remembered - Legends App</title>
     
-    <!-- 1. EXTERNE SKRIPTE -->
+    <!-- 1. EXTERNAL SCRIPTS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <style>
-        /* BASIS DESIGN */
+        /* BASE DESIGN */
         body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; }
         .font-serif-custom { font-family: 'Playfair Display', serif; }
         .text-gold { color: #EAB308; }
@@ -39,14 +39,10 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* VELVET ROPE (FEATURE GATES) STYLES */
+        /* VELVET ROPE STYLES */
         .gate-blur { filter: blur(12px); pointer-events: none; user-select: none; transform: scale(1.05); }
         .gate-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); z-index: 20; }
         .gate-badge { border: 1px solid rgba(234, 179, 8, 0.5); background: rgba(0, 0, 0, 0.8); color: #EAB308; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 9999px; margin-bottom: 0.5rem; box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); }
-    
-        /* TOGGLE SWITCH STYLE */
-        .toggle-checkbox:checked { right: 0; border-color: #EAB308; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #EAB308; }
     </style>
 </head>
 <body class="min-h-screen pb-24 selection:bg-gold selection:text-black">
@@ -61,6 +57,8 @@
                 <button onclick="filterCategory('Actor')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Actor</button>
                 <button onclick="filterCategory('DJ')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">DJ & Producer</button>
                 <button onclick="filterCategory('Sport')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Sport Icon</button>
+                <button onclick="filterCategory('Visionary')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Visionary</button>
+                <button onclick="filterCategory('Royal')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Royal</button>
             </div>
         </nav>
         <div class="flex items-center space-x-5 pl-4 shadow-[-10px_0_20px_rgba(0,0,0,0.5)]">
@@ -104,7 +102,7 @@
         <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
     </main>
 
-    <!-- NEW: MONETIZATION / PLANS VIEW -->
+    <!-- NEW: MONETIZATION / PLANS VIEW (UPDATED ENGLISH) -->
     <main id="monetization-view" class="hidden pt-24 px-4 max-w-7xl mx-auto fade-in h-screen overflow-y-auto pb-32">
         
         <!-- PHILOSOPHY HEADER -->
@@ -114,16 +112,16 @@
                 <h3 class="text-gold font-bold tracking-widest uppercase text-sm">Core Philosophy</h3>
             </div>
             <p class="italic text-gray-200 text-lg leading-relaxed font-serif-custom">
-                "Remembered monetarisiert Nähe, nicht Erinnerung.<br>
-                Unsere Nutzer zahlen, um tiefer zu verbinden – nicht um Zugang zu bekommen."
+                "Remembered monetizes closeness, not memory.<br>
+                Our users pay to connect deeper – not to get access."
             </p>
         </div>
 
         <!-- TOGGLE -->
         <div class="flex justify-center mb-10">
             <div class="bg-gray-900 border border-white/10 p-1 rounded-full flex relative">
-                <button onclick="setBilling('monthly')" id="btn-monthly" class="px-6 py-2 rounded-full text-xs font-bold uppercase transition-all bg-gold text-black">Monatlich</button>
-                <button onclick="setBilling('yearly')" id="btn-yearly" class="px-6 py-2 rounded-full text-xs font-bold uppercase transition-all text-gray-400 hover:text-white">Jährlich (-17%)</button>
+                <button onclick="setBilling('monthly')" id="btn-monthly" class="px-6 py-2 rounded-full text-xs font-bold uppercase transition-all bg-gold text-black">Monthly</button>
+                <button onclick="setBilling('yearly')" id="btn-yearly" class="px-6 py-2 rounded-full text-xs font-bold uppercase transition-all text-gray-400 hover:text-white">Yearly (-17%)</button>
             </div>
         </div>
 
@@ -135,17 +133,20 @@
                 <div class="mb-6">
                     <span class="bg-gray-800 text-gray-400 text-[10px] font-bold px-2 py-1 uppercase rounded">Entry</span>
                     <h3 class="text-3xl font-black text-white mt-4">FREE</h3>
-                    <p class="text-gray-400 text-sm mt-1">Der kulturelle Auftrag.</p>
+                    <p class="text-gray-400 text-sm mt-1">The cultural mission.</p>
                 </div>
                 <div class="text-4xl font-bold text-white mb-1">0 €</div>
-                <div class="text-gray-500 text-xs uppercase tracking-widest mb-8">/ Immer</div>
+                <div class="text-gray-500 text-xs uppercase tracking-widest mb-8">/ Always</div>
                 
-                <ul class="space-y-4 mb-8 flex-1">
-                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Ikonen entdecken</li>
-                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Biografien lesen</li>
-                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Kerzen (1 pro Tag)</li>
+                <ul class="space-y-3 mb-8 flex-1">
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Discover Icons</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Read Biographies</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Auto-Translation</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> "For You" Feed</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Light Candle (1/day)</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Save Favorites (Limited)</li>
                 </ul>
-                <button class="w-full py-3 rounded-xl border border-white/10 text-gray-400 text-xs font-bold uppercase cursor-default opacity-50">Aktueller Plan</button>
+                <button class="w-full py-3 rounded-xl border border-white/10 text-gray-400 text-xs font-bold uppercase cursor-default opacity-50">Current Plan</button>
             </div>
 
             <!-- SUPPORTER -->
@@ -153,20 +154,21 @@
                 <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gold text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">Popular</div>
                 <div class="mb-6">
                     <h3 class="text-3xl font-black text-white mt-4">SUPPORTER</h3>
-                    <p class="text-gray-400 text-sm mt-1">Für Fans, die Tiefe wollen.</p>
+                    <p class="text-gray-400 text-sm mt-1">For fans who want depth.</p>
                 </div>
                 <div class="flex items-end gap-1 mb-1">
                     <div id="price-supporter" class="text-4xl font-bold text-white">1,99 €</div>
                 </div>
-                <div id="cycle-supporter" class="text-gray-500 text-xs uppercase tracking-widest mb-8">/ Monat</div>
+                <div id="cycle-supporter" class="text-gray-500 text-xs uppercase tracking-widest mb-8">/ Month</div>
 
-                <ul class="space-y-4 mb-8 flex-1">
-                    <li class="flex items-center gap-3 text-sm text-white"><svg class="w-4 h-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Unbegrenzte Kerzen</li>
-                    <li class="flex items-center gap-3 text-sm text-white"><svg class="w-4 h-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Werbefrei</li>
-                    <li class="flex items-center gap-3 text-sm text-white"><svg class="w-4 h-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Eigene Sammlungen</li>
+                <ul class="space-y-3 mb-8 flex-1">
+                    <li class="flex items-center gap-3 text-sm text-white"><svg class="w-4 h-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> <strong>Unlimited</strong> Candles</li>
+                    <li class="flex items-center gap-3 text-sm text-white"><svg class="w-4 h-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> <strong>Unlimited</strong> Favorites</li>
+                    <li class="flex items-center gap-3 text-sm text-white"><svg class="w-4 h-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> <strong>Ad-Free Experience</strong></li>
+                    <li class="flex items-center gap-3 text-sm text-white"><svg class="w-4 h-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Personal Collections</li>
                     <li class="flex items-center gap-3 text-sm text-white"><svg class="w-4 h-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Supporter Badge</li>
                 </ul>
-                <button onclick="alert('Checkout folgt in Stufe 2')" class="w-full py-3 rounded-xl bg-gold text-black text-xs font-bold uppercase hover:bg-yellow-400 transition-colors shadow-lg shadow-gold/20">Wählen</button>
+                <button onclick="alert('Checkout integration coming in Phase 2')" class="w-full py-3 rounded-xl bg-gold text-black text-xs font-bold uppercase hover:bg-yellow-400 transition-colors shadow-lg shadow-gold/20">Select Plan</button>
             </div>
 
             <!-- LEGACY+ -->
@@ -174,25 +176,31 @@
                 <div class="mb-6">
                     <span class="bg-blue-900/30 text-blue-400 border border-blue-500/30 text-[10px] font-bold px-2 py-1 uppercase rounded">Premium</span>
                     <h3 class="text-3xl font-black text-white mt-4">LEGACY+</h3>
-                    <p class="text-gray-400 text-sm mt-1">Bewahre, was bleiben soll.</p>
+                    <p class="text-gray-400 text-sm mt-1">Preserve what remains.</p>
                 </div>
                 <div class="flex items-end gap-1 mb-1">
                     <div id="price-legacy" class="text-4xl font-bold text-white">4,99 €</div>
                 </div>
-                <div id="cycle-legacy" class="text-gray-500 text-xs uppercase tracking-widest mb-8">/ Monat</div>
+                <div id="cycle-legacy" class="text-gray-500 text-xs uppercase tracking-widest mb-8">/ Month</div>
 
-                <ul class="space-y-4 mb-8 flex-1">
-                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Alles aus Supporter</li>
-                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Private Gedenkseiten</li>
-                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Eigene Erinnerungen</li>
-                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> KI-Zusammenfassungen</li>
+                <ul class="space-y-3 mb-8 flex-1">
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Everything in Supporter</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Private Memorial Pages</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Create Personal Memories</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Store Text, Images & Quotes</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> AI Summaries</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Life Timeline</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Export (PDF/Memorial Page)</li>
                 </ul>
-                <button onclick="alert('Checkout folgt in Stufe 2')" class="w-full py-3 rounded-xl border border-blue-500/50 text-blue-400 text-xs font-bold uppercase hover:bg-blue-900/20 transition-colors">Wählen</button>
+                <button onclick="alert('Checkout integration coming in Phase 2')" class="w-full py-3 rounded-xl border border-blue-500/50 text-blue-400 text-xs font-bold uppercase hover:bg-blue-900/20 transition-colors">Select Plan</button>
             </div>
         </div>
 
-        <div class="mt-12 text-center">
-            <button onclick="showProfile()" class="text-gray-500 text-xs uppercase tracking-widest hover:text-white transition-colors">Zurück zum Profil</button>
+        <!-- PRICE PROMISE FOOTER -->
+        <div class="mt-12 text-center max-w-2xl mx-auto border-t border-white/5 pt-8">
+            <p class="text-gray-400 text-sm mb-2">We are constantly expanding our features.</p>
+            <p class="text-white font-bold text-sm">Your price remains locked forever once you subscribe. <span class="text-gold">No hidden hikes.</span></p>
+            <button onclick="showProfile()" class="mt-8 text-gray-500 text-xs uppercase tracking-widest hover:text-white transition-colors">Back to Profile</button>
         </div>
     </main>
 
@@ -215,8 +223,8 @@
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold">★</div>
                     <div class="text-left">
-                        <p class="text-white font-bold text-sm">Mitgliedschaft</p>
-                        <p class="text-gold text-xs">Supporter werden</p>
+                        <p class="text-white font-bold text-sm">Membership</p>
+                        <p class="text-gold text-xs">Become a Supporter</p>
                     </div>
                 </div>
                 <svg class="w-5 h-5 text-gray-500 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -239,11 +247,11 @@
             <p id="plan-label" class="text-gold text-xs tracking-[0.2em] uppercase mt-1 opacity-80">Free Member</p>
         </div>
         
-        <!-- NEW: CALL TO ACTION IN PROFILE -->
+        <!-- CALL TO ACTION IN PROFILE -->
         <div class="mb-10">
             <button onclick="showMonetization()" class="w-full bg-gray-900 border border-gold/40 p-3 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors shadow-[0_0_15px_rgba(234,179,8,0.1)]">
                 <span class="text-gold">✨</span>
-                <span class="text-white text-xs font-bold uppercase tracking-widest">Mitgliedschaft wählen</span>
+                <span class="text-white text-xs font-bold uppercase tracking-widest">Select Membership</span>
             </button>
         </div>
 
@@ -322,14 +330,14 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
         const db = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // --- 1. INTELLIGENTES PERMISSIONS SYSTEM ---
+        // --- 1. INTELLIGENT PERMISSIONS SYSTEM ---
         const Permissions = {
             caps: ['read_bio', 'discover_icons'], 
             currentPlan: 'FREE', 
 
             async init() {
                 const { data: { session } } = await db.auth.getSession();
-                if (!session) { console.log("Gast-Modus: FREE"); this.updateUI(); return; }
+                if (!session) { console.log("Guest Mode: FREE"); this.updateUI(); return; }
                 const userId = session.user.id;
 
                 const { data: sub } = await db.from('user_subscriptions').select('plan_id').eq('user_id', userId).eq('is_active', true).maybeSingle();
@@ -365,7 +373,7 @@
         let club27Data = [];
         let currentDetailId = null;
 
-        // --- BILLING TOGGLE ---
+        // --- BILLING TOGGLE (ENGLISH UPDATES) ---
         function setBilling(period) {
             const btnMonthly = document.getElementById('btn-monthly');
             const btnYearly = document.getElementById('btn-yearly');
@@ -380,20 +388,20 @@
                 btnYearly.classList.remove('bg-gold', 'text-black');
                 btnYearly.classList.add('text-gray-400', 'hover:text-white');
 
-                pSupporter.innerText = '1,99 €'; cSupporter.innerText = '/ Monat';
-                pLegacy.innerText = '4,99 €'; cLegacy.innerText = '/ Monat';
+                pSupporter.innerText = '1,99 €'; cSupporter.innerText = '/ Month';
+                pLegacy.innerText = '4,99 €'; cLegacy.innerText = '/ Month';
             } else {
                 btnYearly.classList.add('bg-gold', 'text-black');
                 btnYearly.classList.remove('text-gray-400', 'hover:text-white');
                 btnMonthly.classList.remove('bg-gold', 'text-black');
                 btnMonthly.classList.add('text-gray-400', 'hover:text-white');
 
-                pSupporter.innerText = '19,99 €'; cSupporter.innerText = '/ Jahr (2 Monate geschenkt)';
-                pLegacy.innerText = '49,99 €'; cLegacy.innerText = '/ Jahr (2 Monate geschenkt)';
+                pSupporter.innerText = '19,99 €'; cSupporter.innerText = '/ Year (2 months free)';
+                pLegacy.innerText = '49,99 €'; cLegacy.innerText = '/ Year (2 months free)';
             }
         }
 
-        // --- NAVIGATION EXTENDED ---
+        // --- NAVIGATION ---
         function hideAllViews() { ['home-view','profile-view','favorites-view','candles-view','settings-view','monetization-view'].forEach(id=>document.getElementById(id).classList.add('hidden')); }
         function showHome() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.remove('hidden'); document.getElementById('club27-header').classList.add('hidden'); renderGrid(allLegendsData); updateNavColors('home'); }
         async function showClub27() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.add('hidden'); document.getElementById('club27-header').classList.remove('hidden'); if(!club27Data.length) await loadClub27Data(); renderGrid(club27Data); updateNavColors('home'); }
@@ -402,12 +410,11 @@
         function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); renderGridSubset('favorites-grid', getFavorites()); }
         function showCandlesView() { hideAllViews(); document.getElementById('candles-view').classList.remove('hidden'); renderGridSubset('candles-grid', getMyCandles()); }
         
-        // NEW: SHOW MONETIZATION
         function showMonetization() { hideAllViews(); document.getElementById('monetization-view').classList.remove('hidden'); }
 
         // --- GATES & FEATURES ---
         function enablePush() {
-            if (!Permissions.can('private_pages')) { showVelvetRopeToast("Exklusiv im LEGACY+ Plan"); return; }
+            if (!Permissions.can('private_pages')) { showVelvetRopeToast("Exclusive to LEGACY+ Plan"); return; }
             if (!("Notification" in window)) return;
             Notification.requestPermission().then(p => {
                 if (p === "granted") { 
@@ -456,7 +463,7 @@
                     let i = ""; try { i=l.trailer_url.split('v=')[1].split('&')[0]; } catch(e){}
                     const thumb = i ? `https://img.youtube.com/vi/${i}/hqdefault.jpg` : l.image_url;
                     wrapper.innerHTML = `<img src="${thumb}" class="w-full h-full object-cover gate-blur opacity-50"><div class="gate-overlay"><div class="gate-badge">🔒 SUPPORTER ONLY</div><p class="text-white text-xs font-light tracking-widest uppercase">Video Locked</p></div>`;
-                    wrapper.onclick = () => showVelvetRopeToast("Werde Supporter für Video-Zugriff");
+                    wrapper.onclick = () => showVelvetRopeToast("Become a Supporter to watch video");
                 }
             } else { v.classList.add('hidden'); } 
             const m=document.getElementById('music-btn'); if(l.music_url) { m.classList.remove('hidden'); m.onclick=()=>window.open(l.music_url,'_blank'); } else m.classList.add('hidden'); 

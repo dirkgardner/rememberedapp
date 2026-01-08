@@ -9,7 +9,6 @@
     
     <!-- 1. EXTERNE SKRIPTE -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- WICHTIG: Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <!-- FONTS -->
@@ -41,37 +40,13 @@
         }
 
         /* VELVET ROPE (FEATURE GATES) STYLES */
-        /* Macht das Element unscharf (Milchglas-Effekt) */
-        .gate-blur {
-            filter: blur(12px);
-            pointer-events: none;
-            user-select: none;
-            transform: scale(1.05); /* Zoom, damit Ränder sauber bleiben */
-        }
-        /* Das Overlay mit dem Schloss-Icon */
-        .gate-overlay {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 20;
-        }
-        /* Das Badge "SUPPORTER ONLY" */
-        .gate-badge {
-            border: 1px solid rgba(234, 179, 8, 0.5);
-            background: rgba(0, 0, 0, 0.8);
-            color: #EAB308;
-            font-size: 0.65rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            margin-bottom: 0.5rem;
-            box-shadow: 0 0 15px rgba(234, 179, 8, 0.2);
-        }
+        .gate-blur { filter: blur(12px); pointer-events: none; user-select: none; transform: scale(1.05); }
+        .gate-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); z-index: 20; }
+        .gate-badge { border: 1px solid rgba(234, 179, 8, 0.5); background: rgba(0, 0, 0, 0.8); color: #EAB308; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 9999px; margin-bottom: 0.5rem; box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); }
+    
+        /* TOGGLE SWITCH STYLE */
+        .toggle-checkbox:checked { right: 0; border-color: #EAB308; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #EAB308; }
     </style>
 </head>
 <body class="min-h-screen pb-24 selection:bg-gold selection:text-black">
@@ -86,8 +61,6 @@
                 <button onclick="filterCategory('Actor')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Actor</button>
                 <button onclick="filterCategory('DJ')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">DJ & Producer</button>
                 <button onclick="filterCategory('Sport')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Sport Icon</button>
-                <button onclick="filterCategory('Visionary')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Visionary</button>
-                <button onclick="filterCategory('Royal')" class="text-sm md:text-base font-light text-gray-400 hover:text-white uppercase tracking-widest whitespace-nowrap transition-colors">Royal</button>
             </div>
         </nav>
         <div class="flex items-center space-x-5 pl-4 shadow-[-10px_0_20px_rgba(0,0,0,0.5)]">
@@ -112,7 +85,6 @@
 
     <!-- HOME VIEW -->
     <main id="home-view" class="pt-24 px-4 max-w-7xl mx-auto fade-in">
-        <!-- HERO SECTION -->
         <div id="hero-section" class="mb-12 transition-all duration-500">
             <h2 class="text-2xl font-bold text-white mb-1 tracking-tight">For You – Today</h2>
             <p class="text-gray-400 text-sm mb-6 font-medium">Remember the Icons</p>
@@ -120,8 +92,6 @@
                 <div class="w-full h-full animate-pulse bg-gray-900 flex items-center justify-center"><p class="text-gold opacity-50">Loading...</p></div>
             </div>
         </div>
-
-        <!-- CLUB 27 HEADER (Hidden initially) -->
         <div id="club27-header" class="hidden mb-12 relative rounded-3xl overflow-hidden border border-red-900/30">
             <div class="absolute inset-0 bg-gradient-to-br from-black via-[#2a0505] to-black"></div>
             <div class="relative z-10 p-8 md:p-12 flex flex-col justify-end min-h-[350px]">
@@ -131,9 +101,99 @@
                 </div>
             </div>
         </div>
-
-        <!-- THE GRID -->
         <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
+    </main>
+
+    <!-- NEW: MONETIZATION / PLANS VIEW -->
+    <main id="monetization-view" class="hidden pt-24 px-4 max-w-7xl mx-auto fade-in h-screen overflow-y-auto pb-32">
+        
+        <!-- PHILOSOPHY HEADER -->
+        <div class="border-l-4 border-gold bg-white/5 p-6 mb-10 rounded-r-xl max-w-3xl mx-auto">
+            <div class="flex items-center gap-2 mb-2">
+                <div class="w-1 h-6 bg-gold"></div>
+                <h3 class="text-gold font-bold tracking-widest uppercase text-sm">Core Philosophy</h3>
+            </div>
+            <p class="italic text-gray-200 text-lg leading-relaxed font-serif-custom">
+                "Remembered monetarisiert Nähe, nicht Erinnerung.<br>
+                Unsere Nutzer zahlen, um tiefer zu verbinden – nicht um Zugang zu bekommen."
+            </p>
+        </div>
+
+        <!-- TOGGLE -->
+        <div class="flex justify-center mb-10">
+            <div class="bg-gray-900 border border-white/10 p-1 rounded-full flex relative">
+                <button onclick="setBilling('monthly')" id="btn-monthly" class="px-6 py-2 rounded-full text-xs font-bold uppercase transition-all bg-gold text-black">Monatlich</button>
+                <button onclick="setBilling('yearly')" id="btn-yearly" class="px-6 py-2 rounded-full text-xs font-bold uppercase transition-all text-gray-400 hover:text-white">Jährlich (-17%)</button>
+            </div>
+        </div>
+
+        <!-- PLANS GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            
+            <!-- FREE -->
+            <div class="bg-gray-900/50 border border-white/5 rounded-2xl p-8 flex flex-col relative group hover:border-white/10 transition-colors">
+                <div class="mb-6">
+                    <span class="bg-gray-800 text-gray-400 text-[10px] font-bold px-2 py-1 uppercase rounded">Entry</span>
+                    <h3 class="text-3xl font-black text-white mt-4">FREE</h3>
+                    <p class="text-gray-400 text-sm mt-1">Der kulturelle Auftrag.</p>
+                </div>
+                <div class="text-4xl font-bold text-white mb-1">0 €</div>
+                <div class="text-gray-500 text-xs uppercase tracking-widest mb-8">/ Immer</div>
+                
+                <ul class="space-y-4 mb-8 flex-1">
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Ikonen entdecken</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Biografien lesen</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Kerzen (1 pro Tag)</li>
+                </ul>
+                <button class="w-full py-3 rounded-xl border border-white/10 text-gray-400 text-xs font-bold uppercase cursor-default opacity-50">Aktueller Plan</button>
+            </div>
+
+            <!-- SUPPORTER -->
+            <div class="bg-gray-900 border border-gold/50 rounded-2xl p-8 flex flex-col relative transform md:scale-105 z-10 shadow-2xl shadow-gold/10">
+                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gold text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">Popular</div>
+                <div class="mb-6">
+                    <h3 class="text-3xl font-black text-white mt-4">SUPPORTER</h3>
+                    <p class="text-gray-400 text-sm mt-1">Für Fans, die Tiefe wollen.</p>
+                </div>
+                <div class="flex items-end gap-1 mb-1">
+                    <div id="price-supporter" class="text-4xl font-bold text-white">1,99 €</div>
+                </div>
+                <div id="cycle-supporter" class="text-gray-500 text-xs uppercase tracking-widest mb-8">/ Monat</div>
+
+                <ul class="space-y-4 mb-8 flex-1">
+                    <li class="flex items-center gap-3 text-sm text-white"><svg class="w-4 h-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Unbegrenzte Kerzen</li>
+                    <li class="flex items-center gap-3 text-sm text-white"><svg class="w-4 h-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Werbefrei</li>
+                    <li class="flex items-center gap-3 text-sm text-white"><svg class="w-4 h-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Eigene Sammlungen</li>
+                    <li class="flex items-center gap-3 text-sm text-white"><svg class="w-4 h-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Supporter Badge</li>
+                </ul>
+                <button onclick="alert('Checkout folgt in Stufe 2')" class="w-full py-3 rounded-xl bg-gold text-black text-xs font-bold uppercase hover:bg-yellow-400 transition-colors shadow-lg shadow-gold/20">Wählen</button>
+            </div>
+
+            <!-- LEGACY+ -->
+            <div class="bg-gray-900/50 border border-blue-500/30 rounded-2xl p-8 flex flex-col relative hover:border-blue-500/50 transition-colors">
+                <div class="mb-6">
+                    <span class="bg-blue-900/30 text-blue-400 border border-blue-500/30 text-[10px] font-bold px-2 py-1 uppercase rounded">Premium</span>
+                    <h3 class="text-3xl font-black text-white mt-4">LEGACY+</h3>
+                    <p class="text-gray-400 text-sm mt-1">Bewahre, was bleiben soll.</p>
+                </div>
+                <div class="flex items-end gap-1 mb-1">
+                    <div id="price-legacy" class="text-4xl font-bold text-white">4,99 €</div>
+                </div>
+                <div id="cycle-legacy" class="text-gray-500 text-xs uppercase tracking-widest mb-8">/ Monat</div>
+
+                <ul class="space-y-4 mb-8 flex-1">
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Alles aus Supporter</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Private Gedenkseiten</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Eigene Erinnerungen</li>
+                    <li class="flex items-center gap-3 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> KI-Zusammenfassungen</li>
+                </ul>
+                <button onclick="alert('Checkout folgt in Stufe 2')" class="w-full py-3 rounded-xl border border-blue-500/50 text-blue-400 text-xs font-bold uppercase hover:bg-blue-900/20 transition-colors">Wählen</button>
+            </div>
+        </div>
+
+        <div class="mt-12 text-center">
+            <button onclick="showProfile()" class="text-gray-500 text-xs uppercase tracking-widest hover:text-white transition-colors">Zurück zum Profil</button>
+        </div>
     </main>
 
     <!-- OTHER VIEWS -->
@@ -151,6 +211,16 @@
         <div class="mb-8 flex items-center space-x-4"><button onclick="showProfile()" class="p-2 bg-white/5 rounded-full hover:bg-white/10"><svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button><h2 class="text-2xl font-bold text-white">Settings</h2></div>
         <div class="space-y-6">
             <input type="text" id="settings-name-input" placeholder="Your Name" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white">
+            <button onclick="showMonetization()" class="w-full bg-gradient-to-r from-gray-900 to-gray-800 border border-gold/30 p-4 rounded-xl flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold">★</div>
+                    <div class="text-left">
+                        <p class="text-white font-bold text-sm">Mitgliedschaft</p>
+                        <p class="text-gold text-xs">Supporter werden</p>
+                    </div>
+                </div>
+                <svg class="w-5 h-5 text-gray-500 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
             <button id="push-btn" onclick="enablePush()" class="w-full bg-white/5 border border-white/10 text-gray-300 font-bold py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-white/10 hover:text-white transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
                 <span id="push-btn-text">Enable Push Notifications</span>
@@ -166,15 +236,23 @@
                 <div class="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden"><span id="profile-avatar" class="text-3xl font-bold text-white">ME</span></div>
             </div>
             <h2 id="profile-name" class="text-2xl font-bold text-white">My Profile</h2>
-            <!-- DYNAMISCHER PLAN STATUS -->
             <p id="plan-label" class="text-gold text-xs tracking-[0.2em] uppercase mt-1 opacity-80">Free Member</p>
         </div>
+        
+        <!-- NEW: CALL TO ACTION IN PROFILE -->
+        <div class="mb-10">
+            <button onclick="showMonetization()" class="w-full bg-gray-900 border border-gold/40 p-3 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors shadow-[0_0_15px_rgba(234,179,8,0.1)]">
+                <span class="text-gold">✨</span>
+                <span class="text-white text-xs font-bold uppercase tracking-widest">Mitgliedschaft wählen</span>
+            </button>
+        </div>
+
         <div class="grid grid-cols-2 gap-4 mb-10">
             <div onclick="showCandlesView()" class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center cursor-pointer hover:bg-white/10 transition group"><p id="profile-candle-count" class="text-2xl font-bold text-white group-hover:text-gold">0</p><p class="text-gray-500 text-[10px] uppercase mt-1 group-hover:text-white">Candles</p></div>
             <div onclick="showFavoritesView()" class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center cursor-pointer group"><p id="profile-fav-count" class="text-2xl font-bold text-white group-hover:text-gold">0</p><p class="text-gray-500 text-[10px] uppercase mt-1 group-hover:text-white">Favorites</p></div>
         </div>
         <div class="space-y-3">
-            <button onclick="showSettings()" class="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition"><span class="text-sm font-medium text-gray-300">Account & Push</span><svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+            <button onclick="showSettings()" class="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition"><span class="text-sm font-medium text-gray-300">Account & Settings</span><svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
             <button id="notif-btn" class="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition"><div class="flex items-center"><span id="notif-text" class="text-sm font-medium text-gray-300">No new messages</span></div><div id="notif-badge" class="hidden w-2 h-2 bg-red-500 rounded-full"></div></button>
             <button onclick="resetApp()" class="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 mt-8"><span class="text-sm font-medium text-red-500">Log out</span></button>
         </div>
@@ -242,60 +320,29 @@
     <script>
         const supabaseUrl = 'https://aahsaqygohmykhagbihk.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
-        
-        // Supabase wird jetzt sicher geladen sein
         const db = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // --- 1. INTELLIGENTES PERMISSIONS SYSTEM (DATABASE) ---
+        // --- 1. INTELLIGENTES PERMISSIONS SYSTEM ---
         const Permissions = {
-            // Standard: Was jeder darf (laut deinen Screenshots)
             caps: ['read_bio', 'discover_icons'], 
-            currentPlan: 'FREE', // Fallback
+            currentPlan: 'FREE', 
 
             async init() {
-                // A. User Check
                 const { data: { session } } = await db.auth.getSession();
-                
-                if (!session) {
-                    console.log("Gast-Modus: FREE Plan");
-                    this.updateUI();
-                    return; 
-                }
-
+                if (!session) { console.log("Gast-Modus: FREE"); this.updateUI(); return; }
                 const userId = session.user.id;
-                console.log("Eingeloggt:", session.user.email);
 
-                // B. Subscription Check (Verbindung User -> Plan)
-                const { data: sub } = await db.from('user_subscriptions')
-                    .select('plan_id')
-                    .eq('user_id', userId)
-                    .eq('is_active', true)
-                    .maybeSingle();
+                const { data: sub } = await db.from('user_subscriptions').select('plan_id').eq('user_id', userId).eq('is_active', true).maybeSingle();
+                if (!sub) { this.updateUI(); return; }
 
-                if (!sub) {
-                    console.log("Kein aktives Abo gefunden -> FREE");
-                    this.updateUI();
-                    return;
-                }
-
-                // C. Plan Name holen
                 const { data: planInfo } = await db.from('plans').select('name').eq('id', sub.plan_id).single();
                 if (planInfo) this.currentPlan = planInfo.name;
 
-                // D. Features laden (Der Join)
-                // Wir holen alle Features, die zu diesem Plan gehören
-                const { data: featureList } = await db
-                    .from('plan_features')
-                    .select('features(key)')
-                    .eq('plan_id', sub.plan_id);
-
+                const { data: featureList } = await db.from('plan_features').select('features(key)').eq('plan_id', sub.plan_id);
                 if (featureList && featureList.length > 0) {
-                    // Mappen der Keys (z.B. 'collections', 'private_pages')
                     const newCaps = featureList.map(item => item.features.key);
                     this.caps = [...new Set([...this.caps, ...newCaps])];
-                    console.log("Features geladen:", this.caps);
                 }
-                
                 this.updateUI();
             },
 
@@ -303,31 +350,64 @@
                 const label = document.getElementById('plan-label');
                 if(label) label.innerText = `${this.currentPlan} MEMBER`;
             },
-
             can(featureKey) { return this.caps.includes(featureKey); }
         };
 
-        // --- DEV TOOLS (Zum Testen über Konsole) ---
+        // --- DEV TOOLS ---
         window.devLogin = async (email, password) => {
-            console.log("Login versuch...");
             const { error } = await db.auth.signInWithPassword({ email, password });
             if (error) alert(error.message); else location.reload();
         };
         window.devLogout = async () => { await db.auth.signOut(); location.reload(); };
 
-
-        // --- APP LOGIC ---
+        // --- APP DATA ---
         let allLegendsData = [];
         let club27Data = [];
         let currentDetailId = null;
 
-        // PUSH GATE (Logik: Nur für LEGACY+)
-        // Wir prüfen auf 'private_pages', da das exklusiv für Legacy+ ist laut deiner Matrix
-        function enablePush() {
-            if (!Permissions.can('private_pages')) {
-                showVelvetRopeToast("Exklusiv im LEGACY+ Plan");
-                return;
+        // --- BILLING TOGGLE ---
+        function setBilling(period) {
+            const btnMonthly = document.getElementById('btn-monthly');
+            const btnYearly = document.getElementById('btn-yearly');
+            const pSupporter = document.getElementById('price-supporter');
+            const pLegacy = document.getElementById('price-legacy');
+            const cSupporter = document.getElementById('cycle-supporter');
+            const cLegacy = document.getElementById('cycle-legacy');
+
+            if (period === 'monthly') {
+                btnMonthly.classList.add('bg-gold', 'text-black');
+                btnMonthly.classList.remove('text-gray-400', 'hover:text-white');
+                btnYearly.classList.remove('bg-gold', 'text-black');
+                btnYearly.classList.add('text-gray-400', 'hover:text-white');
+
+                pSupporter.innerText = '1,99 €'; cSupporter.innerText = '/ Monat';
+                pLegacy.innerText = '4,99 €'; cLegacy.innerText = '/ Monat';
+            } else {
+                btnYearly.classList.add('bg-gold', 'text-black');
+                btnYearly.classList.remove('text-gray-400', 'hover:text-white');
+                btnMonthly.classList.remove('bg-gold', 'text-black');
+                btnMonthly.classList.add('text-gray-400', 'hover:text-white');
+
+                pSupporter.innerText = '19,99 €'; cSupporter.innerText = '/ Jahr (2 Monate geschenkt)';
+                pLegacy.innerText = '49,99 €'; cLegacy.innerText = '/ Jahr (2 Monate geschenkt)';
             }
+        }
+
+        // --- NAVIGATION EXTENDED ---
+        function hideAllViews() { ['home-view','profile-view','favorites-view','candles-view','settings-view','monetization-view'].forEach(id=>document.getElementById(id).classList.add('hidden')); }
+        function showHome() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.remove('hidden'); document.getElementById('club27-header').classList.add('hidden'); renderGrid(allLegendsData); updateNavColors('home'); }
+        async function showClub27() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.add('hidden'); document.getElementById('club27-header').classList.remove('hidden'); if(!club27Data.length) await loadClub27Data(); renderGrid(club27Data); updateNavColors('home'); }
+        function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); }
+        function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
+        function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); renderGridSubset('favorites-grid', getFavorites()); }
+        function showCandlesView() { hideAllViews(); document.getElementById('candles-view').classList.remove('hidden'); renderGridSubset('candles-grid', getMyCandles()); }
+        
+        // NEW: SHOW MONETIZATION
+        function showMonetization() { hideAllViews(); document.getElementById('monetization-view').classList.remove('hidden'); }
+
+        // --- GATES & FEATURES ---
+        function enablePush() {
+            if (!Permissions.can('private_pages')) { showVelvetRopeToast("Exklusiv im LEGACY+ Plan"); return; }
             if (!("Notification" in window)) return;
             Notification.requestPermission().then(p => {
                 if (p === "granted") { 
@@ -338,7 +418,6 @@
             });
         }
 
-        // ANNIVERSARY
         function checkAnniversaries() {
             const today = new Date(); const m = today.getMonth() + 1; const d = today.getDate(); const favIds = getFavorites(); let hit = null; let y = 0;
             allLegendsData.forEach(l => {
@@ -351,122 +430,52 @@
             });
             const btn=document.getElementById('notif-btn'); const txt=document.getElementById('notif-text'); const bdg=document.getElementById('notif-badge');
             if (hit) {
-                btn.onclick = () => openDetail(hit.id); 
-                btn.classList.add('bg-red-500/10', 'pulse-red');
+                btn.onclick = () => openDetail(hit.id); btn.classList.add('bg-red-500/10', 'pulse-red');
                 txt.innerHTML = `<span class="text-red-400 font-bold">🕊️ ${hit.name}: ${y} years</span>`;
                 bdg.classList.remove('hidden');
             }
         }
 
-        async function loadLegends() { 
-            await Permissions.init(); // 1. Rechte prüfen
-            let { data: legends, error } = await db.from('legends').select('*').order('name'); 
-            if (!error) { allLegendsData = legends; setHero(legends); renderGrid(legends); loadUserData(); checkAnniversaries(); } 
-        }
+        async function loadLegends() { await Permissions.init(); let { data: legends, error } = await db.from('legends').select('*').order('name'); if (!error) { allLegendsData = legends; setHero(legends); renderGrid(legends); loadUserData(); checkAnniversaries(); } }
 
-        async function loadClub27Data() {
-            let { data } = await db.from('club27').select('*');
-            if (data) {
-                club27Data = data.map(i => ({
-                    id: i.id, name: i.name, dates: i.lifespan, category: 'CLUB 27',
-                    image_url: i.image_url, bio: i.description, candles: 0 
-                }));
-            }
-        }
+        async function loadClub27Data() { let { data } = await db.from('club27').select('*'); if (data) { club27Data = data.map(i => ({ id: i.id, name: i.name, dates: i.lifespan, category: 'CLUB 27', image_url: i.image_url, bio: i.description, candles: 0 })); } }
 
         // UI HELPERS
         function openDetail(id) { 
-            const l = allLegendsData.find(x => x.id === id) || club27Data.find(x => x.id === id); 
-            if(!l) return; 
-            currentDetailId=id; 
-            
-            document.getElementById('detail-img').src=l.image_url; 
-            document.getElementById('detail-name').innerText=l.name; 
-            document.getElementById('detail-dates').innerText = getDetailDate(l.dates, l.death_date); 
-            document.getElementById('detail-headline').innerText=l.headline||""; 
-            document.getElementById('detail-quote').innerText=l.quote||""; 
-            document.getElementById('detail-bio').innerText=l.bio||""; 
-            
-            const v=document.getElementById('video-container'); 
-            const wrapper=document.getElementById('video-wrapper');
-            
+            const l = allLegendsData.find(x => x.id === id) || club27Data.find(x => x.id === id); if(!l) return; currentDetailId=id; 
+            document.getElementById('detail-img').src=l.image_url; document.getElementById('detail-name').innerText=l.name; 
+            document.getElementById('detail-dates').innerText = getDetailDate(l.dates, l.death_date); document.getElementById('detail-headline').innerText=l.headline||""; 
+            document.getElementById('detail-quote').innerText=l.quote||""; document.getElementById('detail-bio').innerText=l.bio||""; 
+            const v=document.getElementById('video-container'); const wrapper=document.getElementById('video-wrapper');
             if(l.trailer_url) { 
                 v.classList.remove('hidden');
-                
-                // VIDEO GATE: Wir prüfen auf 'collections' (Eigene Sammlungen).
-                // Laut deiner Matrix ist das rot bei Free, aber grün bei Supporter & Legacy.
-                // Das ist der perfekte Indikator für "Bezahlter User".
                 if (Permissions.can('collections')) {
                     let i = ""; try { i=l.trailer_url.split('v=')[1].split('&')[0]; } catch(e){}
                     if(i) wrapper.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${i}" frameborder="0" allowfullscreen></iframe>`;
                 } else {
                     let i = ""; try { i=l.trailer_url.split('v=')[1].split('&')[0]; } catch(e){}
                     const thumb = i ? `https://img.youtube.com/vi/${i}/hqdefault.jpg` : l.image_url;
-                    wrapper.innerHTML = `
-                        <img src="${thumb}" class="w-full h-full object-cover gate-blur opacity-50">
-                        <div class="gate-overlay">
-                            <div class="gate-badge">🔒 SUPPORTER ONLY</div>
-                            <p class="text-white text-xs font-light tracking-widest uppercase">Video Locked</p>
-                        </div>`;
+                    wrapper.innerHTML = `<img src="${thumb}" class="w-full h-full object-cover gate-blur opacity-50"><div class="gate-overlay"><div class="gate-badge">🔒 SUPPORTER ONLY</div><p class="text-white text-xs font-light tracking-widest uppercase">Video Locked</p></div>`;
                     wrapper.onclick = () => showVelvetRopeToast("Werde Supporter für Video-Zugriff");
                 }
             } else { v.classList.add('hidden'); } 
-            
-            const m=document.getElementById('music-btn'); 
-            if(l.music_url) { m.classList.remove('hidden'); m.onclick=()=>window.open(l.music_url,'_blank'); } else m.classList.add('hidden'); 
-            updateFavBtnState(id); 
-            
-            const countLabel = document.getElementById('candle-count'); 
-            countLabel.innerText = (l.candles || 0).toLocaleString('de-DE');
-            
-            document.getElementById('detail-overlay').classList.remove('hidden'); 
-            document.getElementById('radio-fab').classList.add('hidden');
+            const m=document.getElementById('music-btn'); if(l.music_url) { m.classList.remove('hidden'); m.onclick=()=>window.open(l.music_url,'_blank'); } else m.classList.add('hidden'); 
+            updateFavBtnState(id); const countLabel = document.getElementById('candle-count'); countLabel.innerText = (l.candles || 0).toLocaleString('de-DE');
+            document.getElementById('detail-overlay').classList.remove('hidden'); document.getElementById('radio-fab').classList.add('hidden');
         }
 
         function closeDetail() { document.getElementById('detail-overlay').classList.add('hidden'); document.getElementById('video-wrapper').innerHTML=""; document.getElementById('radio-fab').classList.remove('hidden'); }
-        
-        function showVelvetRopeToast(msg) {
-            const div = document.createElement('div');
-            div.className = "fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-gray-900 border border-gold/30 text-gold px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest shadow-2xl z-[70] animate-in fade-in slide-in-from-bottom-4";
-            div.innerHTML = `<span class="opacity-70 mr-2">🔒</span> ${msg}`;
-            document.body.appendChild(div);
-            setTimeout(() => div.remove(), 3000);
-        }
-
+        function showVelvetRopeToast(msg) { const div = document.createElement('div'); div.className = "fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-gray-900 border border-gold/30 text-gold px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest shadow-2xl z-[70] animate-in fade-in slide-in-from-bottom-4"; div.innerHTML = `<span class="opacity-70 mr-2">🔒</span> ${msg}`; document.body.appendChild(div); setTimeout(() => div.remove(), 3000); }
         function getDetailDate(d1, d2) { if(!d2) return d1; return `${d1 ? d1.split('–')[0].trim() : ''} – ${d2}`; }
         function getCardDate(d1, d2) { if(!d1) return ''; let b=d1.match(/(\d{4})/); b=b?b[0]:''; let d=d2?d2.split('-')[0]:''; return d ? `${b} – ${d}` : d1; }
-
-        function hideAllViews() { ['home-view','profile-view','favorites-view','candles-view','settings-view'].forEach(id=>document.getElementById(id).classList.add('hidden')); }
-        function showHome() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.remove('hidden'); document.getElementById('club27-header').classList.add('hidden'); renderGrid(allLegendsData); updateNavColors('home'); }
-        async function showClub27() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.add('hidden'); document.getElementById('club27-header').classList.remove('hidden'); if(!club27Data.length) await loadClub27Data(); renderGrid(club27Data); updateNavColors('home'); }
-        function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); }
-        function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
-        function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); renderGridSubset('favorites-grid', getFavorites()); }
-        function showCandlesView() { hideAllViews(); document.getElementById('candles-view').classList.remove('hidden'); renderGridSubset('candles-grid', getMyCandles()); }
         
-        function renderGrid(data) {
-            const g=document.getElementById('legends-grid'); g.innerHTML=''; 
-            data.forEach(l => g.innerHTML+=createCard(l));
-            g.innerHTML += `<div onclick="openSuggestModal()" class="relative group aspect-[3/4] bg-white/5 rounded-xl border-2 border-dashed border-white/20 hover:border-gold flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-white/10"><div class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center mb-4 group-hover:bg-gold text-gold group-hover:text-black transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></div><p class="text-white font-bold text-sm text-center px-4">Forgotten someone?</p><p class="text-gray-400 text-xs text-center mt-1">Suggest an Icon</p></div>`;
-        }
-        function renderGridSubset(elId, ids) {
-            const g=document.getElementById(elId); g.innerHTML='';
-            const sub = allLegendsData.filter(x => ids.includes(x.id));
-            if(sub.length) sub.forEach(l=>g.innerHTML+=createCard(l)); else g.innerHTML='<p class="col-span-2 text-gray-500">Nothing here yet.</p>';
-        }
-
-        function createCard(l) { 
-            const i=l.image_url||'https://placehold.co/600x800'; const d=getCardDate(l.dates, l.death_date); const is27=l.category&&l.category.includes('27'); 
-            const style=is27 ? "opacity-90 group-hover:opacity-100 border-red-900/20 hover:border-red-500/50" : "grayscale group-hover:grayscale-0 border-white/5 hover:border-gold/30";
-            return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden border ${style} transition-all duration-500"><img src="${i}" class="w-full h-full object-cover ${is27?'':'grayscale group-hover:grayscale-0'}"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div><div class="absolute bottom-0 left-0 p-4 w-full"><h2 class="text-white font-bold text-lg leading-tight mb-1 group-hover:text-gold">${l.name}</h2><p class="text-[10px] font-mono opacity-90 ${is27?'text-red-500':'text-gold'}">${d}</p></div></div>`; 
-        }
-        
+        function renderGrid(data) { const g=document.getElementById('legends-grid'); g.innerHTML=''; data.forEach(l => g.innerHTML+=createCard(l)); g.innerHTML += `<div onclick="openSuggestModal()" class="relative group aspect-[3/4] bg-white/5 rounded-xl border-2 border-dashed border-white/20 hover:border-gold flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-white/10"><div class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center mb-4 group-hover:bg-gold text-gold group-hover:text-black transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></div><p class="text-white font-bold text-sm text-center px-4">Forgotten someone?</p><p class="text-gray-400 text-xs text-center mt-1">Suggest an Icon</p></div>`; }
+        function renderGridSubset(elId, ids) { const g=document.getElementById(elId); g.innerHTML=''; const sub = allLegendsData.filter(x => ids.includes(x.id)); if(sub.length) sub.forEach(l=>g.innerHTML+=createCard(l)); else g.innerHTML='<p class="col-span-2 text-gray-500">Nothing here yet.</p>'; }
+        function createCard(l) { const i=l.image_url||'https://placehold.co/600x800'; const d=getCardDate(l.dates, l.death_date); const is27=l.category&&l.category.includes('27'); const style=is27 ? "opacity-90 group-hover:opacity-100 border-red-900/20 hover:border-red-500/50" : "grayscale group-hover:grayscale-0 border-white/5 hover:border-gold/30"; return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden border ${style} transition-all duration-500"><img src="${i}" class="w-full h-full object-cover ${is27?'':'grayscale group-hover:grayscale-0'}"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div><div class="absolute bottom-0 left-0 p-4 w-full"><h2 class="text-white font-bold text-lg leading-tight mb-1 group-hover:text-gold">${l.name}</h2><p class="text-[10px] font-mono opacity-90 ${is27?'text-red-500':'text-gold'}">${d}</p></div></div>`; }
         function setHero(d) { const c=document.getElementById('hero-container'); if(d.length && c) { const r=d[Math.floor(Math.random()*d.length)]; c.innerHTML=`<div onclick="openDetail('${r.id}')" class="relative w-full h-full"><img src="${r.image_url}" class="absolute inset-0 w-full h-full object-cover object-top grayscale"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div><div class="absolute bottom-8 left-8"><span class="bg-gold text-black text-[10px] font-bold px-2 py-1 uppercase">Highlight</span><h2 class="text-4xl font-black mt-2 text-white">${r.name}</h2></div></div>`; } }
-        
         function toggleSearch() { const s=document.getElementById('search-bar-container'); if(s.classList.contains('hidden')) { s.classList.remove('hidden'); document.getElementById('search-input').focus(); } else document.getElementById('search-bar-container').classList.add('hidden'); }
         function filterLegends() { const q=document.getElementById('search-input').value.toLowerCase(); renderGrid(allLegendsData.filter(l=>l.name.toLowerCase().includes(q))); }
         function filterCategory(c) { showHome(); renderGrid(allLegendsData.filter(l => l.category && l.category.includes(c))); }
-        
         function loadUserData() { const n=localStorage.getItem('user_name'); if(n) { document.getElementById('profile-name').innerText=n; document.getElementById('profile-avatar').innerText=n[0]; } }
         function saveSettings() { const n=document.getElementById('settings-name-input').value; if(n) localStorage.setItem('user_name', n); showProfile(); }
         function resetApp() { if(confirm("Reset?")) { localStorage.clear(); location.reload(); } }
@@ -477,22 +486,12 @@
         function toggleFavorite() { if(!currentDetailId)return; let f=getFavorites(); if(f.includes(currentDetailId)) f=f.filter(i=>i!==currentDetailId); else f.push(currentDetailId); saveFavorites(f); updateFavBtnState(currentDetailId); }
         function updateFavBtnState(id) { const i=document.getElementById('fav-icon'); if(getFavorites().includes(id)) { i.setAttribute('fill','currentColor'); i.classList.add('text-red-500'); } else { i.setAttribute('fill','none'); i.classList.remove('text-red-500'); } }
         function toggleCandle() { const t=document.getElementById('candle-text'); if(t.innerText==="CANDLE LIT") return; t.innerText="CANDLE LIT"; t.classList.add('text-gold'); let c=getMyCandles(); if(!c.includes(currentDetailId)) { c.push(currentDetailId); saveMyCandles(c); } document.getElementById('candle-count').innerText = getMyCandles().length; }
-
         function updateNavColors(active) { const b="flex flex-col items-center space-y-1 text-gray-500"; const a="flex flex-col items-center space-y-1 text-gold"; ['nav-home','nav-search','nav-profile'].forEach(id=>document.getElementById(id).className=b); if(active==='home')document.getElementById('nav-home').className=a; if(active==='profile')document.getElementById('nav-profile').className=a; }
-
         function openSuggestModal() { document.getElementById('suggest-overlay').classList.remove('hidden'); }
         function closeSuggest() { document.getElementById('suggest-overlay').classList.add('hidden'); }
-        async function submitSuggestion() {
-            const n=document.getElementById('suggest-name').value; const c=document.getElementById('suggest-category').value; const r=document.getElementById('suggest-reason').value;
-            if(!n)return; 
-            document.getElementById('submit-suggest-btn').innerText="SENDING...";
-            await db.from('suggestions').insert([{name:n, category:c, reason:r}]);
-            closeSuggest(); alert("Sent!");
-        }
+        async function submitSuggestion() { const n=document.getElementById('suggest-name').value; const c=document.getElementById('suggest-category').value; const r=document.getElementById('suggest-reason').value; if(!n)return; document.getElementById('submit-suggest-btn').innerText="SENDING..."; await db.from('suggestions').insert([{name:n, category:c, reason:r}]); closeSuggest(); alert("Sent!"); }
 
-        // START
         loadLegends();
-
     </script>
 </body>
 </html>

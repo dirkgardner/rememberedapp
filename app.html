@@ -43,6 +43,13 @@
         .gate-blur { filter: blur(12px); pointer-events: none; user-select: none; transform: scale(1.05); }
         .gate-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); z-index: 20; }
         .gate-badge { border: 1px solid rgba(234, 179, 8, 0.5); background: rgba(0, 0, 0, 0.8); color: #EAB308; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 9999px; margin-bottom: 0.5rem; box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); }
+    
+        /* CANDLE GLOW FIX (Kein Kasten mehr) */
+        .candle-glow-active {
+            box-shadow: 0 0 30px 5px rgba(234, 179, 8, 0.4), inset 0 0 10px rgba(234, 179, 8, 0.2);
+            border-color: #EAB308;
+            background-color: rgba(234, 179, 8, 0.1);
+        }
     </style>
 </head>
 <body class="min-h-screen pb-24 selection:bg-gold selection:text-black">
@@ -99,6 +106,9 @@
                 </div>
             </div>
         </div>
+        <!-- HEADER FOR CATEGORY (Optional display) -->
+        <h2 id="category-title" class="hidden text-xl font-bold text-white mb-6 uppercase tracking-widest pl-1"></h2>
+        
         <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
     </main>
 
@@ -209,7 +219,34 @@
         </div>
     </section>
 
-    <!-- DETAIL VIEW (MIT VELVET ROPE & CANDLE FIX) -->
+    <!-- SUGGEST OVERLAY -->
+    <div id="suggest-overlay" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
+        <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+            <button onclick="closeSuggest()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+            <h2 class="text-xl font-bold text-white mb-1">Suggest an Icon</h2>
+            <p class="text-gray-400 text-xs mb-6">Who are we missing?</p>
+            <div class="space-y-4">
+                <div><label class="block text-gray-500 text-xs uppercase font-bold tracking-wider mb-2">Name of Legend</label><input type="text" id="suggest-name" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:border-gold focus:outline-none transition-colors" placeholder="e.g. David Bowie"></div>
+                <div><label class="block text-gray-500 text-xs uppercase font-bold tracking-wider mb-2">Category</label><select id="suggest-category" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:border-gold focus:outline-none transition-colors appearance-none"><option value="Musician">Musician</option><option value="Actor">Actor</option><option value="DJ & Producer">DJ & Producer</option><option value="Sport Icon">Sport Icon</option><option value="Visionary">Visionary</option><option value="Royal">Royal</option><option value="Club 27">Club 27</option><option value="Other">Other</option></select></div>
+                <div><label class="block text-gray-500 text-xs uppercase font-bold tracking-wider mb-2">Why? (Optional)</label><textarea id="suggest-reason" rows="3" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:border-gold focus:outline-none transition-colors" placeholder="Tell us why they belong here..."></textarea></div>
+                <button onclick="submitSuggestion()" id="submit-suggest-btn" class="w-full bg-gold text-black font-bold py-3 rounded-xl hover:bg-yellow-400 transition-colors mt-2">SEND SUGGESTION</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPOTIFY FAB -->
+    <a href="https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M" target="_blank" id="radio-fab" class="fixed bottom-24 right-4 z-30 bg-black/80 backdrop-blur border border-gold/50 text-gold p-3 rounded-full shadow-lg shadow-gold/10 hover:bg-gold hover:text-black hover:scale-105 transition-all duration-300 group pulse-gold-slow flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-2v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-2" /></svg>
+    </a>
+
+    <!-- BOTTOM NAV -->
+    <nav class="fixed bottom-0 w-full z-40 bg-black/90 backdrop-blur-xl border-t border-white/5 px-6 py-4 flex justify-around items-center pb-8 safe-area-pb">
+        <button onclick="showHome()" id="nav-home" class="flex flex-col items-center space-y-1 text-gold"><span class="text-[9px] font-bold uppercase">Home</span></button>
+        <button onclick="toggleSearch()" id="nav-search" class="flex flex-col items-center space-y-1 text-gray-500"><span class="text-[9px] font-bold uppercase">Search</span></button>
+        <button onclick="showProfile()" id="nav-profile" class="flex flex-col items-center space-y-1 text-gray-500"><span class="text-[9px] font-bold uppercase">Profile</span></button>
+    </nav>
+
+    <!-- DETAIL VIEW -->
     <div id="detail-overlay" class="hidden fixed inset-0 z-50 bg-black text-white overflow-y-auto animate-in fade-in duration-300">
         <div class="fixed top-6 right-6 z-[60] flex space-x-3">
             <button id="music-btn" class="hidden bg-black/50 p-3 rounded-full border border-white/20 hover:border-gold text-white hover:text-gold"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-2v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-2"/></svg></button>
@@ -288,9 +325,52 @@
             }
         }
 
-        function hideAllViews() { ['home-view','profile-view','favorites-view','candles-view','settings-view','monetization-view'].forEach(id=>document.getElementById(id).classList.add('hidden')); }
-        function showHome() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.remove('hidden'); document.getElementById('club27-header').classList.add('hidden'); renderGrid(allLegendsData); updateNavColors('home'); }
-        async function showClub27() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.add('hidden'); document.getElementById('club27-header').classList.remove('hidden'); if(!club27Data.length) await loadClub27Data(); renderGrid(club27Data); updateNavColors('home'); }
+        function hideAllViews() { 
+            // Separate DOM manipulation to ensure no race conditions
+            const views = ['home-view','profile-view','favorites-view','candles-view','settings-view','monetization-view'];
+            views.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+        }
+
+        function showHome() { 
+            hideAllViews(); 
+            document.getElementById('home-view').classList.remove('hidden'); 
+            document.getElementById('hero-section').classList.remove('hidden'); 
+            document.getElementById('club27-header').classList.add('hidden');
+            document.getElementById('category-title').classList.add('hidden'); // Hide category title
+            renderGrid(allLegendsData); 
+            updateNavColors('home'); 
+        }
+
+        async function showClub27() { 
+            hideAllViews(); 
+            document.getElementById('home-view').classList.remove('hidden'); 
+            document.getElementById('hero-section').classList.add('hidden'); 
+            document.getElementById('club27-header').classList.remove('hidden'); 
+            document.getElementById('category-title').classList.add('hidden');
+            
+            if(!club27Data.length) await loadClub27Data(); 
+            renderGrid(club27Data); 
+            updateNavColors('home'); 
+        }
+
+        function filterCategory(c) {
+            hideAllViews();
+            document.getElementById('home-view').classList.remove('hidden');
+            document.getElementById('hero-section').classList.add('hidden'); // Hide hero for category view
+            document.getElementById('club27-header').classList.add('hidden');
+            
+            const titleEl = document.getElementById('category-title');
+            titleEl.innerText = c;
+            titleEl.classList.remove('hidden');
+
+            const filtered = allLegendsData.filter(l => l.category && l.category.toLowerCase().includes(c.toLowerCase()));
+            renderGrid(filtered);
+            updateNavColors('home');
+        }
+
         function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); }
         function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
         function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); renderGridSubset('favorites-grid', getFavorites()); }
@@ -314,13 +394,25 @@
                 else { let i = ""; try { i=l.trailer_url.split('v=')[1].split('&')[0]; } catch(e){} const thumb = i ? `https://img.youtube.com/vi/${i}/hqdefault.jpg` : l.image_url; wrapper.innerHTML = `<img src="${thumb}" class="w-full h-full object-cover gate-blur opacity-50"><div class="gate-overlay"><div class="gate-badge">🔒 SUPPORTER ONLY</div><p class="text-white text-xs font-light tracking-widest uppercase">Video Locked</p></div>`; wrapper.onclick = () => showVelvetRopeToast("Become a Supporter"); }
             } else { v.classList.add('hidden'); } 
             
-            // CANDLE STATE CHECK (FIX)
+            // CANDLE STATE CHECK WITH CLASS TOGGLE
             const isLit = getMyCandles().includes(id);
-            const circle = document.getElementById('candle-circle'); const text = document.getElementById('candle-text'); const glow = document.getElementById('candle-glow'); const icon = document.getElementById('candle-icon');
+            const circle = document.getElementById('candle-circle'); 
+            const text = document.getElementById('candle-text'); 
+            const icon = document.getElementById('candle-icon');
+            const glow = document.getElementById('candle-glow'); // Keep just in case, but use class for effect
+
             if(isLit) {
-                text.innerText = "CANDLE LIT"; text.classList.add('text-gold'); circle.classList.add('border-gold', 'bg-gold/10'); glow.classList.remove('opacity-0'); icon.classList.add('text-gold');
+                text.innerText = "CANDLE LIT"; 
+                text.classList.add('text-gold'); 
+                icon.classList.add('text-gold');
+                circle.classList.add('candle-glow-active'); // Apply the CSS shadow class
+                circle.classList.remove('border-white/10');
             } else {
-                text.innerText = "LIGHT A CANDLE"; text.classList.remove('text-gold'); circle.classList.remove('border-gold', 'bg-gold/10'); glow.classList.add('opacity-0'); icon.classList.remove('text-gold');
+                text.innerText = "LIGHT A CANDLE"; 
+                text.classList.remove('text-gold'); 
+                icon.classList.remove('text-gold');
+                circle.classList.remove('candle-glow-active');
+                circle.classList.add('border-white/10');
             }
             
             updateFavBtnState(id); const countLabel = document.getElementById('candle-count'); countLabel.innerText = (l.candles || 0).toLocaleString('de-DE');
@@ -332,10 +424,12 @@
         function updateFavBtnState(id) { const i=document.getElementById('fav-icon'); if(getFavorites().includes(id)) { i.setAttribute('fill','currentColor'); i.classList.add('text-red-500'); } else { i.setAttribute('fill','none'); i.classList.remove('text-red-500'); } }
         
         async function toggleCandle() { 
-            const circle = document.getElementById('candle-circle'); const text = document.getElementById('candle-text'); const glow = document.getElementById('candle-glow'); const icon = document.getElementById('candle-icon');
+            const circle = document.getElementById('candle-circle'); const text = document.getElementById('candle-text'); const icon = document.getElementById('candle-icon');
             if(text.innerText === "CANDLE LIT") return; // Only toggle ON
             
-            text.innerText = "CANDLE LIT"; text.classList.add('text-gold'); circle.classList.add('border-gold', 'bg-gold/10'); glow.classList.remove('opacity-0'); icon.classList.add('text-gold');
+            text.innerText = "CANDLE LIT"; text.classList.add('text-gold'); icon.classList.add('text-gold');
+            circle.classList.add('candle-glow-active'); // Apply CSS shadow
+            circle.classList.remove('border-white/10');
             
             let c = getMyCandles(); if(!c.includes(currentDetailId)) { c.push(currentDetailId); saveMyCandles(c); }
             let currentCount = parseInt(document.getElementById('candle-count').innerText.replace(/\./g, '')) || 0;
@@ -343,7 +437,6 @@
             await db.from('legends').update({ candles: currentCount + 1 }).eq('id', currentDetailId); 
         }
 
-        function filterCategory(c) { showHome(); renderGrid(allLegendsData.filter(l => l.category && l.category.toLowerCase().includes(c.toLowerCase()))); }
         function getDetailDate(d1, d2) { if(!d2) return d1; return `${d1 ? d1.split('–')[0].trim() : ''} – ${d2}`; }
         function getCardDate(d1, d2) { if(!d1) return ''; let b=d1.match(/(\d{4})/); b=b?b[0]:''; let d=d2?d2.split('-')[0]:''; return d ? `${b} – ${d}` : d1; }
         function showVelvetRopeToast(msg) { const div = document.createElement('div'); div.className = "fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-gray-900 border border-gold/30 text-gold px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest shadow-2xl z-[70] animate-in fade-in slide-in-from-bottom-4"; div.innerHTML = `<span class="opacity-70 mr-2">🔒</span> ${msg}`; document.body.appendChild(div); setTimeout(() => div.remove(), 3000); }

@@ -116,7 +116,7 @@
             </div>
         </div>
 
-        <!-- HEADER FOR CATEGORY (Jetzt fett und weiß wie im Bild) -->
+        <!-- HEADER FOR CATEGORY -->
         <h2 id="category-title" class="hidden text-3xl font-black text-white mb-8 uppercase tracking-tight pl-1"></h2>
         
         <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
@@ -256,7 +256,7 @@
         <button onclick="showProfile()" id="nav-profile" class="flex flex-col items-center space-y-1 text-gray-500"><span class="text-[9px] font-bold uppercase">Profile</span></button>
     </nav>
 
-    <!-- DETAIL VIEW -->
+    <!-- DETAIL VIEW (MIT VELVET ROPE & CANDLE FIX) -->
     <div id="detail-overlay" class="hidden fixed inset-0 z-50 bg-black text-white overflow-y-auto animate-in fade-in duration-300">
         <div class="fixed top-6 right-6 z-[60] flex space-x-3">
             <button id="music-btn" class="hidden bg-black/50 p-3 rounded-full border border-white/20 hover:border-gold text-white hover:text-gold"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-2v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-2"/></svg></button>
@@ -465,8 +465,8 @@
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
                 <div class="absolute bottom-0 left-0 p-4 w-full">
                     <h2 class="text-white font-bold text-lg leading-tight mb-1 group-hover:text-gold transition-colors">${l.name}</h2>
-                    <p class="${is27 ? 'text-red-500' : 'text-gold'} text-[10px] font-mono leading-tight mb-1.5 opacity-90 break-words">${d}</p>
-                    <p class="text-gray-400 text-[9px] font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors">${l.category || 'LEGEND'}</p>
+                    <p class="${is27 ? 'text-red-500' : 'text-yellow-500'} text-[10px] font-mono leading-tight mb-1.5 opacity-90 break-words">${d}</p>
+                    <p class="text-yellow-500 text-[9px] font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors opacity-80">${l.category || 'LEGEND'}</p>
                 </div>
             </div>`; 
         }

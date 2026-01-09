@@ -20,18 +20,15 @@
         body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; }
         .font-serif-custom { font-family: 'Playfair Display', serif; }
         
-        /* COLORS */
-        .text-gold { color: #EAB308 !important; } 
-        .bg-gold { background-color: #EAB308; }
-        .border-gold { border-color: #EAB308; }
-        
+        /* SCROLLBAR */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none;  scrollbar-width: none; }
 
+        /* ANIMATIONS */
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* HEADER & NAV */
+        /* HEADER */
         .glass-header {
             background-color: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(20px);
@@ -39,28 +36,39 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* VELVET ROPE */
+        /* --- KACHEL STYLES (HIER LAG DER FEHLER) --- */
+
+        /* 1. NORMALE KARTEN (GOLD GLOW) */
+        .legend-card {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: #000;
+            transition: all 0.4s ease;
+        }
+        .legend-card:hover {
+            border-color: #EAB308; /* Gold */
+            box-shadow: 0 0 25px rgba(234, 179, 8, 0.4); /* Gold Glow */
+            transform: translateY(-2px);
+            z-index: 10;
+        }
+
+        /* 2. CLUB 27 KARTEN (RED GLOW - WIEDER HINZUGEFÜGT) */
+        .club27-card {
+            border: 1px solid rgba(153, 27, 27, 0.3); /* Dunkelrot */
+            background-color: #000;
+            transition: all 0.4s ease;
+        }
+        .club27-card:hover {
+            border-color: #EF4444; /* Hellrot */
+            box-shadow: 0 0 30px rgba(220, 38, 38, 0.6); /* Starker Roter Glow */
+            transform: scale(1.02);
+            z-index: 10;
+        }
+
+        /* VELVET ROPE & CANDLE */
         .gate-blur { filter: blur(12px); pointer-events: none; user-select: none; transform: scale(1.05); }
         .gate-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); z-index: 20; }
         .gate-badge { border: 1px solid rgba(250, 204, 21, 0.5); background: rgba(0, 0, 0, 0.8); color: #EAB308; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 9999px; margin-bottom: 0.5rem; box-shadow: 0 0 15px rgba(250, 204, 21, 0.2); }
-    
-        /* CANDLE GLOW */
-        .candle-glow-active {
-            box-shadow: 0 0 30px 5px rgba(234, 179, 8, 0.4), inset 0 0 10px rgba(234, 179, 8, 0.2);
-            border-color: #EAB308;
-            background-color: rgba(234, 179, 8, 0.1);
-        }
-
-        /* CARD GLOW EFFEKT (CSS statt Tailwind für Sicherheit) */
-        .card-glow {
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.4s ease;
-        }
-        .card-glow:hover {
-            box-shadow: 0 0 20px rgba(234, 179, 8, 0.4);
-            border-color: #EAB308;
-            transform: translateY(-2px);
-        }
+        .candle-glow-active { box-shadow: 0 0 30px 5px rgba(234, 179, 8, 0.4), inset 0 0 10px rgba(250, 204, 21, 0.2); border-color: #EAB308; background-color: rgba(250, 204, 21, 0.1); }
     </style>
 </head>
 <body class="min-h-screen pb-24 selection:bg-gold selection:text-black">

@@ -20,10 +20,10 @@
         body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; }
         .font-serif-custom { font-family: 'Playfair Display', serif; }
         
-        /* COLORS */
-        .text-gold { color: #FACC15; } 
-        .bg-gold { background-color: #FACC15; }
-        .border-gold { border-color: #FACC15; }
+        /* EXAKT DEIN GOLD-TON */
+        .text-gold { color: #EAB308; } 
+        .bg-gold { background-color: #EAB308; }
+        .border-gold { border-color: #EAB308; }
         
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none;  scrollbar-width: none; }
@@ -31,7 +31,7 @@
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* HEADER & NAVIGATION */
+        /* HEADER */
         .glass-header {
             background-color: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(20px);
@@ -42,13 +42,13 @@
         /* VELVET ROPE STYLES */
         .gate-blur { filter: blur(12px); pointer-events: none; user-select: none; transform: scale(1.05); }
         .gate-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); z-index: 20; }
-        .gate-badge { border: 1px solid rgba(250, 204, 21, 0.5); background: rgba(0, 0, 0, 0.8); color: #FACC15; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 9999px; margin-bottom: 0.5rem; box-shadow: 0 0 15px rgba(250, 204, 21, 0.2); }
+        .gate-badge { border: 1px solid rgba(234, 179, 8, 0.5); background: rgba(0, 0, 0, 0.8); color: #EAB308; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 9999px; margin-bottom: 0.5rem; box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); }
     
-        /* CANDLE GLOW FIX */
+        /* CANDLE GLOW ACTIVE STATE */
         .candle-glow-active {
-            box-shadow: 0 0 30px 5px rgba(250, 204, 21, 0.4), inset 0 0 10px rgba(250, 204, 21, 0.2);
-            border-color: #FACC15;
-            background-color: rgba(250, 204, 21, 0.1);
+            box-shadow: 0 0 30px 5px rgba(234, 179, 8, 0.4), inset 0 0 10px rgba(234, 179, 8, 0.2);
+            border-color: #EAB308;
+            background-color: rgba(234, 179, 8, 0.1);
         }
     </style>
 </head>
@@ -98,20 +98,25 @@
             </div>
         </div>
         
-        <!-- CLUB 27 HEADER -->
+        <!-- FIXED CLUB 27 HEADER -->
         <div id="club27-header" class="hidden mb-12 relative rounded-3xl overflow-hidden border border-red-900/30 min-h-[400px]">
             <div class="absolute inset-0 bg-gradient-to-br from-black via-[#2a0505] to-black"></div>
             <div class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-red-900/40 to-transparent blur-3xl"></div>
+            
             <div class="relative z-10 p-8 md:p-12 flex flex-col justify-center h-full min-h-[400px]">
                 <div class="max-w-2xl">
                     <div class="text-5xl mb-4 opacity-90 animate-pulse">🥀</div>
-                    <h1 class="text-6xl md:text-8xl font-serif-custom text-white mb-6 leading-none">CLUB <span class="text-red-600 italic font-serif-custom">27</span></h1>
-                    <p class="text-gray-300 text-sm md:text-base leading-relaxed font-light max-w-lg border-l-2 border-red-600 pl-6">The 27 Club is one of music history’s darkest legends. Extraordinary talent, excess, and massive influence collide here – their lives ended far too early, but their music became immortal.</p>
+                    <h1 class="text-6xl md:text-8xl font-serif-custom text-white mb-6 leading-none">
+                        CLUB <span class="text-red-600 italic font-serif-custom">27</span>
+                    </h1>
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed font-light max-w-lg border-l-2 border-red-600 pl-6">
+                        The 27 Club is one of music history’s darkest legends. It refers to iconic artists, mainly from rock and blues, who all died at the age of 27. Extraordinary talent, excess, and massive influence collide here – their lives ended far too early, but their music became immortal.
+                    </p>
                 </div>
             </div>
         </div>
 
-        <!-- CATEGORY TITLE -->
+        <!-- HEADER FOR CATEGORY -->
         <h2 id="category-title" class="hidden text-3xl font-black text-white mb-8 uppercase tracking-tight pl-1"></h2>
         
         <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
@@ -120,7 +125,10 @@
     <!-- MONETIZATION / PLANS VIEW -->
     <main id="monetization-view" class="hidden pt-24 px-4 max-w-7xl mx-auto fade-in h-screen overflow-y-auto pb-32">
         <div class="border-l-4 border-gold bg-white/5 p-6 mb-10 rounded-r-xl max-w-3xl mx-auto">
-            <div class="flex items-center gap-2 mb-2"><div class="w-1 h-6 bg-gold"></div><h3 class="text-gold font-bold tracking-widest uppercase text-sm">Core Philosophy</h3></div>
+            <div class="flex items-center gap-2 mb-2">
+                <div class="w-1 h-6 bg-gold"></div>
+                <h3 class="text-gold font-bold tracking-widest uppercase text-sm">Core Philosophy</h3>
+            </div>
             <p class="italic text-gray-200 text-lg leading-relaxed font-serif-custom">"Remembered monetizes closeness, not memory.<br>Our users pay to connect deeper – not to get access."</p>
         </div>
         <div class="flex justify-center mb-10">
@@ -454,7 +462,7 @@
             const nameHover = is27 ? "group-hover:text-red-500" : "group-hover:text-[#FACC15]";
             const dateColor = is27 ? "text-red-500" : "text-[#FACC15]";
             const catColor = "text-[#FACC15]"; // Category is ALWAYS Gold (Yellow-400)
-            const style = is27 ? "opacity-90 group-hover:opacity-100 border-red-900/20 hover:border-red-500/50" : "grayscale group-hover:grayscale-0 border-white/5 hover:border-gold/30";
+            const style = is27 ? "opacity-90 group-hover:opacity-100 border-red-900/20 hover:border-red-500/50" : "grayscale group-hover:grayscale-0 border-white/5 hover:border-[#FACC15] hover:shadow-[0_0_20px_rgba(234,179,8,0.3)]";
             
             return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden border ${style} transition-all duration-500">
                 <img src="${i}" class="w-full h-full object-cover ${is27?'':'grayscale group-hover:grayscale-0'} transition-all duration-700">

@@ -20,10 +20,10 @@
         body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; }
         .font-serif-custom { font-family: 'Playfair Display', serif; }
         
-        /* BRIGHTER GOLD DEFINITION */
-        .text-gold { color: #FFD700; } /* Echtes Gold, heller als vorher */
-        .bg-gold { background-color: #EAB308; }
-        .border-gold { border-color: #EAB308; }
+        /* HELLES LEUCHTENDES GOLD */
+        .text-gold { color: #FACC15; } 
+        .bg-gold { background-color: #FACC15; }
+        .border-gold { border-color: #FACC15; }
         
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none;  scrollbar-width: none; }
@@ -44,13 +44,13 @@
         /* VELVET ROPE STYLES */
         .gate-blur { filter: blur(12px); pointer-events: none; user-select: none; transform: scale(1.05); }
         .gate-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); z-index: 20; }
-        .gate-badge { border: 1px solid rgba(234, 179, 8, 0.5); background: rgba(0, 0, 0, 0.8); color: #EAB308; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 9999px; margin-bottom: 0.5rem; box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); }
+        .gate-badge { border: 1px solid rgba(250, 204, 21, 0.5); background: rgba(0, 0, 0, 0.8); color: #FACC15; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.5rem 1rem; border-radius: 9999px; margin-bottom: 0.5rem; box-shadow: 0 0 15px rgba(250, 204, 21, 0.2); }
     
         /* CANDLE GLOW FIX */
         .candle-glow-active {
-            box-shadow: 0 0 30px 5px rgba(234, 179, 8, 0.4), inset 0 0 10px rgba(234, 179, 8, 0.2);
-            border-color: #EAB308;
-            background-color: rgba(234, 179, 8, 0.1);
+            box-shadow: 0 0 30px 5px rgba(250, 204, 21, 0.4), inset 0 0 10px rgba(250, 204, 21, 0.2);
+            border-color: #FACC15;
+            background-color: rgba(250, 204, 21, 0.1);
         }
     </style>
 </head>
@@ -258,7 +258,7 @@
         <button onclick="showProfile()" id="nav-profile" class="flex flex-col items-center space-y-1 text-gray-500"><span class="text-[9px] font-bold uppercase">Profile</span></button>
     </nav>
 
-    <!-- DETAIL VIEW -->
+    <!-- DETAIL VIEW (MIT VELVET ROPE & CANDLE FIX) -->
     <div id="detail-overlay" class="hidden fixed inset-0 z-50 bg-black text-white overflow-y-auto animate-in fade-in duration-300">
         <div class="fixed top-6 right-6 z-[60] flex space-x-3">
             <button id="music-btn" class="hidden bg-black/50 p-3 rounded-full border border-white/20 hover:border-gold text-white hover:text-gold"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-2v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-2"/></svg></button>
@@ -459,16 +459,17 @@
             const i = l.image_url || 'https://placehold.co/600x800'; 
             const d = getCardDate(l.dates, l.death_date); 
             const is27 = l.category && l.category.includes('27');
+            // FIX: Using inline style for color to force GOLD
+            const textColor = is27 ? '#EF4444' : '#FACC15'; 
             const style = is27 ? "opacity-90 group-hover:opacity-100 border-red-900/20 hover:border-red-500/50" : "grayscale group-hover:grayscale-0 border-white/5 hover:border-gold/30";
             
-            // MODIFIED FOR HARDCODED GOLD
             return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden border ${style} transition-all duration-500">
                 <img src="${i}" class="w-full h-full object-cover ${is27?'':'grayscale group-hover:grayscale-0'} transition-all duration-700">
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-90"></div>
                 <div class="absolute bottom-0 left-0 p-4 w-full">
                     <h2 class="text-white font-bold text-lg leading-tight mb-1 group-hover:text-gold transition-colors">${l.name}</h2>
-                    <p class="${is27 ? 'text-red-500' : 'text-[#FFD700]'} text-[10px] font-mono leading-tight mb-1.5 opacity-100 break-words">${d}</p>
-                    <p class="text-[#FFD700] text-[9px] font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors opacity-100">${l.category || 'LEGEND'}</p>
+                    <p style="color: ${textColor}" class="text-[10px] font-mono leading-tight mb-1.5 opacity-100 break-words">${d}</p>
+                    <p style="color: ${textColor}" class="text-[9px] font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors opacity-100">${l.category || 'LEGEND'}</p>
                 </div>
             </div>`; 
         }

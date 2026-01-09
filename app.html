@@ -41,22 +41,22 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* --- KACHEL STYLES --- */
+        /* --- KACHEL STYLES (DER FINAL FIX) --- */
 
-        /* 1. NORMALE KARTEN: GOLD GLOW */
+        /* 1. NORMALE KARTEN: WEISSER GLOW (Light Effect) - Text bleibt Gold */
         .legend-card {
             border: 1px solid rgba(255, 255, 255, 0.1);
             background-color: #000;
             transition: all 0.4s ease;
         }
         .legend-card:hover {
-            border-color: #EAB308; /* Gold */
-            box-shadow: 0 0 25px rgba(234, 179, 8, 0.4); /* Gold Glow */
+            border-color: #FFFFFF; /* WEISSER Rand */
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.6); /* WEISSER Schein (Light Effect) */
             transform: translateY(-2px);
             z-index: 10;
         }
 
-        /* 2. CLUB 27 KARTEN: RED GLOW */
+        /* 2. CLUB 27 KARTEN: ROTER GLOW (UNANGETASTET) */
         .club27-card {
             border: 1px solid rgba(153, 27, 27, 0.3);
             background-color: #000;
@@ -117,7 +117,6 @@
         <div id="hero-section" class="mb-12 transition-all duration-500">
             <h2 class="text-2xl font-bold text-white mb-1 tracking-tight">For You – Today</h2>
             <p class="text-gray-400 text-sm mb-6 font-medium">Remember the Icons</p>
-            <!-- FIX 3: Object Position 50% 25% für bessere Köpfe -->
             <div id="hero-container" class="relative w-full h-[500px] md:h-[600px] rounded-3xl overflow-hidden bg-gray-900 border border-white/10 shadow-2xl cursor-pointer">
                 <div class="w-full h-full animate-pulse bg-gray-900 flex items-center justify-center"><p class="text-gold opacity-50">Loading...</p></div>
             </div>
@@ -261,7 +260,7 @@
         </div>
     </div>
 
-    <!-- FIX 2: SPOTIFY FAB GREEN -->
+    <!-- SPOTIFY FAB (GREEN FIX) -->
     <a href="https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M" target="_blank" id="radio-fab" class="fixed bottom-24 right-4 z-30 bg-black border border-[#1DB954] text-[#1DB954] p-3 rounded-full shadow-[0_0_15px_rgba(29,185,84,0.5)] hover:bg-[#1DB954] hover:text-black hover:scale-105 transition-all duration-300 group flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-2v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-2" /></svg>
     </a>
@@ -291,9 +290,12 @@
                 <div class="border-l-4 border-gold pl-6 mb-10 py-1"><h3 id="detail-headline" class="text-2xl font-bold text-white mb-3 italic"></h3><p id="detail-quote" class="text-gray-400 italic text-lg leading-relaxed"></p></div>
                 <div class="prose prose-invert prose-lg mb-12"><p id="detail-bio" class="text-gray-300 leading-loose font-light text-lg text-left"></p></div>
                 
+                <!-- INTELLIGENT VIDEO CONTAINER -->
                 <div id="video-container" class="hidden mb-16">
                     <h3 class="text-xl font-bold text-white mb-4">OFFICIAL TRAILER</h3>
-                    <div id="video-wrapper" class="aspect-video w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black relative"></div>
+                    <div id="video-wrapper" class="aspect-video w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black relative">
+                        <!-- Content injected via JS based on Permissions -->
+                    </div>
                 </div>
 
                 <div class="mb-16 flex flex-col items-center"><button id="candle-btn" onclick="toggleCandle()" class="group flex flex-col items-center outline-none"><div id="candle-circle" class="relative w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-gold/50 transition-all duration-500"><div id="candle-glow" class="absolute inset-0 rounded-full bg-gold blur-xl opacity-0 transition-opacity duration-700"></div><svg id="candle-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="relative z-10 w-8 h-8 text-gray-500 transition-colors"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" /></svg></div><span id="candle-text" class="mt-4 text-[10px] font-bold tracking-[0.2em] text-gray-500 uppercase group-hover:text-white transition-colors">Light a Candle</span><span id="candle-count" class="mt-1 text-gold font-mono text-sm opacity-60">0</span></button></div>
@@ -305,85 +307,244 @@
     <script>
         const supabaseUrl = 'https://aahsaqygohmykhagbihk.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
+        
+        // Supabase wird jetzt sicher geladen sein
         const db = supabase.createClient(supabaseUrl, supabaseKey);
 
+        // --- 1. INTELLIGENTES PERMISSIONS SYSTEM (DATABASE) ---
         const Permissions = {
-            caps: ['read_bio', 'discover_icons'], currentPlan: 'FREE', 
+            caps: ['read_content', 'search'], 
+            currentPlan: 'FREE', // Fallback
+
             async init() {
+                // A. User Check
                 const { data: { session } } = await db.auth.getSession();
-                if (!session) { this.updateUI(); return; }
-                const userId = session.user.id;
-                const { data: sub } = await db.from('user_subscriptions').select('plan_id').eq('user_id', userId).eq('is_active', true).maybeSingle();
-                if (!sub) { this.updateUI(); return; }
-                const { data: planInfo } = await db.from('plans').select('name').eq('id', sub.plan_id).single();
-                if (planInfo) this.currentPlan = planInfo.name;
-                const { data: featureList } = await db.from('plan_features').select('features(key)').eq('plan_id', sub.plan_id);
-                if (featureList && featureList.length > 0) {
-                    const newCaps = featureList.map(item => item.features.key);
-                    this.caps = [...new Set([...this.caps, ...newCaps])];
+                
+                if (!session) {
+                    console.log("Gast-Modus: FREE Plan");
+                    this.updateUI();
+                    return; 
                 }
+
+                const userId = session.user.id;
+                console.log("Eingeloggt:", session.user.email);
+
+                // B. Subscription Check
+                const { data: sub } = await db.from('user_subscriptions').select('plan_id').eq('user_id', userId).maybeSingle();
+
+                if (!sub) {
+                    console.log("Kein Abo gefunden -> FREE");
+                    this.updateUI();
+                    return;
+                }
+
+                // C. Plan Check
+                const { data: plan } = await db.from('plans').select('key, name').eq('id', sub.plan_id).single();
+
+                if (plan) {
+                    console.log("Plan aktiv:", plan.name);
+                    this.currentPlan = plan.name;
+                    this.setCapabilities(plan.key);
+                }
+                
                 this.updateUI();
             },
-            updateUI() { document.getElementById('plan-label').innerText = `${this.currentPlan} MEMBER`; },
-            can(featureKey) { return this.caps.includes(featureKey); }
+
+            setCapabilities(planKey) {
+                // Mapping DB Key -> App Feature
+                if (planKey === 'supporter') {
+                    this.caps.push('view_trailers');
+                } 
+                else if (planKey === 'legacy') { 
+                    this.caps.push('view_trailers', 'enable_push');
+                }
+            },
+
+            updateUI() {
+                const label = document.getElementById('plan-label');
+                if(label) label.innerText = `${this.currentPlan} MEMBER`;
+            },
+
+            can(feature) { return this.caps.includes(feature); }
         };
 
-        window.devLogin = async (e, p) => { const { error } = await db.auth.signInWithPassword({ email: e, password: p }); if (error) alert(error.message); else location.reload(); };
+        // --- DEV TOOLS (Zum Testen über Konsole) ---
+        window.devLogin = async (email, password) => {
+            console.log("Login versuch...");
+            const { error } = await db.auth.signInWithPassword({ email, password });
+            if (error) alert(error.message); else location.reload();
+        };
         window.devLogout = async () => { await db.auth.signOut(); location.reload(); };
 
-        let allLegendsData = []; let club27Data = []; let currentDetailId = null;
+        // --- APP LOGIC ---
+        let allLegendsData = [];
+        let club27Data = [];
+        let currentDetailId = null;
+        let heroInterval; // Variable für den Intervall-Timer
 
-        function setBilling(period) {
-            const btnM = document.getElementById('btn-monthly'); const btnY = document.getElementById('btn-yearly');
-            const pS = document.getElementById('price-supporter'); const pL = document.getElementById('price-legacy');
-            const cS = document.getElementById('cycle-supporter'); const cL = document.getElementById('cycle-legacy');
-            if (period === 'monthly') {
-                btnM.className = "px-6 py-2 rounded-full text-xs font-bold uppercase transition-all bg-gold text-black";
-                btnY.className = "px-6 py-2 rounded-full text-xs font-bold uppercase transition-all text-gray-400 hover:text-white";
-                pS.innerText = '1,99 €'; cS.innerText = '/ Month'; pL.innerText = '4,99 €'; cL.innerText = '/ Month';
-            } else {
-                btnY.className = "px-6 py-2 rounded-full text-xs font-bold uppercase transition-all bg-gold text-black";
-                btnM.className = "px-6 py-2 rounded-full text-xs font-bold uppercase transition-all text-gray-400 hover:text-white";
-                pS.innerText = '19,99 €'; cS.innerText = '/ Year (2 months free)'; pL.innerText = '49,99 €'; cL.innerText = '/ Year (2 months free)';
+        // HERO ROTATION
+        function startHeroRotation(data) {
+            if (!data || data.length === 0) return;
+            
+            // Sofort einmal setzen
+            updateHero(data);
+
+            // Timer starten (alle 5 Sekunden)
+            if (heroInterval) clearInterval(heroInterval);
+            heroInterval = setInterval(() => {
+                updateHero(data);
+            }, 5000);
+        }
+
+        function updateHero(data) {
+            const c = document.getElementById('hero-container');
+            if (data.length && c) {
+                const r = data[Math.floor(Math.random() * data.length)];
+                // WICHTIG: FIX 3 - Kopf in Bild schieben
+                c.innerHTML = `
+                    <div onclick="openDetail('${r.id}')" class="relative w-full h-full animate-fade-in">
+                        <img src="${r.image_url}" class="absolute inset-0 w-full h-full object-cover object-[50%_25%] grayscale transition-all duration-1000">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                        <div class="absolute bottom-8 left-8">
+                            <span class="bg-gold text-black text-[10px] font-bold px-2 py-1 uppercase">Highlight</span>
+                            <h2 class="text-4xl font-black mt-2 text-white drop-shadow-lg">${r.name}</h2>
+                        </div>
+                    </div>`;
             }
         }
 
-        function hideAllViews() { 
-            const views = ['home-view','profile-view','favorites-view','candles-view','settings-view','monetization-view'];
-            views.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.classList.add('hidden');
+        // PUSH GATE
+        function enablePush() {
+            if (!Permissions.can('enable_push')) {
+                showVelvetRopeToast("Requires LEGACY+ Plan");
+                return;
+            }
+            if (!("Notification" in window)) return;
+            Notification.requestPermission().then(p => {
+                if (p === "granted") { 
+                    document.getElementById('push-btn-text').innerText = "Push Enabled ✅"; 
+                    document.getElementById('push-btn').classList.add('text-gold', 'border-gold');
+                    new Notification("Remembered", { body: "Welcome to the Inner Circle." }); 
+                }
             });
         }
 
-        function showHome() { 
-            hideAllViews(); 
-            document.getElementById('home-view').classList.remove('hidden'); 
-            document.getElementById('hero-section').classList.remove('hidden'); 
-            document.getElementById('club27-header').classList.add('hidden');
-            document.getElementById('category-title').classList.add('hidden');
-            renderGrid(allLegendsData); 
-            updateNavColors('home'); 
+        // ANNIVERSARY
+        function checkAnniversaries() {
+            const today = new Date(); const m = today.getMonth() + 1; const d = today.getDate(); const favIds = getFavorites(); let hit = null; let y = 0;
+            allLegendsData.forEach(l => {
+                if (l.death_date && favIds.includes(l.id)) {
+                    let dDay, dMonth, dYear;
+                    if (l.death_date.includes('.')) { const p=l.death_date.split('.'); dDay=parseInt(p[0]); dMonth=parseInt(p[1]); dYear=parseInt(p[2]); } 
+                    else { const p=l.death_date.split('-'); dYear=parseInt(p[0]); dMonth=parseInt(p[1]); dDay=parseInt(p[2]); }
+                    if (dMonth === m && dDay === d) { hit = l; y = today.getFullYear() - dYear; }
+                }
+            });
+            const btn=document.getElementById('notif-btn'); const txt=document.getElementById('notif-text'); const bdg=document.getElementById('notif-badge');
+            if (hit) {
+                btn.onclick = () => openDetail(hit.id); 
+                btn.classList.add('bg-red-500/10', 'pulse-red');
+                txt.innerHTML = `<span class="text-red-400 font-bold">🕊️ ${hit.name}: ${y} years</span>`;
+                bdg.classList.remove('hidden');
+            }
         }
 
-        async function showClub27() { 
-            hideAllViews(); 
-            document.getElementById('home-view').classList.remove('hidden'); 
-            document.getElementById('hero-section').classList.add('hidden'); 
-            document.getElementById('club27-header').classList.remove('hidden'); 
-            document.getElementById('category-title').classList.add('hidden');
-            if(!club27Data.length) await loadClub27Data(); 
-            renderGrid(club27Data); 
-            updateNavColors('home'); 
+        async function loadLegends() { 
+            await Permissions.init(); // 1. Rechte prüfen
+            let { data: legends, error } = await db.from('legends').select('*').order('name'); 
+            if (!error) { 
+                allLegendsData = legends; 
+                startHeroRotation(legends); // Startet die Rotation
+                renderGrid(legends); 
+                loadUserData(); 
+                checkAnniversaries(); 
+            } 
         }
 
-        // FIX 1: LOOSE SEARCH for Categories
+        async function loadClub27Data() {
+            let { data } = await db.from('club27').select('*');
+            if (data) {
+                club27Data = data.map(i => ({
+                    id: i.id, name: i.name, dates: i.lifespan, category: 'CLUB 27',
+                    image_url: i.image_url, bio: i.description, candles: 0 
+                }));
+            }
+        }
+
+        // UI HELPERS
+        function openDetail(id) { 
+            const l = allLegendsData.find(x => x.id === id) || club27Data.find(x => x.id === id); 
+            if(!l) return; 
+            currentDetailId=id; 
+            
+            document.getElementById('detail-img').src=l.image_url; 
+            document.getElementById('detail-name').innerText=l.name; 
+            document.getElementById('detail-dates').innerText = getDetailDate(l.dates, l.death_date); 
+            document.getElementById('detail-headline').innerText=l.headline||""; 
+            document.getElementById('detail-quote').innerText=l.quote||""; 
+            document.getElementById('detail-bio').innerText=l.bio||""; 
+            
+            const v=document.getElementById('video-container'); 
+            const wrapper=document.getElementById('video-wrapper');
+            
+            if(l.trailer_url) { 
+                v.classList.remove('hidden');
+                // GATE CHECK
+                if (Permissions.can('view_trailers')) {
+                    let i = ""; try { i=l.trailer_url.split('v=')[1].split('&')[0]; } catch(e){}
+                    if(i) wrapper.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${i}" frameborder="0" allowfullscreen></iframe>`;
+                } else {
+                    let i = ""; try { i=l.trailer_url.split('v=')[1].split('&')[0]; } catch(e){}
+                    const thumb = i ? `https://img.youtube.com/vi/${i}/hqdefault.jpg` : l.image_url;
+                    wrapper.innerHTML = `
+                        <img src="${thumb}" class="w-full h-full object-cover gate-blur opacity-50">
+                        <div class="gate-overlay">
+                            <div class="gate-badge">🔒 SUPPORTER ONLY</div>
+                            <p class="text-white text-xs font-light tracking-widest uppercase">Video Locked</p>
+                        </div>`;
+                    wrapper.onclick = () => showVelvetRopeToast("Become a Supporter to watch.");
+                }
+            } else { v.classList.add('hidden'); } 
+            
+            const m=document.getElementById('music-btn'); 
+            if(l.music_url) { m.classList.remove('hidden'); m.onclick=()=>window.open(l.music_url,'_blank'); } else m.classList.add('hidden'); 
+            updateFavBtnState(id); 
+            
+            const countLabel = document.getElementById('candle-count'); 
+            countLabel.innerText = (l.candles || 0).toLocaleString('de-DE');
+            
+            document.getElementById('detail-overlay').classList.remove('hidden'); 
+            document.getElementById('radio-fab').classList.add('hidden');
+        }
+
+        function closeDetail() { document.getElementById('detail-overlay').classList.add('hidden'); document.getElementById('video-wrapper').innerHTML=""; document.getElementById('radio-fab').classList.remove('hidden'); }
+        
+        function showVelvetRopeToast(msg) {
+            const div = document.createElement('div');
+            div.className = "fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-gray-900 border border-gold/30 text-gold px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest shadow-2xl z-[70] animate-in fade-in slide-in-from-bottom-4";
+            div.innerHTML = `<span class="opacity-70 mr-2">🔒</span> ${msg}`;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        function getDetailDate(d1, d2) { if(!d2) return d1; return `${d1 ? d1.split('–')[0].trim() : ''} – ${d2}`; }
+        function getCardDate(d1, d2) { if(!d1) return ''; let b=d1.match(/(\d{4})/); b=b?b[0]:''; let d=d2?d2.split('-')[0]:''; return d ? `${b} – ${d}` : d1; }
+
+        function hideAllViews() { ['home-view','profile-view','favorites-view','candles-view','settings-view','monetization-view'].forEach(id=>document.getElementById(id).classList.add('hidden')); }
+        function showHome() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.remove('hidden'); document.getElementById('club27-header').classList.add('hidden'); renderGrid(allLegendsData); updateNavColors('home'); }
+        async function showClub27() { hideAllViews(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('hero-section').classList.add('hidden'); document.getElementById('club27-header').classList.remove('hidden'); if(!club27Data.length) await loadClub27Data(); renderGrid(club27Data); updateNavColors('home'); }
+        function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); }
+        function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
+        function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); renderGridSubset('favorites-grid', getFavorites()); }
+        function showCandlesView() { hideAllViews(); document.getElementById('candles-view').classList.remove('hidden'); renderGridSubset('candles-grid', getMyCandles()); }
+        function showMonetization() { hideAllViews(); document.getElementById('monetization-view').classList.remove('hidden'); }
+        
+        // UNSCHARFE SUCHE (CASE INSENSITIVE + PARTIAL)
         function filterCategory(c) {
             hideAllViews();
             document.getElementById('home-view').classList.remove('hidden');
-            document.getElementById('hero-section').classList.add('hidden'); 
+            document.getElementById('hero-section').classList.add('hidden');
             document.getElementById('club27-header').classList.add('hidden');
-            
             const titleEl = document.getElementById('category-title');
             titleEl.innerText = c;
             titleEl.classList.remove('hidden');
@@ -392,65 +553,32 @@
             renderGrid(filtered);
             updateNavColors('home');
         }
-
-        function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); }
-        function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
-        function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); renderGridSubset('favorites-grid', getFavorites()); }
-        function showCandlesView() { hideAllViews(); document.getElementById('candles-view').classList.remove('hidden'); renderGridSubset('candles-grid', getMyCandles()); }
-        function showMonetization() { hideAllViews(); document.getElementById('monetization-view').classList.remove('hidden'); }
-
-        function enablePush() { if (!Permissions.can('private_pages')) { showVelvetRopeToast("Exclusive to LEGACY+ Plan"); return; } if (!("Notification" in window)) return; Notification.requestPermission().then(p => { if (p === "granted") { document.getElementById('push-btn-text').innerText = "Push Enabled ✅"; document.getElementById('push-btn').classList.add('text-gold', 'border-gold'); new Notification("Remembered", { body: "Welcome to the Inner Circle." }); } }); }
         
-        async function loadLegends() { await Permissions.init(); let { data, error } = await db.from('legends').select('*').order('name'); if (!error) { allLegendsData = data; setHero(data); renderGrid(data); loadUserData(); } }
-        async function loadClub27Data() { let { data } = await db.from('club27').select('*'); if (data) { club27Data = data.map(i => ({ id: i.id, name: i.name, dates: i.lifespan, category: 'CLUB 27', image_url: i.image_url, bio: i.description, candles: 0 })); } }
-
-        function openDetail(id) { 
-            const l = allLegendsData.find(x => x.id === id) || club27Data.find(x => x.id === id); if(!l) return; currentDetailId=id; 
-            document.getElementById('detail-img').src=l.image_url; document.getElementById('detail-name').innerText=l.name; 
-            document.getElementById('detail-dates').innerText = getDetailDate(l.dates, l.death_date); document.getElementById('detail-headline').innerText=l.headline||""; 
-            document.getElementById('detail-quote').innerText=l.quote||""; document.getElementById('detail-bio').innerText=l.bio||""; 
-            const v=document.getElementById('video-container'); const wrapper=document.getElementById('video-wrapper');
-            if(l.trailer_url) { 
-                v.classList.remove('hidden');
-                if (Permissions.can('collections')) { let i = ""; try { i=l.trailer_url.split('v=')[1].split('&')[0]; } catch(e){} if(i) wrapper.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${i}" frameborder="0" allowfullscreen></iframe>`; } 
-                else { let i = ""; try { i=l.trailer_url.split('v=')[1].split('&')[0]; } catch(e){} const thumb = i ? `https://img.youtube.com/vi/${i}/hqdefault.jpg` : l.image_url; wrapper.innerHTML = `<img src="${thumb}" class="w-full h-full object-cover gate-blur opacity-50"><div class="gate-overlay"><div class="gate-badge">🔒 SUPPORTER ONLY</div><p class="text-white text-xs font-light tracking-widest uppercase">Video Locked</p></div>`; wrapper.onclick = () => showVelvetRopeToast("Become a Supporter"); }
-            } else { v.classList.add('hidden'); } 
-            
-            const isLit = getMyCandles().includes(id);
-            const circle = document.getElementById('candle-circle'); const text = document.getElementById('candle-text'); const glow = document.getElementById('candle-glow'); const icon = document.getElementById('candle-icon');
-            if(isLit) { text.innerText = "CANDLE LIT"; text.classList.add('text-gold'); icon.classList.add('text-gold'); circle.classList.add('candle-glow-active'); circle.classList.remove('border-white/10'); } 
-            else { text.innerText = "LIGHT A CANDLE"; text.classList.remove('text-gold'); icon.classList.remove('text-gold'); circle.classList.remove('candle-glow-active'); circle.classList.add('border-white/10'); }
-            
-            updateFavBtnState(id); const countLabel = document.getElementById('candle-count'); countLabel.innerText = (l.candles || 0).toLocaleString('de-DE');
-            document.getElementById('detail-overlay').classList.remove('hidden'); document.getElementById('radio-fab').classList.add('hidden');
+        function renderGrid(data) {
+            const g=document.getElementById('legends-grid'); g.innerHTML=''; 
+            data.forEach(l => g.innerHTML+=createCard(l));
+            g.innerHTML += `<div onclick="openSuggestModal()" class="relative group aspect-[3/4] bg-white/5 rounded-xl border-2 border-dashed border-white/20 hover:border-gold flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-white/10"><div class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center mb-4 group-hover:bg-gold text-gold group-hover:text-black transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg></div><p class="text-white font-bold text-sm text-center px-4">Forgotten someone?</p><p class="text-gray-400 text-xs text-center mt-1">Suggest an Icon</p></div>`;
+        }
+        function renderGridSubset(elId, ids) {
+            const g=document.getElementById(elId); g.innerHTML='';
+            const sub = allLegendsData.filter(x => ids.includes(x.id));
+            if(sub.length) sub.forEach(l=>g.innerHTML+=createCard(l)); else g.innerHTML='<p class="col-span-2 text-gray-500">Nothing here yet.</p>';
         }
 
-        function closeDetail() { document.getElementById('detail-overlay').classList.add('hidden'); document.getElementById('video-wrapper').innerHTML=""; document.getElementById('radio-fab').classList.remove('hidden'); }
-        function toggleFavorite() { if(!currentDetailId)return; let f=getFavorites(); if(f.includes(currentDetailId)) f=f.filter(i=>i!==currentDetailId); else f.push(currentDetailId); saveFavorites(f); updateFavBtnState(currentDetailId); }
-        function updateFavBtnState(id) { const i=document.getElementById('fav-icon'); if(getFavorites().includes(id)) { i.setAttribute('fill','currentColor'); i.classList.add('text-red-500'); } else { i.setAttribute('fill','none'); i.classList.remove('text-red-500'); } }
-        
-        async function toggleCandle() { 
-            const circle = document.getElementById('candle-circle'); const text = document.getElementById('candle-text'); const icon = document.getElementById('candle-icon');
-            if(text.innerText === "CANDLE LIT") return;
-            text.innerText = "CANDLE LIT"; text.classList.add('text-gold'); icon.classList.add('text-gold'); circle.classList.add('candle-glow-active'); circle.classList.remove('border-white/10');
-            let c = getMyCandles(); if(!c.includes(currentDetailId)) { c.push(currentDetailId); saveMyCandles(c); }
-            let currentCount = parseInt(document.getElementById('candle-count').innerText.replace(/\./g, '')) || 0;
-            document.getElementById('candle-count').innerText = (currentCount + 1).toLocaleString('de-DE');
-            await db.from('legends').update({ candles: currentCount + 1 }).eq('id', currentDetailId); 
-        }
-
-        function getDetailDate(d1, d2) { if(!d2) return d1; return `${d1 ? d1.split('–')[0].trim() : ''} – ${d2}`; }
-        function getCardDate(d1, d2) { if(!d1) return ''; let b=d1.match(/(\d{4})/); b=b?b[0]:''; let d=d2?d2.split('-')[0]:''; return d ? `${b} – ${d}` : d1; }
-        function showVelvetRopeToast(msg) { const div = document.createElement('div'); div.className = "fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-gray-900 border border-gold/30 text-gold px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest shadow-2xl z-[70] animate-in fade-in slide-in-from-bottom-4"; div.innerHTML = `<span class="opacity-70 mr-2">🔒</span> ${msg}`; document.body.appendChild(div); setTimeout(() => div.remove(), 3000); }
-        function renderGrid(d) { const g=document.getElementById('legends-grid'); g.innerHTML=''; d.forEach(l => g.innerHTML+=createCard(l)); g.innerHTML+=`<div onclick="openSuggestModal()" class="relative group aspect-[3/4] bg-white/5 rounded-xl border-2 border-dashed border-white/20 hover:border-gold flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-white/10"><div class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center mb-4 group-hover:bg-gold text-gold group-hover:text-black transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></div><p class="text-white font-bold text-sm">Forgotten someone?</p><p class="text-gray-400 text-xs mt-1">Suggest an Icon</p></div>`; }
-        function renderGridSubset(elId, ids) { const g=document.getElementById(elId); g.innerHTML=''; const sub = allLegendsData.filter(x => ids.includes(x.id)); if(sub.length) sub.forEach(l=>g.innerHTML+=createCard(l)); else g.innerHTML='<p class="col-span-2 text-gray-500">Nothing here yet.</p>'; }
-        
         function createCard(l) { 
             const i=l.image_url||'https://placehold.co/600x800'; const d=getCardDate(l.dates, l.death_date); const is27=l.category&&l.category.includes('27'); 
-            const cardClass = is27 ? "club27-card" : "legend-card"; const imgClass = is27 ? "" : "grayscale group-hover:grayscale-0";
-            const dateColor = is27 ? '#EF4444' : '#EAB308'; const catColor = '#EAB308';
-            const nameHover = is27 ? 'group-hover:text-red-500' : 'group-hover:text-[#EAB308]';
             
+            // --- FARBEN & GLOW ---
+            const dateColor = is27 ? '#EF4444' : '#EAB308'; // Rot oder Gold
+            const catColor = '#EAB308'; // Immer Gold
+            const nameHover = is27 ? 'group-hover:text-red-500' : 'group-hover:text-[#EAB308]'; 
+
+            // --- FILTER ---
+            const imgClass = is27 ? "" : "grayscale group-hover:grayscale-0";
+            
+            // --- GLOW KLASSEN ---
+            const cardClass = is27 ? "club27-card" : "legend-card";
+
             return `<div onclick="openDetail('${l.id}')" class="${cardClass} relative group aspect-[3/4] rounded-xl overflow-hidden cursor-pointer bg-black">
                 <img src="${i}" class="w-full h-full object-cover transition-all duration-700 ${imgClass}">
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-90"></div>
@@ -461,12 +589,10 @@
                 </div>
             </div>`; 
         }
-
-        // FIX 3: Object Position 50% 25% for better headshots
-        function setHero(d) { if(d.length) document.getElementById('hero-container').innerHTML=`<div onclick="openDetail('${d[0].id}')" class="relative w-full h-full"><img src="${d[0].image_url}" class="absolute inset-0 w-full h-full object-cover object-[50%_25%] grayscale"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div><div class="absolute bottom-8 left-8"><span class="bg-gold text-black text-[10px] font-bold px-2 py-1 uppercase">Highlight</span><h2 class="text-4xl font-black mt-2 text-white">${d[0].name}</h2></div></div>`; }
         
+        // setHero ist jetzt dynamisch in startHeroRotation
+
         function toggleSearch() { const s=document.getElementById('search-bar-container'); if(s.classList.contains('hidden')) { s.classList.remove('hidden'); document.getElementById('search-input').focus(); } else document.getElementById('search-bar-container').classList.add('hidden'); }
-        function closeSearch() { document.getElementById('search-bar-container').classList.add('hidden'); }
         function filterLegends() { const q=document.getElementById('search-input').value.toLowerCase(); renderGrid(allLegendsData.filter(l=>l.name.toLowerCase().includes(q))); }
         function loadUserData() { const n=localStorage.getItem('user_name'); if(n) { document.getElementById('profile-name').innerText=n; document.getElementById('profile-avatar').innerText=n[0]; } }
         function saveSettings() { const n=document.getElementById('settings-name-input').value; if(n) localStorage.setItem('user_name', n); showProfile(); }
@@ -475,12 +601,25 @@
         function getMyCandles() { return JSON.parse(localStorage.getItem('my_candles') || '[]'); }
         function saveFavorites(a) { localStorage.setItem('my_favorites', JSON.stringify(a)); }
         function saveMyCandles(a) { localStorage.setItem('my_candles', JSON.stringify(a)); }
+        function toggleFavorite() { if(!currentDetailId)return; let f=getFavorites(); if(f.includes(currentDetailId)) f=f.filter(i=>i!==currentDetailId); else f.push(currentDetailId); saveFavorites(f); updateFavBtnState(currentDetailId); }
+        function updateFavBtnState(id) { const i=document.getElementById('fav-icon'); if(getFavorites().includes(id)) { i.setAttribute('fill','currentColor'); i.classList.add('text-red-500'); } else { i.setAttribute('fill','none'); i.classList.remove('text-red-500'); } }
+        function toggleCandle() { const t=document.getElementById('candle-text'); if(t.innerText==="CANDLE LIT") return; t.innerText="CANDLE LIT"; t.classList.add('text-gold'); let c=getMyCandles(); if(!c.includes(currentDetailId)) { c.push(currentDetailId); saveMyCandles(c); } document.getElementById('candle-count').innerText = getMyCandles().length; }
+
         function updateNavColors(active) { const b="flex flex-col items-center space-y-1 text-gray-500"; const a="flex flex-col items-center space-y-1 text-gold"; ['nav-home','nav-search','nav-profile'].forEach(id=>document.getElementById(id).className=b); if(active==='home')document.getElementById('nav-home').className=a; if(active==='profile')document.getElementById('nav-profile').className=a; }
+
         function openSuggestModal() { document.getElementById('suggest-overlay').classList.remove('hidden'); }
         function closeSuggest() { document.getElementById('suggest-overlay').classList.add('hidden'); }
-        async function submitSuggestion() { const n=document.getElementById('suggest-name').value; const c=document.getElementById('suggest-category').value; const r=document.getElementById('suggest-reason').value; if(!n)return; document.getElementById('submit-suggest-btn').innerText="SENDING..."; await db.from('suggestions').insert([{name:n, category:c, reason:r}]); closeSuggest(); alert("Sent!"); }
+        async function submitSuggestion() {
+            const n=document.getElementById('suggest-name').value; const c=document.getElementById('suggest-category').value; const r=document.getElementById('suggest-reason').value;
+            if(!n)return; 
+            document.getElementById('submit-suggest-btn').innerText="SENDING...";
+            await db.from('suggestions').insert([{name:n, category:c, reason:r}]);
+            closeSuggest(); alert("Sent!");
+        }
 
+        // START
         loadLegends();
+
     </script>
 </body>
 </html>

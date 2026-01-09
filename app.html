@@ -20,7 +20,7 @@
         body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; }
         .font-serif-custom { font-family: 'Playfair Display', serif; }
         
-        /* HELLES LEUCHTENDES GOLD */
+        /* COLORS */
         .text-gold { color: #FACC15; } 
         .bg-gold { background-color: #FACC15; }
         .border-gold { border-color: #FACC15; }
@@ -31,9 +31,7 @@
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .pulse-red { animation: pulseRed 2s infinite; }
-        @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-
+        /* HEADER & NAVIGATION */
         .glass-header {
             background-color: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(20px);
@@ -100,25 +98,20 @@
             </div>
         </div>
         
-        <!-- FIXED CLUB 27 HEADER -->
+        <!-- CLUB 27 HEADER -->
         <div id="club27-header" class="hidden mb-12 relative rounded-3xl overflow-hidden border border-red-900/30 min-h-[400px]">
             <div class="absolute inset-0 bg-gradient-to-br from-black via-[#2a0505] to-black"></div>
             <div class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-red-900/40 to-transparent blur-3xl"></div>
-            
             <div class="relative z-10 p-8 md:p-12 flex flex-col justify-center h-full min-h-[400px]">
                 <div class="max-w-2xl">
                     <div class="text-5xl mb-4 opacity-90 animate-pulse">🥀</div>
-                    <h1 class="text-6xl md:text-8xl font-serif-custom text-white mb-6 leading-none">
-                        CLUB <span class="text-red-600 italic font-serif-custom">27</span>
-                    </h1>
-                    <p class="text-gray-300 text-sm md:text-base leading-relaxed font-light max-w-lg border-l-2 border-red-600 pl-6">
-                        The 27 Club is one of music history’s darkest legends. It refers to iconic artists, mainly from rock and blues, who all died at the age of 27. Extraordinary talent, excess, and massive influence collide here – their lives ended far too early, but their music became immortal.
-                    </p>
+                    <h1 class="text-6xl md:text-8xl font-serif-custom text-white mb-6 leading-none">CLUB <span class="text-red-600 italic font-serif-custom">27</span></h1>
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed font-light max-w-lg border-l-2 border-red-600 pl-6">The 27 Club is one of music history’s darkest legends. Extraordinary talent, excess, and massive influence collide here – their lives ended far too early, but their music became immortal.</p>
                 </div>
             </div>
         </div>
 
-        <!-- HEADER FOR CATEGORY -->
+        <!-- CATEGORY TITLE -->
         <h2 id="category-title" class="hidden text-3xl font-black text-white mb-8 uppercase tracking-tight pl-1"></h2>
         
         <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
@@ -127,10 +120,7 @@
     <!-- MONETIZATION / PLANS VIEW -->
     <main id="monetization-view" class="hidden pt-24 px-4 max-w-7xl mx-auto fade-in h-screen overflow-y-auto pb-32">
         <div class="border-l-4 border-gold bg-white/5 p-6 mb-10 rounded-r-xl max-w-3xl mx-auto">
-            <div class="flex items-center gap-2 mb-2">
-                <div class="w-1 h-6 bg-gold"></div>
-                <h3 class="text-gold font-bold tracking-widest uppercase text-sm">Core Philosophy</h3>
-            </div>
+            <div class="flex items-center gap-2 mb-2"><div class="w-1 h-6 bg-gold"></div><h3 class="text-gold font-bold tracking-widest uppercase text-sm">Core Philosophy</h3></div>
             <p class="italic text-gray-200 text-lg leading-relaxed font-serif-custom">"Remembered monetizes closeness, not memory.<br>Our users pay to connect deeper – not to get access."</p>
         </div>
         <div class="flex justify-center mb-10">
@@ -258,7 +248,7 @@
         <button onclick="showProfile()" id="nav-profile" class="flex flex-col items-center space-y-1 text-gray-500"><span class="text-[9px] font-bold uppercase">Profile</span></button>
     </nav>
 
-    <!-- DETAIL VIEW (MIT VELVET ROPE & CANDLE FIX) -->
+    <!-- DETAIL VIEW -->
     <div id="detail-overlay" class="hidden fixed inset-0 z-50 bg-black text-white overflow-y-auto animate-in fade-in duration-300">
         <div class="fixed top-6 right-6 z-[60] flex space-x-3">
             <button id="music-btn" class="hidden bg-black/50 p-3 rounded-full border border-white/20 hover:border-gold text-white hover:text-gold"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-2v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-2"/></svg></button>
@@ -459,17 +449,20 @@
             const i = l.image_url || 'https://placehold.co/600x800'; 
             const d = getCardDate(l.dates, l.death_date); 
             const is27 = l.category && l.category.includes('27');
-            // FIX: Using inline style for color to force GOLD
-            const textColor = is27 ? '#EF4444' : '#FACC15'; 
+            
+            // LOGIC SPLIT FOR COLORS
+            const nameHover = is27 ? "group-hover:text-red-500" : "group-hover:text-[#FACC15]";
+            const dateColor = is27 ? "text-red-500" : "text-[#FACC15]";
+            const catColor = "text-[#FACC15]"; // Category is ALWAYS Gold (Yellow-400)
             const style = is27 ? "opacity-90 group-hover:opacity-100 border-red-900/20 hover:border-red-500/50" : "grayscale group-hover:grayscale-0 border-white/5 hover:border-gold/30";
             
             return `<div onclick="openDetail('${l.id}')" class="relative group aspect-[3/4] bg-gray-900 rounded-xl overflow-hidden border ${style} transition-all duration-500">
                 <img src="${i}" class="w-full h-full object-cover ${is27?'':'grayscale group-hover:grayscale-0'} transition-all duration-700">
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-90"></div>
                 <div class="absolute bottom-0 left-0 p-4 w-full">
-                    <h2 class="text-white font-bold text-lg leading-tight mb-1 group-hover:text-gold transition-colors">${l.name}</h2>
-                    <p style="color: ${textColor}" class="text-[10px] font-mono leading-tight mb-1.5 opacity-100 break-words">${d}</p>
-                    <p style="color: ${textColor}" class="text-[9px] font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors opacity-100">${l.category || 'LEGEND'}</p>
+                    <h2 class="text-white font-bold text-lg leading-tight mb-1 transition-colors ${nameHover}">${l.name}</h2>
+                    <p class="${dateColor} text-[10px] font-mono leading-tight mb-1.5 opacity-100 break-words">${d}</p>
+                    <p class="${catColor} text-[9px] font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors opacity-100">${l.category || 'LEGEND'}</p>
                 </div>
             </div>`; 
         }

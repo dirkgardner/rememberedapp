@@ -165,7 +165,7 @@
     </main>
 
     <!-- ============================================== -->
-    <!-- MONETIZATION / PLANS VIEW (DESIGN 1 + CONTENT 3) -->
+    <!-- MONETIZATION / PLANS VIEW (USD) -->
     <!-- ============================================== -->
     <main id="monetization-view" class="hidden pt-24 px-4 max-w-7xl mx-auto fade-in h-screen overflow-y-auto pb-32">
         
@@ -183,7 +183,7 @@
             </div>
         </div>
 
-        <!-- PRICING CARDS (FIXED DESIGN) -->
+        <!-- PRICING CARDS (USD) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             
             <!-- FREE PLAN -->
@@ -194,10 +194,9 @@
                 <h3 class="text-3xl font-black text-white mb-1">FREE</h3>
                 <p class="text-gray-400 text-xs mb-6">The cultural mission.</p>
                 
-                <div class="text-5xl font-bold text-white mb-1">0 €</div>
+                <div class="text-5xl font-bold text-white mb-1">$0</div>
                 <div class="text-gray-500 text-[10px] uppercase tracking-widest mb-8">/ Always</div>
                 
-                <!-- Features mapped from Bild 3 -->
                 <ul class="space-y-4 flex-1 mb-8">
                     <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-green-500 font-bold">✓</span> Discover Icons</li>
                     <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-green-500 font-bold">✓</span> Read Biographies</li>
@@ -219,11 +218,10 @@
                 <p class="text-gray-400 text-xs mb-6">For fans who want depth.</p>
                 
                 <div class="flex items-end gap-1 mb-1">
-                    <div id="price-supporter" class="text-5xl font-bold text-white">1,99 €</div>
+                    <div id="price-supporter" class="text-5xl font-bold text-white">$1.99</div>
                 </div>
                 <div id="cycle-supporter" class="text-gray-500 text-[10px] uppercase tracking-widest mb-8">/ Month</div>
                 
-                <!-- Features mapped from Bild 3 -->
                 <ul class="space-y-4 flex-1 mb-8">
                     <li class="flex items-start gap-3 text-sm text-white font-medium"><span class="text-gold">★</span> <strong>Unlimited</strong> Candles</li>
                     <li class="flex items-start gap-3 text-sm text-white font-medium"><span class="text-gold">★</span> <strong>Unlimited</strong> Favorites</li>
@@ -246,11 +244,10 @@
                 <p class="text-gray-400 text-xs mb-6">Preserve what remains.</p>
                 
                 <div class="flex items-end gap-1 mb-1">
-                    <div id="price-legacy" class="text-5xl font-bold text-white">4,99 €</div>
+                    <div id="price-legacy" class="text-5xl font-bold text-white">$4.99</div>
                 </div>
                 <div id="cycle-legacy" class="text-gray-500 text-[10px] uppercase tracking-widest mb-8">/ Month</div>
                 
-                <!-- Features mapped from Bild 3 -->
                 <ul class="space-y-4 flex-1 mb-8">
                     <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-blue-500">✓</span> Everything in Supporter</li>
                     <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-blue-500">✓</span> Private Memorial Pages</li>
@@ -325,8 +322,8 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
 
-        <!-- FAVORITE BUTTON (Oben links, dezent) -->
-        <button onclick="toggleFavorite()" class="fixed top-6 left-6 z-50 bg-black/50 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center border border-white/10 transition-all">
+        <!-- FAVORITE BUTTON (Oben Rechts, neben Close) -->
+        <button onclick="toggleFavorite()" class="fixed top-6 right-20 z-50 bg-black/50 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center border border-white/10 transition-all">
             <svg id="fav-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
         </button>
 
@@ -534,11 +531,11 @@
             if (period === 'monthly') {
                 btnM.className = "px-6 py-2 rounded-full text-xs font-bold uppercase transition-all bg-gold text-black";
                 btnY.className = "px-6 py-2 rounded-full text-xs font-bold uppercase transition-all text-gray-400 hover:text-white";
-                pS.innerText = '1,99 €'; cS.innerText = '/ Month'; pL.innerText = '4,99 €'; cL.innerText = '/ Month';
+                pS.innerText = '$1.99'; cS.innerText = '/ Month'; pL.innerText = '$4.99'; cL.innerText = '/ Month';
             } else {
                 btnY.className = "px-6 py-2 rounded-full text-xs font-bold uppercase transition-all bg-gold text-black";
                 btnM.className = "px-6 py-2 rounded-full text-xs font-bold uppercase transition-all text-gray-400 hover:text-white";
-                pS.innerText = '19,99 €'; cS.innerText = '/ Year (2 months free)'; pL.innerText = '49,99 €'; cL.innerText = '/ Year (2 months free)';
+                pS.innerText = '$19.99'; cS.innerText = '/ Year (2 months free)'; pL.innerText = '$49.99'; cL.innerText = '/ Year (2 months free)';
             }
         }
         

@@ -68,7 +68,7 @@
         /* SAFE AREA */
         .safe-area-pb { padding-bottom: env(safe-area-inset-bottom, 20px); }
 
-        /* --- NEUE KERZEN STYLES (IMMERSIVE) --- */
+        /* KERZEN STYLES (IMMERSIVE) */
         .candle-container {
             position: relative;
             width: 80px;
@@ -83,25 +83,20 @@
             cursor: pointer;
             backdrop-filter: blur(4px);
         }
-        
-        /* Das ist der "Ignition Effect" */
         .candle-active {
             border-color: #EAB308;
             box-shadow: 0 0 40px rgba(234, 179, 8, 0.6), inset 0 0 20px rgba(234, 179, 8, 0.2);
             background: rgba(234, 179, 8, 0.1);
         }
-        
         .flame-icon {
             color: #4B5563;
             transition: all 0.5s ease;
         }
-        
         .candle-active .flame-icon {
             color: #EAB308;
             filter: drop-shadow(0 0 10px #EAB308);
             animation: flicker 1.5s infinite alternate;
         }
-
         @keyframes flicker {
             0% { opacity: 0.8; transform: scale(1); }
             100% { opacity: 1; transform: scale(1.1); }
@@ -169,49 +164,112 @@
         <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
     </main>
 
-    <!-- MONETIZATION VIEW -->
+    <!-- ============================================== -->
+    <!-- MONETIZATION / PLANS VIEW (DESIGN 1 + CONTENT 3) -->
+    <!-- ============================================== -->
     <main id="monetization-view" class="hidden pt-24 px-4 max-w-7xl mx-auto fade-in h-screen overflow-y-auto pb-32">
+        
+        <!-- CORE PHILOSOPHY -->
         <div class="border-l-4 border-gold bg-white/5 p-6 mb-10 rounded-r-xl max-w-3xl mx-auto">
             <div class="flex items-center gap-2 mb-2"><div class="w-1 h-6 bg-gold"></div><h3 class="text-gold font-bold tracking-widest uppercase text-sm">Core Philosophy</h3></div>
-            <p class="italic text-gray-200 text-lg leading-relaxed font-serif-custom">"Remembered monetizes closeness, not memory."</p>
+            <p class="italic text-gray-200 text-lg leading-relaxed font-serif-custom">"Remembered monetizes closeness, not memory.<br>Our users pay to connect deeper – not to get access."</p>
         </div>
+
+        <!-- TOGGLE -->
         <div class="flex justify-center mb-10">
             <div class="bg-gray-900 border border-white/10 p-1 rounded-full flex relative">
                 <button onclick="setBilling('monthly')" id="btn-monthly" class="px-6 py-2 rounded-full text-xs font-bold uppercase transition-all bg-gold text-black">Monthly</button>
                 <button onclick="setBilling('yearly')" id="btn-yearly" class="px-6 py-2 rounded-full text-xs font-bold uppercase transition-all text-gray-400 hover:text-white">Yearly (-17%)</button>
             </div>
         </div>
+
+        <!-- PRICING CARDS (FIXED DESIGN) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            <div class="bg-gray-900/50 border border-white/5 rounded-2xl p-8 flex flex-col relative group hover:border-white/10 transition-colors">
-                <div class="mb-6"><span class="bg-gray-800 text-gray-400 text-[10px] font-bold px-2 py-1 uppercase rounded">Entry</span><h3 class="text-3xl font-black text-white mt-4">FREE</h3><p class="text-gray-400 text-sm mt-1">The cultural mission.</p></div>
-                <div class="text-4xl font-bold text-white mb-1">0 €</div><div class="text-gray-500 text-xs uppercase tracking-widest mb-8">/ Always</div>
-                <ul class="space-y-3 mb-8 flex-1">
-                    <li class="flex items-center gap-3 text-sm text-gray-300"><span class="text-green-500">✓</span> Discover Icons</li>
-                    <li class="flex items-center gap-3 text-sm text-gray-300"><span class="text-gray-500">⚠</span> Light Candle (1/day)</li>
+            
+            <!-- FREE PLAN -->
+            <div class="bg-[#0A0A0A] border border-white/5 rounded-xl p-8 flex flex-col relative h-full">
+                <div class="mb-4">
+                    <span class="bg-[#1A1A1A] text-gray-400 text-[10px] font-bold px-2 py-1 uppercase rounded border border-white/10">Entry</span>
+                </div>
+                <h3 class="text-3xl font-black text-white mb-1">FREE</h3>
+                <p class="text-gray-400 text-xs mb-6">The cultural mission.</p>
+                
+                <div class="text-5xl font-bold text-white mb-1">0 €</div>
+                <div class="text-gray-500 text-[10px] uppercase tracking-widest mb-8">/ Always</div>
+                
+                <!-- Features mapped from Bild 3 -->
+                <ul class="space-y-4 flex-1 mb-8">
+                    <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-green-500 font-bold">✓</span> Discover Icons</li>
+                    <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-green-500 font-bold">✓</span> Read Biographies</li>
+                    <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-green-500 font-bold">✓</span> Auto-Translation</li>
+                    <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-green-500 font-bold">✓</span> "For You" Feed</li>
+                    <li class="flex items-start gap-3 text-sm text-gray-400"><span class="text-gray-500">⚠</span> Light Candle (1/day)</li>
+                    <li class="flex items-start gap-3 text-sm text-gray-400"><span class="text-gray-500">⚠</span> Save Favorites (Limited)</li>
+                    <li class="flex items-start gap-3 text-sm text-gray-600 line-through decoration-red-900"><span class="text-red-900 font-bold">✕</span> No Personal Collections</li>
                 </ul>
-                <button class="w-full py-3 rounded-xl border border-white/10 text-gray-400 text-xs font-bold uppercase cursor-default opacity-50">Current Plan</button>
+                
+                <button class="w-full py-4 rounded-lg border border-white/10 bg-white/5 text-gray-500 text-xs font-bold uppercase cursor-default">Current Plan</button>
             </div>
-            <div class="bg-gray-900 border border-gold/50 rounded-2xl p-8 flex flex-col relative transform md:scale-105 z-10 shadow-2xl shadow-gold/10">
-                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gold text-black text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">Popular</div>
-                <div class="mb-6"><h3 class="text-3xl font-black text-white mt-4">SUPPORTER</h3><p class="text-gray-400 text-sm mt-1">For fans who want depth.</p></div>
-                <div class="flex items-end gap-1 mb-1"><div id="price-supporter" class="text-4xl font-bold text-white">1,99 €</div></div><div id="cycle-supporter" class="text-gray-500 text-xs uppercase tracking-widest mb-8">/ Month</div>
-                <ul class="space-y-3 mb-8 flex-1">
-                    <li class="flex items-center gap-3 text-sm text-white"><span class="text-gold">★</span> Unlimited Candles</li>
-                    <li class="flex items-center gap-3 text-sm text-white"><span class="text-gold">★</span> Unlimited Favorites</li>
+
+            <!-- SUPPORTER PLAN -->
+            <div class="bg-[#0E121B] border border-gold rounded-xl p-8 flex flex-col relative transform md:-translate-y-4 shadow-2xl shadow-gold/5 h-full">
+                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gold text-black text-[10px] font-bold px-4 py-1 rounded-full uppercase tracking-widest">Popular</div>
+                
+                <h3 class="text-3xl font-black text-white mt-4 mb-1">SUPPORTER</h3>
+                <p class="text-gray-400 text-xs mb-6">For fans who want depth.</p>
+                
+                <div class="flex items-end gap-1 mb-1">
+                    <div id="price-supporter" class="text-5xl font-bold text-white">1,99 €</div>
+                </div>
+                <div id="cycle-supporter" class="text-gray-500 text-[10px] uppercase tracking-widest mb-8">/ Month</div>
+                
+                <!-- Features mapped from Bild 3 -->
+                <ul class="space-y-4 flex-1 mb-8">
+                    <li class="flex items-start gap-3 text-sm text-white font-medium"><span class="text-gold">★</span> <strong>Unlimited</strong> Candles</li>
+                    <li class="flex items-start gap-3 text-sm text-white font-medium"><span class="text-gold">★</span> <strong>Unlimited</strong> Favorites</li>
+                    <li class="flex items-start gap-3 text-sm text-white"><span class="text-gold">✓</span> <strong>Ad-Free Experience</strong></li>
+                    <li class="flex items-start gap-3 text-sm text-white"><span class="text-gold">✓</span> Personal Collections</li>
+                    <li class="flex items-start gap-3 text-sm text-white"><span class="text-gold">✓</span> Supporter Badge</li>
+                    <li class="flex items-start gap-3 text-sm text-gray-500 line-through decoration-red-900"><span class="text-red-900 font-bold">✕</span> No Private Pages</li>
                 </ul>
-                <button onclick="alert('Checkout integration coming in Phase 2')" class="w-full py-3 rounded-xl bg-gold text-black text-xs font-bold uppercase hover:bg-yellow-400 transition-colors shadow-lg shadow-gold/20">Select Plan</button>
+                
+                <button onclick="alert('Checkout integration coming in Phase 2')" class="w-full py-4 rounded-lg bg-gold text-black text-xs font-bold uppercase hover:bg-yellow-400 transition-colors shadow-lg shadow-gold/20">Select Plan</button>
             </div>
-            <div class="bg-gray-900/50 border border-blue-500/30 rounded-2xl p-8 flex flex-col relative hover:border-blue-500/50 transition-colors">
-                <div class="mb-6"><span class="bg-blue-900/30 text-blue-400 border border-blue-500/30 text-[10px] font-bold px-2 py-1 uppercase rounded">Premium</span><h3 class="text-3xl font-black text-white mt-4">LEGACY+</h3><p class="text-gray-400 text-sm mt-1">Preserve what remains.</p></div>
-                <div class="flex items-end gap-1 mb-1"><div id="price-legacy" class="text-4xl font-bold text-white">4,99 €</div></div><div id="cycle-legacy" class="text-gray-500 text-xs uppercase tracking-widest mb-8">/ Month</div>
-                <ul class="space-y-3 mb-8 flex-1">
-                    <li class="flex items-center gap-3 text-sm text-gray-300"><span class="text-blue-400">✓</span> All Features</li>
+
+            <!-- LEGACY PLAN -->
+            <div class="bg-[#0A0A0A] border border-blue-900/50 rounded-xl p-8 flex flex-col relative h-full">
+                <div class="mb-4">
+                    <span class="bg-blue-900/20 text-blue-400 text-[10px] font-bold px-2 py-1 uppercase rounded border border-blue-500/30">Premium</span>
+                </div>
+                
+                <h3 class="text-3xl font-black text-white mb-1">LEGACY+</h3>
+                <p class="text-gray-400 text-xs mb-6">Preserve what remains.</p>
+                
+                <div class="flex items-end gap-1 mb-1">
+                    <div id="price-legacy" class="text-5xl font-bold text-white">4,99 €</div>
+                </div>
+                <div id="cycle-legacy" class="text-gray-500 text-[10px] uppercase tracking-widest mb-8">/ Month</div>
+                
+                <!-- Features mapped from Bild 3 -->
+                <ul class="space-y-4 flex-1 mb-8">
+                    <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-blue-500">✓</span> Everything in Supporter</li>
+                    <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-blue-500">✓</span> Private Memorial Pages</li>
+                    <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-blue-500">✓</span> Create Personal Memories</li>
+                    <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-blue-500">✓</span> Store Text, Images & Quotes</li>
+                    <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-blue-500">✓</span> AI Summaries</li>
+                    <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-blue-500">✓</span> Life Timeline</li>
+                    <li class="flex items-start gap-3 text-sm text-gray-300"><span class="text-blue-500">✓</span> Export (PDF/Memorial Page)</li>
                 </ul>
-                <button onclick="alert('Checkout integration coming in Phase 2')" class="w-full py-3 rounded-xl border border-blue-500/50 text-blue-400 text-xs font-bold uppercase hover:bg-blue-900/20 transition-colors">Select Plan</button>
+                
+                <button onclick="alert('Checkout integration coming in Phase 2')" class="w-full py-4 rounded-lg border border-blue-500/50 text-blue-400 text-xs font-bold uppercase hover:bg-blue-900/20 transition-colors">Select Plan</button>
             </div>
         </div>
-        <div class="mt-12 text-center max-w-2xl mx-auto border-t border-white/5 pt-8">
-            <button onclick="showProfile()" class="mt-8 text-gray-500 text-xs uppercase tracking-widest hover:text-white transition-colors">Back to Profile</button>
+        
+        <!-- BACK BUTTON FIXED -->
+        <div class="mt-16 mb-10 text-center">
+            <button onclick="showProfile()" class="text-gray-500 hover:text-white text-xs font-bold uppercase tracking-[0.2em] border-b border-transparent hover:border-white transition-all pb-1">
+                &larr; Back to Profile
+            </button>
         </div>
     </main>
 
@@ -483,7 +541,20 @@
                 pS.innerText = '19,99 €'; cS.innerText = '/ Year (2 months free)'; pL.innerText = '49,99 €'; cL.innerText = '/ Year (2 months free)';
             }
         }
-        function showProfile() { hideAllViews(); document.getElementById('profile-view').classList.remove('hidden'); updateNavColors('profile'); }
+        
+        // --- UPDATED SHOW PROFILE (FIXES CANDLE COUNT) ---
+        function showProfile() { 
+            hideAllViews(); 
+            document.getElementById('profile-view').classList.remove('hidden'); 
+            updateNavColors('profile'); 
+            
+            // RECALCULATE COUNTS ON SHOW
+            const candles = getMyCandles();
+            const favs = getFavorites();
+            document.getElementById('profile-candle-count').innerText = candles.length;
+            document.getElementById('profile-fav-count').innerText = favs.length;
+        }
+
         function showSettings() { hideAllViews(); document.getElementById('settings-view').classList.remove('hidden'); }
         function showFavoritesView() { hideAllViews(); document.getElementById('favorites-view').classList.remove('hidden'); renderGridSubset('favorites-grid', getFavorites()); }
         function showCandlesView() { hideAllViews(); document.getElementById('candles-view').classList.remove('hidden'); renderGridSubset('candles-grid', getMyCandles()); }

@@ -9,11 +9,6 @@
       "source": "/dashboard.html",
       "destination": "/",
       "permanent": false
-    },
-    {
-      "source": "/admin.html",
-      "destination": "/",
-      "permanent": false
     }
   ]
 }

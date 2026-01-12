@@ -1,7 +1,7 @@
 {
   "redirects": [
     {
-      "source": "/app.html",
+      "source": "/admin.html",
       "destination": "/",
       "permanent": false
     },
@@ -9,6 +9,22 @@
       "source": "/dashboard.html",
       "destination": "/",
       "permanent": false
+    },
+    {
+      "source": "/app.html",
+      "destination": "/",
+      "permanent": false
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(admin|dashboard).html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ]
 }

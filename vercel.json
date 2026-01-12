@@ -1,0 +1,19 @@
+{
+  "redirects": [
+    {
+      "source": "/app.html",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/dashboard.html",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/admin.html",
+      "destination": "/",
+      "permanent": false
+    }
+  ]
+}

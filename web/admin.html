@@ -1,0 +1,171 @@
+<!-- ⚠️ FINAL ADMIN – Remembered -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mission Control – Remembered</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+body{background:#050505;color:#fff;font-family:'Inter',sans-serif}
+.nav-item{color:#9CA3AF}
+.nav-item.active{background:rgba(234,179,8,.1);border-left:4px solid #EAB308;color:#EAB308}
+th,td{padding:12px}
+</style>
+</head>
+
+<body class="h-screen flex overflow-hidden">
+
+<!-- SIDEBAR -->
+<aside class="w-64 bg-black border-r border-white/10">
+<div class="h-16 flex items-center px-8 border-b border-white/10">
+<span class="text-yellow-400 font-bold tracking-[0.2em] text-sm">MISSION CONTROL</span>
+</div>
+
+<nav class="py-6 space-y-1">
+<button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item active w-full px-8 py-3 text-left">Dashboard</button>
+<button onclick="switchTab('inbox')" id="nav-inbox" class="nav-item w-full px-8 py-3 text-left">Suggestions</button>
+<button onclick="switchTab('add')" id="nav-add" class="nav-item w-full px-8 py-3 text-left">➕ Add Legend</button>
+<button onclick="switchTab('monetization')" id="nav-monetization" class="nav-item w-full px-8 py-3 text-left">Monetization</button>
+</nav>
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 overflow-y-auto">
+
+<header class="h-16 bg-black/60 backdrop-blur border-b border-white/10 flex items-center justify-between px-8">
+<h1 id="page-title" class="text-xl font-bold">System Overview</h1>
+<button onclick="logout()" class="text-red-500 text-xs font-bold">Logout</button>
+</header>
+
+<div class="p-8 max-w-6xl mx-auto">
+
+<!-- DASHBOARD -->
+<section id="tab-dashboard">
+<h2 class="text-xl font-bold mb-6">Stats</h2>
+<div class="grid grid-cols-3 gap-6">
+<div class="bg-gray-900 p-6 rounded-xl">Legends<br><b id="stat-legends">–</b></div>
+<div class="bg-gray-900 p-6 rounded-xl">Suggestions<br><b id="stat-suggestions">–</b></div>
+<div class="bg-gray-900 p-6 rounded-xl">Candles<br><b id="stat-candles">–</b></div>
+</div>
+</section>
+
+<!-- SUGGESTIONS -->
+<section id="tab-inbox" class="hidden">
+<h2 class="text-xl font-bold mb-6">Community Suggestions</h2>
+<table class="w-full text-sm border border-white/10 rounded overflow-hidden">
+<thead class="bg-white/5">
+<tr><th>Name</th><th>Category</th><th class="text-right">Action</th></tr>
+</thead>
+<tbody id="suggestions-table"></tbody>
+</table>
+</section>
+
+<!-- ADD LEGEND -->
+<section id="tab-add" class="hidden">
+<h2 class="text-xl font-bold mb-6">Add New Legend</h2>
+
+<div class="grid grid-cols-2 gap-4">
+<input id="name" placeholder="Name" class="p-3 bg-gray-900 rounded"/>
+<input id="slug" placeholder="Slug (amy-winehouse)" class="p-3 bg-gray-900 rounded"/>
+<input id="category" placeholder="Category" class="p-3 bg-gray-900 rounded"/>
+<input id="death" type="date" class="p-3 bg-gray-900 rounded"/>
+<input id="headline" placeholder="Headline" class="p-3 bg-gray-900 rounded col-span-2"/>
+<input id="quote" placeholder="Quote" class="p-3 bg-gray-900 rounded col-span-2"/>
+<textarea id="bio" placeholder="Bio" class="p-3 bg-gray-900 rounded col-span-2"></textarea>
+<input id="image" placeholder="Image URL" class="p-3 bg-gray-900 rounded col-span-2"/>
+</div>
+
+<button onclick="addLegend()" class="mt-6 bg-yellow-400 text-black px-6 py-3 rounded font-bold">
+SAVE LEGEND
+</button>
+</section>
+
+<!-- MONETIZATION -->
+<section id="tab-monetization" class="hidden">
+<h2 class="text-xl font-bold mb-2">Revenue & Plans</h2>
+<p class="text-gray-400 max-w-xl">
+Monetization is finalized.  
+Admin view is read-only by design.
+</p>
+</section>
+
+</div>
+</main>
+
+<script>
+const db = supabase.createClient(
+  "https://aahsaqygohmykhagbihk.supabase.co",
+  "YOUR_PUBLIC_KEY"
+);
+
+function switchTab(tab){
+document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+document.getElementById("tab-"+tab).classList.remove("hidden");
+document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+document.getElementById("nav-"+tab).classList.add("active");
+document.getElementById("page-title").innerText =
+tab === "dashboard" ? "System Overview" :
+tab === "add" ? "Add Legend" :
+tab.charAt(0).toUpperCase()+tab.slice(1);
+
+if(tab==="inbox") loadSuggestions();
+}
+
+async function loadStats(){
+const {count:l}=await db.from("legends").select("*",{count:"exact",head:true});
+const {count:s}=await db.from("suggestions").select("*",{count:"exact",head:true});
+const {data:c}=await db.from("legends").select("candles");
+
+document.getElementById("stat-legends").innerText=l||0;
+document.getElementById("stat-suggestions").innerText=s||0;
+document.getElementById("stat-candles").innerText =
+(c||[]).reduce((a,b)=>a+(b.candles||0),0);
+}
+
+async function loadSuggestions(){
+const {data}=await db.from("suggestions").select("*").order("created_at",{ascending:false});
+document.getElementById("suggestions-table").innerHTML =
+(data||[]).map(d=>`
+<tr class="border-t border-white/5">
+<td>${d.name||"-"}</td>
+<td>${d.category||"-"}</td>
+<td class="text-right">
+<button onclick="deleteSuggestion(${d.id})" class="text-red-500">🗑</button>
+</td>
+</tr>`).join("");
+}
+
+async function deleteSuggestion(id){
+if(confirm("Delete suggestion?")){
+await db.from("suggestions").delete().eq("id",id);
+loadSuggestions(); loadStats();
+}
+}
+
+async function addLegend(){
+await db.from("legends").insert({
+name:name.value,
+slug:slug.value,
+category:category.value,
+headline:headline.value,
+quote:quote.value,
+bio:bio.value,
+image_url:image.value,
+death_date:death.value
+});
+alert("Legend added");
+}
+
+function logout(){location.href="/";}
+loadStats();
+</script>
+</body>
+</html>

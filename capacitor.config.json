@@ -1,0 +1,6 @@
+{
+  "appId": "com.dirkgardner.remembered",
+  "appName": "remembered",
+  "webDir": "web", 
+  "bundledWebRuntime": false
+}

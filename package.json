@@ -1,0 +1,22 @@
+{
+  "name": "remembered",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:sync": "npx cap sync",
+    "cap:ios": "ionic cap run ios -l --external",
+    "cap:android": "ionic cap run android -l --external"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.0.1",
+    "@capacitor/ios": "^8.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.1",
+    "vite": "^5.0.0"
+  }
+}

@@ -23,6 +23,11 @@
             font-family: 'Playfair Display', serif;
         }
 
+        /* Agency-Grade Typography Fix */
+        .text-balance {
+            text-wrap: balance;
+        }
+
         /* Animation Klassen */
         .fade-in-section {
             opacity: 0;
@@ -58,24 +63,24 @@
             </div>
         </div>
 
-        <div class="mb-10 fade-in-section" style="transition-delay: 100ms;">
-            <div class="px-4 py-1.5 rounded-full border border-[#C5A059]/30 bg-[#C5A059]/5 backdrop-blur-md inline-block">
-                <span class="text-[10px] md:text-xs font-semibold tracking-[0.2em] text-[#C5A059] uppercase">
+        <div class="mb-10 fade-in-section text-center" style="transition-delay: 100ms;">
+            <div class="px-5 py-2 rounded-full border border-[#C5A059]/30 bg-[#C5A059]/5 backdrop-blur-md inline-block">
+                <span class="text-[9px] md:text-xs font-semibold tracking-widest md:tracking-[0.2em] text-[#C5A059] uppercase leading-relaxed block text-balance">
                     The World’s First AI-Powered Digital Legacy Vault
                 </span>
             </div>
         </div>
 
         <div class="text-center mb-10 space-y-2 fade-in-section" style="transition-delay: 200ms;">
-            <h1 class="font-serif text-5xl md:text-7xl lg:text-9xl font-medium tracking-tight leading-[0.9] text-transparent bg-clip-text bg-gradient-to-b from-[#f0e6d2] to-[#C5A059] drop-shadow-2xl">
+            <h1 class="font-serif text-5xl md:text-7xl lg:text-9xl font-medium tracking-tight leading-[0.95] text-transparent bg-clip-text bg-gradient-to-b from-[#f0e6d2] to-[#C5A059] drop-shadow-2xl">
                 LEGENDS<br />
                 <span class="text-[#C5A059]">NEVER DIE.</span>
             </h1>
         </div>
 
-        <div class="text-center max-w-2xl mb-16 opacity-90 fade-in-section" style="transition-delay: 300ms;">
-            <p class="text-lg md:text-xl font-light text-neutral-400 leading-relaxed">
-                Preserve what defines you.<br />
+        <div class="text-center max-w-2xl mb-16 opacity-90 fade-in-section px-4" style="transition-delay: 300ms;">
+            <p class="text-lg md:text-xl font-light text-neutral-400 leading-relaxed text-balance">
+                Preserve what defines you.<br class="hidden md:block" />
                 <span class="text-white">Memories, voice, and meaning</span> — structured for eternity.
             </p>
         </div>
@@ -115,10 +120,10 @@
                 <div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-8 bg-gradient-to-b from-[#C5A059] to-transparent opacity-50"></div>
                 
                 <div class="space-y-6 pt-4">
-                    <h3 class="font-serif text-2xl md:text-4xl text-[#e5e5e5] leading-tight">
+                    <h3 class="font-serif text-balance text-2xl md:text-4xl text-[#e5e5e5] leading-tight">
                         Built for legacy. <span class="text-[#C5A059] italic">Not for clicks.</span>
                     </h3>
-                    <p class="text-sm md:text-base text-neutral-400 font-light tracking-wide">
+                    <p class="text-sm md:text-base text-neutral-400 font-light tracking-wide text-balance">
                         No ads. No feeds. No exploitation. <span class="text-white border-b border-[#C5A059]/30 pb-0.5">Your story stays yours.</span>
                     </p>
                     
@@ -167,11 +172,11 @@
         <section class="w-full mb-32 fade-in-section">
             <div class="text-center mb-16">
                 <span class="text-[#C5A059] text-xs font-bold tracking-[0.2em] uppercase block mb-4">The Vision</span>
-                <h2 class="font-serif text-3xl md:text-5xl lg:text-6xl text-white mb-6 leading-tight">
+                <h2 class="font-serif text-3xl md:text-5xl lg:text-6xl text-white mb-6 leading-tight text-balance">
                     More than a database.<br />
                     A sanctuary for stories.
                 </h2>
-                <p class="text-neutral-400 max-w-2xl mx-auto leading-relaxed text-sm md:text-base font-light">
+                <p class="text-neutral-400 max-w-2xl mx-auto leading-relaxed text-sm md:text-base font-light text-balance">
                     The open web forgets. It copies, distorts, and dilutes. Remembered is a closed vault
                     designed to protect the sanctity of history and the privacy of your personal legacy.
                 </p>
@@ -209,10 +214,10 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
         const db = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // 2. ICONS & VISUALS
+        // 2. ICONS
         lucide.createIcons();
 
-        // 3. WAITLIST FORM LOGIC
+        // 3. WAITLIST LOGIC
         const form = document.getElementById('waitlistForm');
         const emailInput = document.getElementById('emailInput');
         const submitBtn = document.getElementById('submitBtn');
@@ -223,12 +228,10 @@
             const email = emailInput.value;
             if(!email) return;
 
-            // Loading State
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<span class="animate-pulse">SAVING...</span>';
             submitBtn.disabled = true;
 
-            // Save to Supabase
             const { error } = await db.from('waitlist').insert([{ email: email }]);
 
             if (error) {
@@ -237,13 +240,12 @@
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
             } else {
-                // Success
                 form.style.display = 'none';
                 successMsg.classList.remove('hidden');
             }
         });
 
-        // 4. PARTICLE SYSTEM
+        // 4. PARTICLES
         const canvas = document.getElementById('particleCanvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -277,7 +279,7 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas(); draw();
 
-        // 5. FADE IN ANIMATION
+        // 5. ANIMATIONS
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => { 
                 if (entry.isIntersecting) { 

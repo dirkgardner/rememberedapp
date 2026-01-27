@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -362,6 +361,15 @@
         const supabaseUrl = 'https://aahsaqygohmykhagbihk.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
         const db = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // 🔥 SECURITY CHECK: Redirect if not logged in
+        (async function protectApp() {
+            const { data: { session } } = await db.auth.getSession();
+            if (!session) {
+                // Not logged in? Redirect to landing page
+                window.location.href = "/"; 
+            }
+        })();
 
         const Permissions = {
             caps: ['read_bio', 'discover_icons'], currentPlan: 'FREE', 

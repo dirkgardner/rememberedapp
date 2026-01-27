@@ -6,40 +6,16 @@
     <title>REMEMBERED - Legends Never Die</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap');
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #050505;
-            color: #e5e5e5;
-            overflow-x: hidden;
-        }
-        
-        .font-serif {
-            font-family: 'Playfair Display', serif;
-        }
-
-        /* Animation Klassen */
-        .fade-in-section {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 1s ease-out, transform 1s cubic-bezier(0.22,1,0.36,1);
-            will-change: opacity, transform;
-        }
-        
-        .fade-in-section.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        ::selection {
-            background: #C5A059;
-            color: black;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: #e5e5e5; overflow-x: hidden; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .fade-in-section { opacity: 0; transform: translateY(30px); transition: opacity 1s ease-out, transform 1s cubic-bezier(0.22,1,0.36,1); will-change: opacity, transform; }
+        .fade-in-section.is-visible { opacity: 1; transform: translateY(0); }
+        ::selection { background: #C5A059; color: black; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center selection:bg-[#C5A059] selection:text-black">
@@ -53,7 +29,6 @@
 
         <div class="mb-12 relative group cursor-default fade-in-section">
             <div class="absolute inset-0 bg-[#C5A059] rounded-full blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-1000 animate-pulse"></div>
-            
             <div class="w-32 h-32 md:w-40 md:h-40 relative flex items-center justify-center">
                  <img src="logo.png" alt="Remembered Logo" class="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(197,160,89,0.5)] transition-transform duration-700 group-hover:scale-105">
             </div>
@@ -61,41 +36,27 @@
 
         <div class="mb-10 fade-in-section" style="transition-delay: 100ms;">
             <div class="px-4 py-1.5 rounded-full border border-[#C5A059]/30 bg-[#C5A059]/5 backdrop-blur-md inline-block">
-                <span class="text-[10px] md:text-xs font-semibold tracking-[0.2em] text-[#C5A059] uppercase">
-                    The World’s First AI-Powered Digital Legacy Vault
-                </span>
+                <span class="text-[10px] md:text-xs font-semibold tracking-[0.2em] text-[#C5A059] uppercase">The World’s First AI-Powered Digital Legacy Vault</span>
             </div>
         </div>
 
         <div class="text-center mb-10 space-y-2 fade-in-section" style="transition-delay: 200ms;">
             <h1 class="font-serif text-5xl md:text-7xl lg:text-9xl font-medium tracking-tight leading-[0.9] text-transparent bg-clip-text bg-gradient-to-b from-[#f0e6d2] to-[#C5A059] drop-shadow-2xl">
-                LEGENDS<br />
-                <span class="text-[#C5A059]">NEVER DIE.</span>
+                LEGENDS<br /><span class="text-[#C5A059]">NEVER DIE.</span>
             </h1>
         </div>
 
         <div class="text-center max-w-2xl mb-16 opacity-90 fade-in-section" style="transition-delay: 300ms;">
             <p class="text-lg md:text-xl font-light text-neutral-400 leading-relaxed">
-                Preserve what defines you.<br />
-                <span class="text-white">Memories, voice, and meaning</span> — structured for eternity.
+                Preserve what defines you.<br /><span class="text-white">Memories, voice, and meaning</span> — structured for eternity.
             </p>
         </div>
 
         <div class="w-full max-w-md mb-8 flex flex-col items-center gap-4 fade-in-section" style="transition-delay: 400ms;">
             <form id="waitlistForm" class="w-full flex flex-col gap-4">
-                <input
-                    type="email"
-                    placeholder="ENTER YOUR EMAIL"
-                    class="w-full bg-white/5 border border-[#C5A059]/30 text-center text-[#e5e5e5] py-3 px-4 focus:outline-none focus:border-[#C5A059] transition-colors placeholder:text-neutral-600 text-sm tracking-widest font-light"
-                    required
-                />
-                <button 
-                    type="submit"
-                    class="group relative w-full px-8 py-4 bg-transparent border border-[#C5A059] text-[#C5A059] font-medium tracking-widest uppercase text-sm hover:bg-[#C5A059] hover:text-black transition-all duration-500 ease-out overflow-hidden"
-                >
-                    <span class="relative z-10 flex items-center justify-center gap-2">
-                        Join The Waitlist <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    </span>
+                <input type="email" id="emailInput" placeholder="ENTER YOUR EMAIL" class="w-full bg-white/5 border border-[#C5A059]/30 text-center text-[#e5e5e5] py-3 px-4 focus:outline-none focus:border-[#C5A059] transition-colors placeholder:text-neutral-600 text-sm tracking-widest font-light" required />
+                <button type="submit" id="submitBtn" class="group relative w-full px-8 py-4 bg-transparent border border-[#C5A059] text-[#C5A059] font-medium tracking-widest uppercase text-sm hover:bg-[#C5A059] hover:text-black transition-all duration-500 ease-out overflow-hidden">
+                    <span class="relative z-10 flex items-center justify-center gap-2">Join The Waitlist <i data-lucide="chevron-right" class="w-4 h-4"></i></span>
                     <div class="absolute inset-0 bg-[#C5A059] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"></div>
                 </button>
             </form>
@@ -103,24 +64,14 @@
             <div id="successMessage" class="hidden w-full px-8 py-4 border border-[#C5A059]/50 bg-[#C5A059]/10 text-[#C5A059] text-center uppercase tracking-widest text-sm animate-pulse">
                 You are on the list.
             </div>
-
-            <p class="text-xs text-neutral-500 tracking-wide uppercase">
-                Limited early access.
-            </p>
+            <p class="text-xs text-neutral-500 tracking-wide uppercase">Limited early access.</p>
         </div>
 
         <div class="mb-24 mt-8 w-full max-w-4xl mx-auto fade-in-section" style="transition-delay: 500ms;">
             <div class="relative p-10 border-t border-b border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent backdrop-blur-sm text-center">
                 <div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-8 bg-gradient-to-b from-[#C5A059] to-transparent opacity-50"></div>
-                
                 <div class="space-y-6 pt-4">
-                    <h3 class="font-serif text-2xl md:text-4xl text-[#e5e5e5] leading-tight">
-                        Built for legacy. <span class="text-[#C5A059] italic">Not for clicks.</span>
-                    </h3>
-                    <p class="text-sm md:text-base text-neutral-400 font-light tracking-wide">
-                        No ads. No feeds. No exploitation. <span class="text-white border-b border-[#C5A059]/30 pb-0.5">Your story stays yours.</span>
-                    </p>
-                    
+                    <h3 class="font-serif text-2xl md:text-4xl text-[#e5e5e5] leading-tight">Built for legacy. <span class="text-[#C5A059] italic">Not for clicks.</span></h3>
                     <div class="pt-2">
                         <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="group flex items-center justify-center gap-2 mx-auto text-[10px] uppercase tracking-[0.2em] text-neutral-600 hover:text-[#C5A059] transition-colors mt-8">
                             Request Early Access
@@ -131,154 +82,87 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full mb-32">
-            <div class="fade-in-section relative group h-full p-8 border border-white/5 hover:border-[#C5A059]/30 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500 flex flex-col items-start min-h-[240px]">
-                <div class="mb-6 p-3 rounded-full bg-white/5 text-[#C5A059]">
-                    <i data-lucide="globe" class="w-6 h-6"></i>
-                </div>
-                <h3 class="text-xl font-serif text-white mb-3">Cultural Layer</h3>
-                <div class="text-sm text-neutral-400 font-light leading-relaxed mb-auto">
-                    Icons, creators, and history.<br/>Curated. Timeless. Public.
-                </div>
-            </div>
-
-            <div class="fade-in-section relative group h-full p-8 border border-white/5 hover:border-[#C5A059]/30 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500 flex flex-col items-start min-h-[240px]" style="transition-delay: 200ms;">
-                <div class="mb-6 p-3 rounded-full bg-white/5 text-[#C5A059]">
-                    <i data-lucide="lock" class="w-6 h-6"></i>
-                </div>
-                <h3 class="text-xl font-serif text-white mb-3">Personal Vault</h3>
-                <div class="text-sm text-neutral-400 font-light leading-relaxed mb-auto">
-                    Your private legacy.<br/>Encrypted. Owned by you.
-                </div>
-            </div>
-
-            <div class="fade-in-section relative group h-full p-8 border border-white/5 hover:border-[#C5A059]/30 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500 flex flex-col items-start min-h-[240px]" style="transition-delay: 400ms;">
-                <div class="mb-6 p-3 rounded-full bg-white/5 text-[#C5A059]">
-                    <i data-lucide="fingerprint" class="w-6 h-6"></i>
-                </div>
-                <h3 class="text-xl font-serif text-white mb-3">Intelligent Structure</h3>
-                <div class="text-sm text-neutral-400 font-light leading-relaxed mb-auto">
-                    AI that organizes meaning —<br/>not attention.
-                </div>
-            </div>
-        </div>
-
-        <section class="w-full mb-32 fade-in-section">
-            <div class="text-center mb-16">
-                <span class="text-[#C5A059] text-xs font-bold tracking-[0.2em] uppercase block mb-4">The Vision</span>
-                <h2 class="font-serif text-3xl md:text-5xl lg:text-6xl text-white mb-6 leading-tight">
-                    More than a database.<br />
-                    A sanctuary for stories.
-                </h2>
-                <p class="text-neutral-400 max-w-2xl mx-auto leading-relaxed text-sm md:text-base font-light">
-                    The open web forgets. It copies, distorts, and dilutes. Remembered is a closed vault
-                    designed to protect the sanctity of history and the privacy of your personal legacy.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="h-full bg-white/5 rounded-2xl p-8 border border-white/5 hover:border-[#C5A059]/20 transition-all duration-500">
-                    <div class="text-[#C5A059] mb-4"><i data-lucide="zap" class="w-6 h-6"></i></div>
-                    <h3 class="text-white font-bold tracking-wide uppercase text-sm mb-3">Daily Inspiration</h3>
-                    <p class="text-neutral-400 text-sm leading-relaxed">Start every day with a quote, a story or a moment that still matters.</p>
-                </div>
-                <div class="h-full bg-white/5 rounded-2xl p-8 border border-white/5 hover:border-[#C5A059]/20 transition-all duration-500">
-                    <div class="text-[#C5A059] mb-4"><i data-lucide="trophy" class="w-6 h-6"></i></div>
-                    <h3 class="text-white font-bold tracking-wide uppercase text-sm mb-3">Hall of Fame</h3>
-                    <p class="text-neutral-400 text-sm leading-relaxed">Your personal collection of the greatest minds, icons and creators of all time.</p>
-                </div>
-                <div class="h-full bg-white/5 rounded-2xl p-8 border border-white/5 hover:border-[#C5A059]/20 transition-all duration-500">
-                    <div class="text-[#C5A059] mb-4"><i data-lucide="shield" class="w-6 h-6"></i></div>
-                    <h3 class="text-white font-bold tracking-wide uppercase text-sm mb-3">Pure & Direct</h3>
-                    <p class="text-neutral-400 text-sm leading-relaxed">No subscription traps. No algorithmic noise. You stay in control.</p>
-                </div>
-            </div>
-        </section>
-
         <footer class="w-full border-t border-white/10 pt-12 pb-6 text-center fade-in-section">
-            <p class="text-xs text-neutral-600 font-light">
-                &copy; 2026 Legacy Global Ventures UG<br/>All rights reserved.
-            </p>
+            <p class="text-xs text-neutral-600 font-light">&copy; 2026 Legacy Global Ventures UG<br/>All rights reserved.</p>
         </footer>
     </main>
 
     <script>
-        // 1. Icons initialisieren
-        lucide.createIcons();
+        // 1. SUPABASE CONFIGURATION
+        const supabaseUrl = 'https://aahsaqygohmykhagbihk.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
+        const db = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // 2. Partikel System (Background)
+        // 2. WAITLIST LOGIC
+        const form = document.getElementById('waitlistForm');
+        const emailInput = document.getElementById('emailInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMsg = document.getElementById('successMessage');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = emailInput.value;
+            if(!email) return;
+
+            // Button Ladezustand
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="animate-pulse">SAVING...</span>';
+            submitBtn.disabled = true;
+
+            // In Supabase speichern
+            const { error } = await db.from('waitlist').insert([{ email: email }]);
+
+            if (error) {
+                console.error('Error:', error);
+                alert('Something went wrong. Please try again.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            } else {
+                // Erfolg!
+                form.style.display = 'none';
+                successMsg.classList.remove('hidden');
+            }
+        });
+
+        // 3. VISUALS & ICONS
+        lucide.createIcons();
+        
+        // Partikel System
         const canvas = document.getElementById('particleCanvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        let animationFrameId;
-
-        const resizeCanvas = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            initParticles();
-        };
-
+        
+        const resizeCanvas = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); };
         const initParticles = () => {
             particles = [];
             const particleCount = Math.floor((window.innerWidth * window.innerHeight) / 15000); 
-            
             for (let i = 0; i < particleCount; i++) {
                 particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    dx: (Math.random() - 0.5) * 0.15,
-                    dy: (Math.random() - 0.5) * 0.15,
-                    size: Math.random() * 1.5 + 0.5,
-                    alpha: Math.random() * 0.2 + 0.05
+                    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                    dx: (Math.random() - 0.5) * 0.15, dy: (Math.random() - 0.5) * 0.15,
+                    size: Math.random() * 1.5 + 0.5, alpha: Math.random() * 0.2 + 0.05
                 });
             }
         };
-
         const draw = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach(p => {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(197, 160, 89, ${p.alpha})`; 
-                ctx.fill();
-                p.x += p.dx;
-                p.y += p.dy;
-                if (p.x < 0) p.x = canvas.width;
-                if (p.x > canvas.width) p.x = 0;
-                if (p.y < 0) p.y = canvas.height;
-                if (p.y > canvas.height) p.y = 0;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(197, 160, 89, ${p.alpha})`; ctx.fill();
+                p.x += p.dx; p.y += p.dy;
+                if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
             });
-            animationFrameId = requestAnimationFrame(draw);
+            requestAnimationFrame(draw);
         };
-
         window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-        draw();
+        resizeCanvas(); draw();
 
-        // 3. Fade In Animationen (Observer)
-        const observerOptions = { threshold: 0.15 };
+        // Fade In
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in-section').forEach(el => {
-            observer.observe(el);
-        });
-
-        // 4. Formular Logik
-        const form = document.getElementById('waitlistForm');
-        const successMsg = document.getElementById('successMessage');
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            form.style.display = 'none';
-            successMsg.classList.remove('hidden');
-        });
+            entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }});
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.fade-in-section').forEach(el => observer.observe(el));
     </script>
 </body>
 </html>

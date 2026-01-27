@@ -1,171 +1,1964 @@
-<!-- ⚠️ FINAL ADMIN – Remembered -->
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en" class="dark">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Mission Control – Remembered</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mission Control – Remembered</title>
 
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
 
-<style>
-body{background:#050505;color:#fff;font-family:'Inter',sans-serif}
-.nav-item{color:#9CA3AF}
-.nav-item.active{background:rgba(234,179,8,.1);border-left:4px solid #EAB308;color:#EAB308}
-th,td{padding:12px}
-</style>
+    <style>
+        /* --- DESIGN TRANSFER FROM APP.HTML --- */
+        body {
+            background-color: #050505;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .font-serif-custom {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* --- COLORS FROM APP --- */
+        .text-gold {
+            color: #EAB308 !important;
+        }
+
+        .bg-gold {
+            background-color: #EAB308;
+        }
+
+        .border-gold {
+            border-color: #EAB308;
+        }
+
+        /* --- ATOM GLOW (PREMIUM BUTTONS) --- */
+        .btn-glow-gold {
+            background: linear-gradient(to bottom right, #EAB308, #CA8A04);
+            border: 1px solid #EAB308;
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-glow-gold:hover {
+            box-shadow: 0 0 40px rgba(234, 179, 8, 0.8), inset 0 0 30px rgba(234, 179, 8, 0.3);
+            transform: scale(1.02);
+        }
+
+        .btn-glow-white {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn-glow-white:hover {
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            border-color: #FFFFFF;
+        }
+
+        .btn-glow-red {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.4);
+            box-shadow: 0 0 15px rgba(220, 38, 38, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn-glow-red:hover {
+            box-shadow: 0 0 30px rgba(220, 38, 38, 0.6), inset 0 0 20px rgba(220, 38, 38, 0.2);
+            border-color: #EF4444;
+        }
+
+        /* --- NAVIGATION STYLES --- */
+        .nav-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .nav-item.active {
+            border-left: 3px solid #EAB308;
+            background: linear-gradient(90deg, rgba(234, 179, 8, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+            color: #EAB308;
+        }
+
+        /* --- PANEL STYLES (PREMIUM) --- */
+        .glass-panel {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        /* --- TABLE HOVER GLOW --- */
+        .table-row-glow {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .table-row-glow:hover {
+            background: rgba(255, 255, 255, 0.03);
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.1);
+        }
+
+        /* --- STATS CARDS --- */
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.5rem;
+        }
+
+        /* --- DROP ZONE --- */
+        .drop-zone {
+            border: 2px dashed rgba(234, 179, 8, 0.2);
+            transition: all 0.2s;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .drop-zone.drag-over {
+            border-color: #EAB308;
+            background: rgba(234, 179, 8, 0.05);
+            box-shadow: 0 0 30px rgba(234, 179, 8, 0.2);
+        }
+
+        .drop-zone:hover {
+            border-color: #EAB308;
+        }
+
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #EAB308;
+        }
+
+        /* --- BADGES --- */
+        .badge-netflix {
+            background: rgba(229, 9, 20, 0.2);
+            color: #E50914;
+            border: 1px solid rgba(229, 9, 20, 0.3);
+        }
+
+        .badge-eventim {
+            background: rgba(245, 130, 31, 0.2);
+            color: #F5821F;
+            border: 1px solid rgba(245, 130, 31, 0.3);
+        }
+
+        .badge-disney {
+            background: rgba(17, 60, 207, 0.2);
+            color: #40aaff;
+            border: 1px solid rgba(17, 60, 207, 0.3);
+        }
+
+        .badge-spotify {
+            background: rgba(29, 185, 84, 0.2);
+            color: #1DB954;
+            border: 1px solid rgba(29, 185, 84, 0.3);
+        }
+
+        .badge-default {
+            background: rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- TAB SYSTEM --- */
+        .tab-btn {
+            padding: 0.5rem 1.5rem;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            color: #6B7280;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+        }
+
+        .tab-btn.active {
+            border-bottom-color: #EAB308;
+            color: #EAB308;
+        }
+
+        .tab-btn:hover {
+            color: white;
+        }
+    </style>
 </head>
 
-<body class="h-screen flex overflow-hidden">
+<body class="flex h-screen bg-black">
 
-<!-- SIDEBAR -->
-<aside class="w-64 bg-black border-r border-white/10">
-<div class="h-16 flex items-center px-8 border-b border-white/10">
-<span class="text-yellow-400 font-bold tracking-[0.2em] text-sm">MISSION CONTROL</span>
-</div>
+    <aside class="w-64 border-r border-white/5 flex flex-col bg-black h-full">
+        <div class="h-16 flex items-center px-6 border-b border-white/5">
+            <div class="h-2 w-2 bg-yellow-500 rounded-full mr-3 shadow-[0_0_10px_#EAB308]"></div>
+            <span class="text-yellow-500 font-bold tracking-[0.2em] text-xs">MISSION CONTROL</span>
+        </div>
 
-<nav class="py-6 space-y-1">
-<button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item active w-full px-8 py-3 text-left">Dashboard</button>
-<button onclick="switchTab('inbox')" id="nav-inbox" class="nav-item w-full px-8 py-3 text-left">Suggestions</button>
-<button onclick="switchTab('add')" id="nav-add" class="nav-item w-full px-8 py-3 text-left">➕ Add Legend</button>
-<button onclick="switchTab('monetization')" id="nav-monetization" class="nav-item w-full px-8 py-3 text-left">Monetization</button>
-</nav>
-</aside>
+        <nav class="flex-1 py-8 space-y-2 px-2 overflow-y-auto">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard"
+                class="nav-item active w-full px-4 py-3 text-left text-sm font-medium rounded-r-lg flex items-center gap-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z">
+                    </path>
+                </svg>
+                Dashboard
+            </button>
 
-<!-- MAIN -->
-<main class="flex-1 overflow-y-auto">
+            <button onclick="switchTab('manage')" id="nav-manage"
+                class="nav-item w-full px-4 py-3 text-left text-gray-400 text-sm font-medium rounded-r-lg flex items-center gap-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                    </path>
+                </svg>
+                Manage Content
+            </button>
 
-<header class="h-16 bg-black/60 backdrop-blur border-b border-white/10 flex items-center justify-between px-8">
-<h1 id="page-title" class="text-xl font-bold">System Overview</h1>
-<button onclick="logout()" class="text-red-500 text-xs font-bold">Logout</button>
-</header>
+            <button onclick="switchTab('add')" id="nav-add"
+                class="nav-item w-full px-4 py-3 text-left text-gray-400 text-sm font-medium rounded-r-lg flex items-center gap-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add / Edit
+            </button>
 
-<div class="p-8 max-w-6xl mx-auto">
+            <button onclick="switchTab('inbox')" id="nav-inbox"
+                class="nav-item w-full px-4 py-3 text-left text-gray-400 text-sm font-medium rounded-r-lg flex items-center gap-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                    </path>
+                </svg>
+                Suggestions
+            </button>
 
-<!-- DASHBOARD -->
-<section id="tab-dashboard">
-<h2 class="text-xl font-bold mb-6">Stats</h2>
-<div class="grid grid-cols-3 gap-6">
-<div class="bg-gray-900 p-6 rounded-xl">Legends<br><b id="stat-legends">–</b></div>
-<div class="bg-gray-900 p-6 rounded-xl">Suggestions<br><b id="stat-suggestions">–</b></div>
-<div class="bg-gray-900 p-6 rounded-xl">Candles<br><b id="stat-candles">–</b></div>
-</div>
-</section>
+            <button onclick="switchTab('users')" id="nav-users"
+                class="nav-item w-full px-4 py-3 text-left text-gray-400 text-sm font-medium rounded-r-lg flex items-center gap-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                    </path>
+                </svg>
+                User Management
+            </button>
 
-<!-- SUGGESTIONS -->
-<section id="tab-inbox" class="hidden">
-<h2 class="text-xl font-bold mb-6">Community Suggestions</h2>
-<table class="w-full text-sm border border-white/10 rounded overflow-hidden">
-<thead class="bg-white/5">
-<tr><th>Name</th><th>Category</th><th class="text-right">Action</th></tr>
-</thead>
-<tbody id="suggestions-table"></tbody>
-</table>
-</section>
+            <button onclick="switchTab('campaigns')" id="nav-campaigns"
+                class="nav-item w-full px-4 py-3 text-left text-gray-400 text-sm font-medium rounded-r-lg flex items-center gap-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z">
+                    </path>
+                </svg>
+                Campaigns
+            </button>
 
-<!-- ADD LEGEND -->
-<section id="tab-add" class="hidden">
-<h2 class="text-xl font-bold mb-6">Add New Legend</h2>
+            <button onclick="switchTab('playlists')" id="nav-playlists"
+                class="nav-item w-full px-4 py-3 text-left text-gray-400 text-sm font-medium rounded-r-lg flex items-center gap-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3">
+                    </path>
+                </svg>
+                Playlists
+            </button>
+        </nav>
 
-<div class="grid grid-cols-2 gap-4">
-<input id="name" placeholder="Name" class="p-3 bg-gray-900 rounded"/>
-<input id="slug" placeholder="Slug (amy-winehouse)" class="p-3 bg-gray-900 rounded"/>
-<input id="category" placeholder="Category" class="p-3 bg-gray-900 rounded"/>
-<input id="death" type="date" class="p-3 bg-gray-900 rounded"/>
-<input id="headline" placeholder="Headline" class="p-3 bg-gray-900 rounded col-span-2"/>
-<input id="quote" placeholder="Quote" class="p-3 bg-gray-900 rounded col-span-2"/>
-<textarea id="bio" placeholder="Bio" class="p-3 bg-gray-900 rounded col-span-2"></textarea>
-<input id="image" placeholder="Image URL" class="p-3 bg-gray-900 rounded col-span-2"/>
-</div>
+        <div class="p-6 text-xs text-gray-700 font-mono mt-auto border-t border-white/5">
+            Build 13.5 (Final)<br>
+            <span class="text-green-900">● Database Secured</span>
+        </div>
+    </aside>
 
-<button onclick="addLegend()" class="mt-6 bg-yellow-400 text-black px-6 py-3 rounded font-bold">
-SAVE LEGEND
-</button>
-</section>
+    <main class="flex-1 flex flex-col relative bg-black h-full overflow-hidden">
 
-<!-- MONETIZATION -->
-<section id="tab-monetization" class="hidden">
-<h2 class="text-xl font-bold mb-2">Revenue & Plans</h2>
-<p class="text-gray-400 max-w-xl">
-Monetization is finalized.  
-Admin view is read-only by design.
-</p>
-</section>
+        <header class="h-16 min-h-[64px] flex items-center justify-between px-8 border-b border-white/5 bg-black z-10">
+            <h1 id="page-title" class="text-2xl font-serif-custom font-bold text-white tracking-wide">System Overview
+            </h1>
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden md:block">
+                    <div class="text-[10px] text-gray-500 uppercase tracking-wider">Status</div>
+                    <div class="text-xs text-green-500 font-bold tracking-widest">ONLINE</div>
+                </div>
+                <div
+                    class="h-10 w-10 rounded-full bg-yellow-500/10 flex items-center justify-center border border-yellow-500/50">
+                    <div class="h-2 w-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                </div>
+            </div>
+        </header>
 
-</div>
-</main>
+        <div class="flex-1 overflow-y-auto p-8 relative">
 
-<script>
-const db = supabase.createClient(
-  "https://aahsaqygohmykhagbihk.supabase.co",
-  "YOUR_PUBLIC_KEY"
-);
+            <div id="tab-dashboard" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass-panel p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-blue-500/10 rounded-xl text-blue-500">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <span class="text-xs text-green-500 bg-green-500/10 px-3 py-1 rounded-full font-bold">↗
+                                Live</span>
+                        </div>
+                        <div class="stat-value text-white" id="stat-legends">--</div>
+                        <div class="stat-label">Total Legends</div>
+                    </div>
+                    <div class="glass-panel p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-red-500/10 rounded-xl text-red-500">
+                                <span class="text-3xl">🥀</span>
+                            </div>
+                            <span class="text-xs text-red-500 bg-red-500/10 px-3 py-1 rounded-full font-bold">Club
+                                27</span>
+                        </div>
+                        <div class="stat-value text-white" id="stat-club27">--</div>
+                        <div class="stat-label">Club 27 Entries</div>
+                    </div>
+                    <div class="glass-panel p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-orange-500/10 rounded-xl text-orange-500">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path>
+                                </svg>
+                            </div>
+                            <span
+                                class="text-xs text-purple-500 bg-purple-500/10 px-3 py-1 rounded-full font-bold">+12.5%</span>
+                        </div>
+                        <div class="stat-value text-yellow-500" id="stat-suggestions">--</div>
+                        <div class="stat-label">Pending Ideas</div>
+                    </div>
+                </div>
 
-function switchTab(tab){
-document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
-document.getElementById("tab-"+tab).classList.remove("hidden");
-document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
-document.getElementById("nav-"+tab).classList.add("active");
-document.getElementById("page-title").innerText =
-tab === "dashboard" ? "System Overview" :
-tab === "add" ? "Add Legend" :
-tab.charAt(0).toUpperCase()+tab.slice(1);
+                <div class="glass-panel p-8">
+                    <h3 class="font-serif-custom text-2xl font-bold text-white mb-6">Traffic Overview</h3>
+                    <div class="w-full h-64">
+                        <canvas id="candleChart"></canvas>
+                    </div>
+                </div>
+            </div>
 
-if(tab==="inbox") loadSuggestions();
-}
+            <div id="tab-manage" class="hidden h-full flex flex-col">
+                <div class="flex justify-end items-center mb-6">
+                    <button onclick="switchTab('add'); resetForm();"
+                        class="btn-glow-gold text-black px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
+                            </path>
+                        </svg>
+                        CREATE NEW
+                    </button>
+                </div>
 
-async function loadStats(){
-const {count:l}=await db.from("legends").select("*",{count:"exact",head:true});
-const {count:s}=await db.from("suggestions").select("*",{count:"exact",head:true});
-const {data:c}=await db.from("legends").select("candles");
+                <div class="flex gap-1 mb-6 border-b border-white/10">
+                    <button onclick="setActiveTable('legends')" id="table-tab-legends" class="tab-btn active">
+                        Legends
+                    </button>
+                    <button onclick="setActiveTable('club27')" id="table-tab-club27" class="tab-btn">
+                        Club 27
+                    </button>
+                </div>
 
-document.getElementById("stat-legends").innerText=l||0;
-document.getElementById("stat-suggestions").innerText=s||0;
-document.getElementById("stat-candles").innerText =
-(c||[]).reduce((a,b)=>a+(b.candles||0),0);
-}
+                <div class="glass-panel overflow-hidden flex-1 rounded-xl border border-white/10">
+                    <div class="overflow-y-auto h-full">
+                        <table class="w-full text-left text-sm text-gray-400">
+                            <thead
+                                class="bg-white/5 text-xs uppercase font-bold text-gray-500 sticky top-0 backdrop-blur-md z-10">
+                                <tr>
+                                    <th class="p-4 w-20">Image</th>
+                                    <th class="p-4">Name</th>
+                                    <th class="p-4">Category</th>
+                                    <th class="p-4">Partner</th>
+                                    <th class="p-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="legends-table-body" class="divide-y divide-white/5"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-async function loadSuggestions(){
-const {data}=await db.from("suggestions").select("*").order("created_at",{ascending:false});
-document.getElementById("suggestions-table").innerHTML =
-(data||[]).map(d=>`
-<tr class="border-t border-white/5">
-<td>${d.name||"-"}</td>
-<td>${d.category||"-"}</td>
-<td class="text-right">
-<button onclick="deleteSuggestion(${d.id})" class="text-red-500">🗑</button>
-</td>
-</tr>`).join("");
-}
+            <div id="tab-inbox" class="hidden">
 
-async function deleteSuggestion(id){
-if(confirm("Delete suggestion?")){
-await db.from("suggestions").delete().eq("id",id);
-loadSuggestions(); loadStats();
-}
-}
+                <div class="glass-panel overflow-hidden rounded-xl border border-white/10">
+                    <table class="w-full text-left text-sm text-gray-400">
+                        <thead class="bg-white/5 text-xs uppercase font-bold text-gray-500">
+                            <tr>
+                                <th class="p-4">Name</th>
+                                <th class="p-4">Category</th>
+                                <th class="p-4">Date</th>
+                                <th class="p-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="suggestions-table" class="divide-y divide-white/5"></tbody>
+                    </table>
+                </div>
+            </div>
 
-async function addLegend(){
-await db.from("legends").insert({
-name:name.value,
-slug:slug.value,
-category:category.value,
-headline:headline.value,
-quote:quote.value,
-bio:bio.value,
-image_url:image.value,
-death_date:death.value
-});
-alert("Legend added");
-}
+            <div id="tab-add" class="hidden pb-20">
+                <div class="max-w-5xl mx-auto glass-panel p-8 rounded-xl border border-white/10">
+                    <div class="flex justify-between items-center mb-6 pb-6 border-b border-white/5">
+                        <div>
+                            <h2 id="form-title" class="text-3xl font-serif-custom font-bold text-white">Add New Legend
+                            </h2>
+                            <p class="text-sm text-gray-500 mt-2">Fill in the details below to create a memorial page.
+                            </p>
+                        </div>
+                        <button onclick="resetForm()"
+                            class="text-xs text-gray-500 hover:text-gold underline transition">Clear Form</button>
+                    </div>
 
-function logout(){location.href="/";}
-loadStats();
-</script>
+                    <input type="hidden" id="edit-id" value="">
+                    <input type="hidden" id="edit-table" value="legends">
+                    <input type="hidden" id="existing-image-url" value="">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Full Name
+                                    *</label>
+                                <input id="name"
+                                    class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none transition-colors"
+                                    placeholder="e.g. Michael Jackson" />
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Category</label>
+                                    <select id="category"
+                                        class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none appearance-none cursor-pointer">
+                                        <option value="Music">Music</option>
+                                        <option value="Actor">Actor</option>
+                                        <option value="Comedian">Comedian</option>
+                                        <option value="Sport">Sport</option>
+                                        <option value="Visionary">Visionary</option>
+                                        <option value="Royal">Royal</option>
+                                        <option value="Fashion Icon">Fashion Icon</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Slug
+                                        (ID)</label>
+                                    <input id="slug"
+                                        class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none" />
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Born
+                                        (Lifespan)</label>
+                                    <input id="born" type="text" placeholder="1958 - 2009"
+                                        class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none" />
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Death
+                                        Date</label>
+                                    <input id="death" type="date"
+                                        class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none" />
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Headline</label>
+                                <input id="headline"
+                                    class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none" />
+                            </div>
+
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Quote</label>
+                                <input id="quote"
+                                    class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none" />
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block">Profile
+                                    Image</label>
+                                <div id="drop-area"
+                                    class="drop-zone w-full h-40 rounded-xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden group">
+                                    <input type="file" id="fileElem" accept="image/*" class="hidden"
+                                        onchange="handleFiles(this.files)">
+                                    <div id="drop-content" class="text-center transition-opacity duration-200">
+                                        <div
+                                            class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3 group-hover:bg-gold/10">
+                                            <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                        <p class="text-sm text-gray-300 font-medium">Click to upload or drag JPG</p>
+                                    </div>
+                                    <div id="preview-container"
+                                        class="absolute inset-0 bg-black hidden flex items-center justify-center">
+                                        <img id="preview-img" class="h-full w-full object-cover opacity-50" />
+                                        <div class="absolute z-10 flex flex-col items-center">
+                                            <span
+                                                class="text-green-500 font-bold text-sm bg-black/50 px-3 py-1 rounded-full border border-green-500/30">✓
+                                                SELECTED</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gold/5 p-6 rounded-xl border border-gold/20 space-y-4">
+                                <h3
+                                    class="text-gold font-bold text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
+                                    <span>⚡</span> Media & Monetization
+                                </h3>
+
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">1.
+                                        YouTube Trailer (App Video)</label>
+                                    <input id="trailer_url" type="text" placeholder="https://youtube.com/watch?v=..."
+                                        class="w-full bg-black border border-white/20 rounded-lg p-3 text-white text-sm focus:border-gold focus:outline-none" />
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">2.
+                                            Partner</label>
+                                        <select id="partner_type"
+                                            class="w-full bg-black border border-white/20 rounded-lg p-3 text-white text-sm focus:border-gold outline-none appearance-none cursor-pointer">
+                                            <option value="netflix">Netflix</option>
+                                            <option value="eventim">Eventim</option>
+                                            <option value="disney">Disney+</option>
+                                            <option value="prime">Prime Video</option>
+                                            <option value="spotify">Spotify</option>
+                                            <option value="apple">Apple TV+</option>
+                                            <option value="hbo">HBO Max</option>
+                                        </select>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">3.
+                                            Partner Link</label>
+                                        <input id="streaming_url" type="text" placeholder="https://..."
+                                            class="w-full bg-black border border-white/20 rounded-lg p-3 text-white text-sm focus:border-gold focus:outline-none" />
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-white/10">
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">4.
+                                            Secondary Partner</label>
+                                        <select id="partner_2_type"
+                                            class="w-full bg-black border border-white/20 rounded-lg p-3 text-white text-sm focus:border-gold outline-none appearance-none cursor-pointer">
+                                            <option value="netflix">Netflix</option>
+                                            <option value="eventim">Eventim</option>
+                                            <option value="disney">Disney+</option>
+                                            <option value="prime">Prime Video</option>
+                                            <option value="spotify">Spotify</option>
+                                            <option value="apple">Apple TV+</option>
+                                            <option value="hbo">HBO Max</option>
+                                        </select>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">5.
+                                            Secondary Partner Link</label>
+                                        <input id="partner_2_url" type="text" placeholder="https://..."
+                                            class="w-full bg-black border border-white/20 rounded-lg p-3 text-white text-sm focus:border-gold focus:outline-none" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-span-1 md:col-span-2 space-y-2">
+                            <label
+                                class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Biography</label>
+                            <textarea id="bio" rows="6"
+                                class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none leading-relaxed"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end gap-4 border-t border-white/10 pt-6">
+                        <button onclick="switchTab('manage')"
+                            class="btn-glow-white text-white font-bold py-4 px-8 rounded-lg uppercase text-sm tracking-wider">
+                            Cancel
+                        </button>
+                        <button onclick="saveLegend()" id="save-btn"
+                            class="btn-glow-gold text-black font-bold py-4 px-10 rounded-lg flex items-center gap-2 uppercase text-sm tracking-wider">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                                </path>
+                            </svg>
+                            SAVE LEGEND
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-users" class="hidden h-full flex flex-col" style="justify-content: flex-start;">
+            <div class="glass-panel p-6 rounded-xl border border-white/10 mb-6">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    Plan Feature Matrix
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-black/40 border border-white/10 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-white font-bold">FREE</h4>
+                            <span class="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">$0</span>
+                        </div>
+                        <ul class="space-y-2 text-xs text-gray-400">
+                            <li class="flex items-center gap-2">
+                                <span class="text-green-500">✓</span> Basic access
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-yellow-500">⚠</span> 1 candle/day
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-yellow-500">⚠</span> Limited favorites
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-red-500">✕</span> Ads visible
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gold/5 border border-gold/30 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-gold font-bold">SUPPORTER</h4>
+                            <span class="text-xs text-gold bg-gold/20 px-2 py-1 rounded">$1.99/mo</span>
+                        </div>
+                        <ul class="space-y-2 text-xs text-gray-300">
+                            <li class="flex items-center gap-2">
+                                <span class="text-gold">★</span> Unlimited candles
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-gold">★</span> Unlimited favorites
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-gold">★</span> Ad-free
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-gold">★</span> Virtual flowers
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-gold">★</span> Collections
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-gold">★</span> Watch trailers
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-blue-900/10 border border-blue-500/30 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-blue-400 font-bold">LEGACY+</h4>
+                            <span class="text-xs text-blue-400 bg-blue-900/20 px-2 py-1 rounded">$4.99/mo</span>
+                        </div>
+                        <ul class="space-y-2 text-xs text-gray-300">
+                            <li class="flex items-center gap-2">
+                                <span class="text-blue-400">✓</span> All SUPPORTER features
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-blue-400">+</span> Memorial pages
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-blue-400">+</span> AI summaries
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-blue-400">+</span> Export to PDF
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-blue-400">+</span> Personal memories
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-blue-400">+</span> Eternal coordinates
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex gap-3">
+                    <button onclick="createTestUser('FREE')"
+                        class="btn-glow-white text-white px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                        Test User (Free)
+                    </button>
+                    <button onclick="createTestUser('SUPPORTER')"
+                        class="btn-glow-gold text-black px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                        Test User (Supporter)
+                    </button>
+                    <button onclick="createTestUser('LEGACY+')"
+                        class="bg-blue-900/20 border border-blue-500/30 text-blue-400 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:bg-blue-900/40 transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                        Test User (Legacy+)
+                    </button>
+                </div>
+                <button onclick="generateInviteLink()"
+                    class="btn-glow-gold text-black px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                        </path>
+                    </svg>
+                    Generate Invite Link
+                </button>
+            </div>
+
+            <div class="glass-panel overflow-hidden rounded-xl border border-white/10 flex-1">
+                <div class="overflow-y-auto h-full">
+                    <table class="w-full text-left text-sm text-gray-400">
+                        <thead
+                            class="bg-white/5 text-xs uppercase font-bold text-gray-500 sticky top-0 backdrop-blur-md z-10">
+                            <tr>
+                                <th class="p-4">User ID / Email</th>
+                                <th class="p-4">Current Plan</th>
+                                <th class="p-4">Features</th>
+                                <th class="p-4">Joined</th>
+                                <th class="p-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body" class="divide-y divide-white/5"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-campaigns" class="hidden h-full flex flex-col">
+            <div class="flex justify-end items-center mb-6">
+                <button onclick="openCampaignForm()"
+                    class="btn-glow-gold text-black px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    CREATE CAMPAIGN
+                </button>
+            </div>
+
+            <div id="campaign-form" class="hidden glass-panel p-6 rounded-xl border border-white/10 mb-6">
+                <h3 class="text-xl font-bold text-white mb-4">Add/Edit Campaign</h3>
+                <input type="hidden" id="campaign-edit-id" value="">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Campaign Title
+                            *</label>
+                        <input id="campaign-title"
+                            class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
+                            placeholder="e.g. Watch the Legends Documentary" />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sponsor
+                            Label</label>
+                        <input id="campaign-sponsor"
+                            class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
+                            placeholder="e.g. Presented by Netflix" value="SPONSORED TRIBUTE" />
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Banner Image URL
+                            *</label>
+                        <input id="campaign-image"
+                            class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
+                            placeholder="https://..." />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Target URL
+                            *</label>
+                        <input id="campaign-target"
+                            class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
+                            placeholder="https://..." />
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button onclick="closeCampaignForm()"
+                        class="btn-glow-white text-white font-bold py-3 px-6 rounded-lg uppercase text-sm tracking-wider">
+                        Cancel
+                    </button>
+                    <button onclick="saveCampaign()"
+                        class="btn-glow-gold text-black font-bold py-3 px-8 rounded-lg uppercase text-sm tracking-wider">
+                        Save Campaign
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-panel overflow-hidden rounded-xl border border-white/10 flex-1">
+                <div class="overflow-y-auto h-full">
+                    <table class="w-full text-left text-sm text-gray-400">
+                        <thead
+                            class="bg-white/5 text-xs uppercase font-bold text-gray-500 sticky top-0 backdrop-blur-md z-10">
+                            <tr>
+                                <th class="p-4 w-20">Image</th>
+                                <th class="p-4">Title</th>
+                                <th class="p-4">Sponsor</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="campaigns-table-body" class="divide-y divide-white/5"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-playlists" class="hidden h-full flex flex-col">
+            <div class="flex justify-end items-center mb-6">
+                <button onclick="openPlaylistForm()"
+                    class="btn-glow-gold text-black px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    CREATE PLAYLIST
+                </button>
+            </div>
+
+            <div id="playlist-form" class="hidden glass-panel p-6 rounded-xl border border-white/10 mb-6">
+                <h3 class="text-xl font-bold text-white mb-4">Add/Edit Playlist</h3>
+                <input type="hidden" id="playlist-edit-id" value="">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Playlist Title
+                            *</label>
+                        <input id="playlist-title"
+                            class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
+                            placeholder="e.g. Rock Legends Forever" />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sort Order</label>
+                        <input id="playlist-sort" type="number"
+                            class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
+                            placeholder="0" value="0" />
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-4 mb-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block">Cover Image
+                            *</label>
+                        <div id="playlist-drop-area"
+                            class="drop-zone w-full h-40 rounded-xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden group">
+                            <input type="file" id="playlist-file-input" accept="image/*" class="hidden"
+                                onchange="handlePlaylistCoverFiles(this.files)">
+                            <div id="playlist-drop-content" class="text-center transition-opacity duration-200">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3 group-hover:bg-gold/10">
+                                    <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <p class="text-sm text-gray-300 font-medium">Click to upload playlist cover</p>
+                                <p class="text-xs text-gray-500 mt-1">JPG, PNG, or WebP</p>
+                            </div>
+                            <div id="playlist-preview-container"
+                                class="absolute inset-0 bg-black hidden flex items-center justify-center">
+                                <img id="playlist-preview-img" class="h-full w-full object-cover opacity-50" />
+                                <div class="absolute z-10 flex flex-col items-center">
+                                    <span
+                                        class="text-green-500 font-bold text-sm bg-black/50 px-3 py-1 rounded-full border border-green-500/30">✓
+                                        SELECTED</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Spotify Playlist
+                            URL *</label>
+                        <input id="playlist-spotify"
+                            class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
+                            placeholder="https://open.spotify.com/playlist/..." />
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 mb-4">
+                    <input type="checkbox" id="playlist-active" checked
+                        class="w-4 h-4 bg-black border-white/20 rounded text-gold focus:ring-gold focus:ring-2">
+                    <label class="text-sm text-gray-300">Active (visible in app)</label>
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button onclick="closePlaylistForm()"
+                        class="btn-glow-white text-white font-bold py-3 px-6 rounded-lg uppercase text-sm tracking-wider">
+                        Cancel
+                    </button>
+                    <button onclick="savePlaylist()"
+                        class="btn-glow-gold text-black font-bold py-3 px-8 rounded-lg uppercase text-sm tracking-wider">
+                        Save Playlist
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-panel overflow-hidden rounded-xl border border-white/10 flex-1">
+                <div class="overflow-y-auto h-full">
+                    <table class="w-full text-left text-sm text-gray-400">
+                        <thead
+                            class="bg-white/5 text-xs uppercase font-bold text-gray-500 sticky top-0 backdrop-blur-md z-10">
+                            <tr>
+                                <th class="p-4 w-20">Cover</th>
+                                <th class="p-4">Title</th>
+                                <th class="p-4">Spotify URL</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4">Order</th>
+                                <th class="p-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="playlists-table-body" class="divide-y divide-white/5"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <script>
+        // --- CONFIGURATION (SAME AS APP.HTML) ---
+        const supabaseUrl = 'https://aahsaqygohmykhagbihk.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
+        const db = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // ================================================
+        // 🔐 CRITICAL: SESSION CHECK & ADMIN VERIFICATION
+        // ================================================
+        // This MUST run before anything else
+        (async function checkAuth() {
+            console.log('🔐 [AUTH] Starting session verification...');
+
+            try {
+                // Get current session
+                const { data: { session }, error: sessionError } = await db.auth.getSession();
+
+                if (sessionError) {
+                    console.error('❌ [AUTH] Session error:', sessionError);
+                    alert('⚠️ Session error. Redirecting to login...');
+                    window.location.href = 'admin_login.html';
+                    return;
+                }
+
+                if (!session) {
+                    console.warn('⚠️ [AUTH] No active session found');
+                    alert('⚠️ Not logged in. Please log in first.');
+                    window.location.href = 'admin_login.html';
+                    return;
+                }
+
+                console.log('✅ [AUTH] Session valid:', session.user.email);
+                console.log('✅ [AUTH] User ID:', session.user.id);
+
+                // Verify admin status
+                const { data: adminCheck, error: adminError } = await db
+                    .from('admin_users')
+                    .select('*')
+                    .eq('user_id', session.user.id)
+                    .single();
+
+                if (adminError || !adminCheck) {
+                    console.error('❌ [AUTH] User is not an admin');
+                    alert('❌ ACCESS DENIED\n\nYou are not authorized as an admin.\n\nRedirecting to login...');
+                    await db.auth.signOut();
+                    window.location.href = 'admin_login.html';
+                    return;
+                }
+
+                console.log('✅ [AUTH] Admin access confirmed for:', session.user.email);
+
+            } catch (err) {
+                console.error('❌ [AUTH] Unexpected error:', err);
+                alert('❌ Authentication error. Redirecting to login...');
+                window.location.href = 'admin_login.html';
+            }
+        })();
+
+        // --- GLOBAL STATE ---
+        let selectedFile = null;
+        let selectedPlaylistCoverFile = null;
+        let activeTable = 'legends'; // 'legends' or 'club27'
+
+        // --- TABLE SWITCHER ---
+        function setActiveTable(table) {
+            activeTable = table;
+            document.getElementById('table-tab-legends').classList.toggle('active', table === 'legends');
+            document.getElementById('table-tab-club27').classList.toggle('active', table === 'club27');
+            loadLegendsList();
+        }
+
+        // --- DRAG & DROP LOGIC (LEGEND FORM) ---
+        const dropArea = document.getElementById('drop-area');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { dropArea.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation() }, false); });
+        ['dragenter', 'dragover'].forEach(eventName => dropArea.addEventListener(eventName, () => dropArea.classList.add('drag-over'), false));
+        ['dragleave', 'drop'].forEach(eventName => dropArea.addEventListener(eventName, () => dropArea.classList.remove('drag-over'), false));
+        dropArea.addEventListener('drop', e => handleFiles(e.dataTransfer.files), false);
+        dropArea.addEventListener('click', () => document.getElementById('fileElem').click());
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                selectedFile = files[0];
+                const reader = new FileReader();
+                reader.readAsDataURL(selectedFile);
+                reader.onloadend = function () {
+                    document.getElementById('drop-content').classList.add('hidden');
+                    document.getElementById('preview-container').classList.remove('hidden');
+                    document.getElementById('preview-img').src = reader.result;
+                }
+            }
+        }
+
+        // --- DRAG & DROP LOGIC (PLAYLIST FORM) ---
+        const playlistDropArea = document.getElementById('playlist-drop-area');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { playlistDropArea.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation() }, false); });
+        ['dragenter', 'dragover'].forEach(eventName => playlistDropArea.addEventListener(eventName, () => playlistDropArea.classList.add('drag-over'), false));
+        ['dragleave', 'drop'].forEach(eventName => playlistDropArea.addEventListener(eventName, () => playlistDropArea.classList.remove('drag-over'), false));
+        playlistDropArea.addEventListener('drop', e => handlePlaylistCoverFiles(e.dataTransfer.files), false);
+        playlistDropArea.addEventListener('click', () => document.getElementById('playlist-file-input').click());
+
+        function handlePlaylistCoverFiles(files) {
+            if (files.length > 0) {
+                selectedPlaylistCoverFile = files[0];
+                const reader = new FileReader();
+                reader.readAsDataURL(selectedPlaylistCoverFile);
+                reader.onloadend = function () {
+                    document.getElementById('playlist-drop-content').classList.add('hidden');
+                    document.getElementById('playlist-preview-container').classList.remove('hidden');
+                    document.getElementById('playlist-preview-img').src = reader.result;
+                }
+            }
+        }
+
+        // --- SAVE FUNCTION (CREATE & UPDATE) ---
+        async function saveLegend() {
+            const btn = document.getElementById('save-btn');
+            const originalText = btn.innerHTML;
+
+            const { data: sessionData } = await db.auth.getSession();
+            if (!sessionData.session) {
+                alert("❌ NOT LOGGED IN\n\nYou must be logged in to save legends.");
+                return;
+            }
+
+            const formData = {
+                editId: document.getElementById('edit-id').value,
+                editTable: document.getElementById('edit-table').value,
+                existingImageUrl: document.getElementById('existing-image-url').value,
+                name: document.getElementById('name').value,
+                slug: document.getElementById('slug').value,
+                category: document.getElementById('category').value,
+                headline: document.getElementById('headline').value,
+                quote: document.getElementById('quote').value,
+                bio: document.getElementById('bio').value,
+                born: document.getElementById('born').value,
+                death: document.getElementById('death').value,
+                trailerUrl: document.getElementById('trailer_url').value,
+                streamingUrl: document.getElementById('streaming_url').value,
+                partnerType: document.getElementById('partner_type').value,
+                partner2Url: document.getElementById('partner_2_url').value,
+                partner2Type: document.getElementById('partner_2_type').value
+            };
+
+            if (!formData.name || formData.name.trim() === '') {
+                alert("❌ Name is required!");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<svg class="animate-spin h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+
+            let publicImageUrl = formData.existingImageUrl;
+
+            if (selectedFile) {
+                try {
+                    const fileExt = selectedFile.name.split('.').pop();
+                    const fileName = `${Date.now()}.${fileExt}`;
+                    const { error: uploadError } = await db.storage.from('assets').upload(fileName, selectedFile);
+
+                    if (uploadError) throw uploadError;
+
+                    const { data } = db.storage.from('assets').getPublicUrl(fileName);
+                    publicImageUrl = data.publicUrl;
+                } catch (uploadErr) {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    alert("❌ Image upload failed: " + uploadErr.message);
+                    return;
+                }
+            }
+
+            const partnerType = formData.streamingUrl ? formData.partnerType : null;
+            const partner2Type = formData.partner2Url ? formData.partner2Type : null;
+
+            let payload;
+            if (formData.editTable === 'club27') {
+                payload = {
+                    name: formData.name,
+                    lifespan: formData.born,
+                    description: formData.bio,
+                    image_url: publicImageUrl,
+                    quote: formData.quote || null,
+                    headline: formData.headline || null,
+                    partner_2_type: partner2Type,
+                    partner_2_url: formData.partner2Url || null
+                };
+            } else {
+                payload = {
+                    name: formData.name,
+                    slug: formData.slug,
+                    category: formData.category,
+                    headline: formData.headline,
+                    quote: formData.quote,
+                    bio: formData.bio,
+                    image_url: publicImageUrl,
+                    death_date: formData.death || null,
+                    dates: formData.born,
+                    trailer_url: formData.trailerUrl || null,
+                    streaming_url: formData.streamingUrl || null,
+                    partner_type: partnerType,
+                    partner_2_type: partner2Type,
+                    partner_2_url: formData.partner2Url || null
+                };
+            }
+
+            try {
+                let result;
+                if (formData.editId) {
+                    result = await db.from(formData.editTable).update(payload).eq('id', formData.editId).select();
+                } else {
+                    result = await db.from(formData.editTable).insert(payload).select();
+                }
+
+                if (result.error) throw result.error;
+
+                alert(`✅ SUCCESS!\n\nLegend "${formData.name}" saved!`);
+                selectedFile = null;
+                resetForm();
+                switchTab('manage');
+                loadLegendsList();
+
+            } catch (dbErr) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                alert("❌ Database error: " + dbErr.message);
+            }
+        }
+
+        // --- EDIT MODE ---
+        async function editLegend(id, table = 'legends') {
+            switchTab('add');
+            document.getElementById('form-title').innerText = "Edit Legend";
+            document.getElementById('save-btn').innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> UPDATE LEGEND';
+            document.getElementById('edit-table').value = table;
+
+            const { data } = await db.from(table).select('*').eq('id', id).single();
+            if (data) {
+                document.getElementById('edit-id').value = data.id;
+                document.getElementById('name').value = data.name;
+
+                if (table === 'club27') {
+                    document.getElementById('slug').value = '';
+                    document.getElementById('category').value = 'Club 27';
+                    document.getElementById('born').value = data.lifespan || '';
+                    document.getElementById('death').value = '';
+                    document.getElementById('headline').value = data.headline || '';
+                    document.getElementById('quote').value = data.quote || '';
+                    document.getElementById('bio').value = data.description || '';
+                    document.getElementById('trailer_url').value = '';
+                    document.getElementById('streaming_url').value = '';
+                    document.getElementById('partner_2_type').value = data.partner_2_type || 'netflix';
+                    document.getElementById('partner_2_url').value = data.partner_2_url || '';
+                } else {
+                    document.getElementById('slug').value = data.slug || '';
+                    document.getElementById('category').value = data.category || '';
+                    document.getElementById('born').value = data.dates || '';
+                    document.getElementById('death').value = data.death_date ? data.death_date.split('T')[0] : '';
+                    document.getElementById('headline').value = data.headline || '';
+                    document.getElementById('quote').value = data.quote || '';
+                    document.getElementById('bio').value = data.bio || '';
+                    document.getElementById('trailer_url').value = data.trailer_url || '';
+                    document.getElementById('streaming_url').value = data.streaming_url || '';
+                    document.getElementById('partner_type').value = data.partner_type || 'netflix';
+                    document.getElementById('partner_2_type').value = data.partner_2_type || 'netflix';
+                    document.getElementById('partner_2_url').value = data.partner_2_url || '';
+                }
+
+                if (data.image_url) {
+                    document.getElementById('existing-image-url').value = data.image_url;
+                    document.getElementById('drop-content').classList.add('hidden');
+                    document.getElementById('preview-container').classList.remove('hidden');
+                    document.getElementById('preview-img').src = data.image_url;
+                }
+            }
+        }
+
+        // --- DELETE ---
+        async function deleteLegend(id, table = 'legends') {
+            if (confirm("DANGER ZONE: Are you sure you want to delete this legend? This cannot be undone.")) {
+                await db.from(table).delete().eq('id', id);
+                loadLegendsList();
+            }
+        }
+
+        function resetForm() {
+            document.querySelectorAll('input, textarea').forEach(i => i.value = '');
+            document.getElementById('edit-id').value = '';
+            document.getElementById('edit-table').value = 'legends';
+            document.getElementById('existing-image-url').value = '';
+            document.getElementById('partner_type').value = 'netflix';
+            document.getElementById('partner_2_type').value = 'netflix';
+            document.getElementById('form-title').innerText = "Add New Legend";
+            document.getElementById('save-btn').innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> SAVE LEGEND';
+            selectedFile = null;
+            document.getElementById('drop-content').classList.remove('hidden');
+            document.getElementById('preview-container').classList.add('hidden');
+        }
+
+        // --- NAVIGATION TABS ---
+        function switchTab(tab) {
+            ['dashboard', 'inbox', 'add', 'manage', 'users', 'campaigns', 'playlists'].forEach(t => {
+                document.getElementById('tab-' + t).classList.add('hidden');
+                document.getElementById('nav-' + t).classList.remove('active', 'text-white', 'bg-white/5');
+                document.getElementById('nav-' + t).classList.add('text-gray-400');
+            });
+            document.getElementById('tab-' + tab).classList.remove('hidden');
+            document.getElementById('nav-' + tab).classList.add('active', 'text-white');
+            document.getElementById('nav-' + tab).classList.remove('text-gray-400');
+
+            const titles = {
+                'dashboard': 'System Overview',
+                'manage': 'Manage Content',
+                'add': 'Add / Edit Legend',
+                'inbox': 'Suggestion Inbox',
+                'users': 'User Management',
+                'campaigns': 'Campaign Management',
+                'playlists': 'Playlists Management'
+            };
+            document.getElementById('page-title').innerText = titles[tab] || 'Admin Panel';
+
+            if (tab === 'dashboard') { setTimeout(() => initChart(), 100); loadStats(); }
+            if (tab === 'inbox') loadSuggestions();
+            if (tab === 'manage') loadLegendsList();
+            if (tab === 'users') loadUsers();
+            if (tab === 'campaigns') loadCampaigns();
+            if (tab === 'playlists') loadPlaylists();
+        }
+
+        // --- MANAGE LIST ---
+        async function loadLegendsList() {
+            const tbody = document.getElementById('legends-table-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">Loading data from Supabase...</td></tr>';
+
+            const { data } = await db.from(activeTable).select('*').order('name', { ascending: true });
+
+            tbody.innerHTML = '';
+            if (data && data.length > 0) {
+                data.forEach(l => {
+                    const img = l.image_url || 'https://via.placeholder.com/40';
+                    const displayName = l.name;
+                    const displayCategory = activeTable === 'club27' ? 'Club 27' : (l.category || '-');
+
+                    let partnerBadge = '<span class="text-gray-600 text-xs">-</span>';
+                    if (l.streaming_url && l.streaming_url.length > 5) {
+                        const type = l.partner_type || 'netflix';
+                        let badgeClass = 'badge-default';
+                        if (type === 'netflix') badgeClass = 'badge-netflix';
+                        else if (type === 'eventim') badgeClass = 'badge-eventim';
+                        else if (type === 'disney') badgeClass = 'badge-disney';
+                        else if (type === 'spotify') badgeClass = 'badge-spotify';
+
+                        partnerBadge = `<span class="${badgeClass} px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider">${type}</span>`;
+                    }
+
+                    tbody.innerHTML += `
+                        <tr class="table-row-glow">
+                            <td class="p-4"><img src="${img}" class="w-12 h-12 rounded-xl object-cover border border-white/20 transition"></td>
+                            <td class="p-4 font-bold text-white">${displayName}</td>
+                            <td class="p-4 text-gray-400 text-xs uppercase tracking-wide">${displayCategory}</td>
+                            <td class="p-4">${partnerBadge}</td>
+                            <td class="p-4 text-right space-x-2">
+                                <button onclick="editLegend('${l.id}', '${activeTable}')" class="btn-glow-white text-white px-4 py-2 rounded-lg text-xs font-bold transition" title="Edit">✏️ Edit</button>
+                                <button onclick="deleteLegend('${l.id}', '${activeTable}')" class="btn-glow-red text-red-400 px-4 py-2 rounded-lg text-xs font-bold transition" title="Delete">🗑️ Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-gray-500">No legends found in database. Create one!</td></tr>';
+            }
+        }
+
+        async function loadStats() {
+            const { count: l } = await db.from("legends").select("*", { count: "exact", head: true });
+            const { count: c27 } = await db.from("club27").select("*", { count: "exact", head: true });
+            const { count: s } = await db.from("suggestions").select("*", { count: "exact", head: true });
+
+            document.getElementById("stat-legends").innerText = l || 0;
+            document.getElementById("stat-club27").innerText = c27 || 0;
+            document.getElementById("stat-suggestions").innerText = s || 0;
+        }
+
+        async function loadSuggestions() {
+            const { data, error } = await db.from('suggestions').select('*').order('created_at', { ascending: false });
+            if (error) { console.error(error); return; }
+
+            const table = document.getElementById('suggestions-table');
+            table.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                table.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-gray-500">No suggestions yet</td></tr>';
+                return;
+            }
+
+            data.forEach(s => {
+                const status = s.status || 'new';
+                const row = document.createElement('tr');
+                row.className = 'table-row-glow';
+                row.innerHTML = `
+                    <td class="p-4">
+                        <div class="font-bold text-white">${s.name}</div>
+                        ${s.reason ? `<div class="text-xs text-gray-500 mt-1 max-w-md">${s.reason}</div>` : ''}
+                    </td>
+                    <td class="p-4">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${status === 'approved' ? 'bg-green-900/20 text-green-500 border border-green-500/30' : status === 'new' ? 'bg-gold/20 text-gold border border-gold/30 shadow-[0_0_10px_rgba(234,179,8,0.2)]' : 'bg-white/5 text-gray-400 border border-white/10'}">${s.category}</span>
+                    </td>
+                    <td class="p-4">
+                        <span class="text-gray-500 text-xs font-mono">${new Date(s.created_at).toLocaleDateString()}</span>
+                    </td>
+                    <td class="p-4 text-right space-x-2">
+                        ${status !== 'approved' ? `
+                            <button onclick="approveSuggestion('${s.id}')" 
+                                class="btn-glow-white text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-green-900/20 hover:text-green-500 hover:border-green-500/30 flex-inline items-center gap-1 transition-all">
+                                APPROVE
+                            </button>
+                        ` : ''}
+                        <button onclick="deleteSuggestion('${s.id}')" 
+                            class="btn-glow-red text-red-500 px-3 py-2 rounded-lg text-xs font-bold hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] flex-inline items-center gap-1 transition-all">
+                            DELETE
+                        </button>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+        }
+
+        async function approveSuggestion(id) {
+            if (!confirm('Approve this suggestion and mark as reviewed?')) return;
+            const { error } = await db.from('suggestions').update({ status: 'approved' }).eq('id', id);
+            if (error) { alert('❌ Error: ' + error.message); return; }
+            alert('✅ Suggestion approved!');
+            loadSuggestions();
+        }
+
+        async function deleteSuggestion(id) {
+            if (!confirm('⚠️ Permanently delete this suggestion?')) return;
+            const { error } = await db.from('suggestions').delete().eq('id', id);
+            if (error) { alert('❌ Error: ' + error.message); return; }
+            alert('✅ Suggestion deleted!');
+            loadSuggestions();
+        }
+
+        function initChart() {
+            if (window.myChart) window.myChart.destroy();
+            const ctx = document.getElementById('candleChart').getContext('2d');
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(234, 179, 8, 0.3)');
+            gradient.addColorStop(1, 'rgba(234, 179, 8, 0)');
+            window.myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        data: [350, 300, 500, 750, 600, 900, 1200],
+                        borderColor: '#EAB308',
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#000',
+                        pointBorderColor: '#EAB308',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: { legend: false },
+                    scales: {
+                        x: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#6B7280' } },
+                        y: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#6B7280' } }
+                    }
+                }
+            });
+        }
+
+        // ==========================================
+        // 🛡️ REPAIRED USER MANAGEMENT FUNCTIONS
+        // ==========================================
+
+        async function loadUsers() {
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">Loading users via Secure Tunnel...</td></tr>';
+
+            try {
+                // 1. Hole User-Liste über den Tunnel (get_users_list)
+                const { data: users, error: userError } = await db.rpc('get_users_list');
+
+                if (userError) {
+                    console.error('RPC Error:', userError);
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">Error: ${userError.message}</td></tr>`;
+                    return;
+                }
+
+                // 2. Hole Abo-Daten (normal)
+                const { data: subs, error: subError } = await db.from('user_subscriptions').select('*');
+                if (subError) console.warn('Sub load warning:', subError);
+
+                tbody.innerHTML = '';
+
+                if (!users || users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">No Users found</td></tr>';
+                    return;
+                }
+
+                // 3. Kombinieren und Anzeigen
+                users.forEach(user => {
+                    // Passendes Abo suchen
+                    const sub = subs ? subs.find(s => s.user_id === user.id) : null;
+                    const planId = sub ? sub.plan_id : 1; // Default: Free
+                    
+                    // Plan Namen
+                    const planNames = { 1: 'FREE', 2: 'SUPPORTER', 3: 'LEGACY+' };
+                    const planName = planNames[planId] || 'FREE';
+                    const planUpper = planName.toUpperCase();
+
+                    // Badges
+                    const planBadge = planUpper === 'FREE' ? 'bg-gray-800 text-gray-400' :
+                        planUpper === 'SUPPORTER' ? 'bg-gold/20 text-gold border border-gold/30' :
+                            'bg-blue-900/20 text-blue-400 border border-blue-500/30';
+
+                    // Icons
+                    let featureIcons = '<span class="text-gray-600 text-xs">Basic</span>';
+                    if (planUpper === 'SUPPORTER') featureIcons = '<span class="text-gold text-xs">🕯️ ❤️ 🎬 +2</span>';
+                    if (planUpper === 'LEGACY+') featureIcons = '<span class="text-blue-400 text-xs">⭐ 🎬 📖 🗺️ +6</span>';
+
+                    // HTML Zeile bauen
+                    tbody.innerHTML += `
+                        <tr class="table-row-glow">
+                            <td class="p-4 font-medium text-white font-mono text-xs">${user.email}</td>
+                            <td class="p-4"><span class="${planBadge} px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">${planUpper}</span></td>
+                            <td class="p-4">${featureIcons}</td>
+                            <td class="p-4 text-gray-500 text-xs">${new Date(user.created_at).toLocaleDateString()}</td>
+                            <td class="p-4 text-right space-x-2">
+                                <select onchange="updateUserPlan('${user.id}', this.value)" 
+                                    class="bg-black border border-white/20 rounded-lg px-3 py-2 text-white text-xs focus:border-gold outline-none appearance-none cursor-pointer hover:border-gold/50 transition-all">
+                                    <option value="">⚡ Change Plan...</option>
+                                    <option value="1" ${planId == 1 ? 'disabled' : ''}>⬇️ Free</option>
+                                    <option value="2" ${planId == 2 ? 'disabled' : ''}>⬆️ Supporter ($1.99)</option>
+                                    <option value="3" ${planId == 3 ? 'disabled' : ''}>⬆️ Legacy+ ($4.99)</option>
+                                </select>
+                                <button onclick="deleteUser('${user.id}')" 
+                                    class="btn-glow-red text-red-400 px-3 py-2 rounded-lg text-xs font-bold transition" 
+                                    title="Delete User & Data">🗑️</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+            } catch (err) {
+                console.error('Fatal Error:', err);
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">Unexpected Error: ${err.message}</td></tr>`;
+            }
+        }
+
+        // Löscht den User komplett (Auth + Daten)
+        async function deleteUser(userId) {
+            if (!confirm('⚠️ DANGER: Really delete this user?\n\nThis will remove their login and all data permanently.')) return;
+
+            const { error } = await db.rpc('delete_user_by_id', { user_id: userId });
+
+            if (error) {
+                alert('❌ Error: ' + error.message);
+            } else {
+                alert('✅ User deleted!');
+                loadUsers();
+            }
+        }
+
+        // Updatet den Plan (oder erstellt Abo, falls keins da ist)
+        async function updateUserPlan(userId, newPlanId) {
+            if (!newPlanId) return;
+            if (!confirm(`🎯 Change user plan to ID ${newPlanId}?`)) return;
+
+            // Erst prüfen, ob Abo existiert
+            const { data: existing } = await db.from('user_subscriptions').select('id').eq('user_id', userId).single();
+
+            let error;
+            if (existing) {
+                // Update
+                const res = await db.from('user_subscriptions').update({ plan_id: parseInt(newPlanId) }).eq('user_id', userId);
+                error = res.error;
+            } else {
+                // Insert (falls User noch kein Abo hat)
+                const res = await db.from('user_subscriptions').insert([{ user_id: userId, plan_id: parseInt(newPlanId), is_active: true }]);
+                error = res.error;
+            }
+
+            if (error) {
+                alert(`❌ Error updating plan: ${error.message}`);
+            } else {
+                alert(`✅ Plan updated!`);
+                loadUsers();
+            }
+        }
+
+        // Test User erstellen (bleibt gleich, funktioniert gut)
+        async function createTestUser(plan) {
+            const planMap = { 'FREE': 1, 'SUPPORTER': 2, 'LEGACY+': 3 };
+            const planId = planMap[plan];
+            const randomId = Math.random().toString(36).substring(2, 8);
+            const testEmail = `test_${plan.toLowerCase()}_${randomId}@remembered.app`;
+
+            const { data: authData, error: authError } = await db.auth.signUp({
+                email: testEmail,
+                password: 'TestPassword123!',
+            });
+
+            if (authError) { alert(`❌ Error: ${authError.message}`); return; }
+
+            const userId = authData.user?.id;
+            if (userId) {
+                await db.from('user_subscriptions').insert([{ user_id: userId, plan_id: planId, is_active: true }]);
+                alert(`✅ Test User Created!\nEmail: ${testEmail}\nPass: TestPassword123!`);
+                loadUsers();
+            }
+        }
+
+        // --- CAMPAIGNS MANAGEMENT FUNCTIONS ---
+        async function loadCampaigns() {
+            const tbody = document.getElementById('campaigns-table-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">Loading campaigns...</td></tr>';
+
+            try {
+                const { data, error } = await db
+                    .from('campaigns')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.log('Campaign load error:', error);
+                    tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-red-500">Error loading campaigns</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">No campaigns found. Create your first campaign!</td></tr>';
+                    return;
+                }
+
+                data.forEach(campaign => {
+                    const statusBadge = campaign.active
+                        ? '<span class="bg-green-900/20 text-green-400 border border-green-500/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">ACTIVE</span>'
+                        : '<span class="bg-gray-800 text-gray-400 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">INACTIVE</span>';
+
+                    tbody.innerHTML += `
+                        <tr class="table-row-glow">
+                            <td class="p-4"><img src="${campaign.image_url}" class="w-16 h-10 rounded-lg object-cover border border-white/20" onerror="this.src='https://via.placeholder.com/64x40'"></td>
+                            <td class="p-4 font-bold text-white">${campaign.title}</td>
+                            <td class="p-4 text-gray-400 text-xs">${campaign.sponsor_label}</td>
+                            <td class="p-4">${statusBadge}</td>
+                            <td class="p-4 text-right space-x-2">
+                                <button onclick="toggleCampaignStatus(${campaign.id}, ${campaign.active})" 
+                                    class="btn-glow-white text-white px-4 py-2 rounded-lg text-xs font-bold transition" 
+                                    title="${campaign.active ? 'Deactivate' : 'Activate'}">
+                                    ${campaign.active ? '⏸️ Pause' : '▶️ Activate'}
+                                </button>
+                                <button onclick="editCampaign(${campaign.id})" 
+                                    class="btn-glow-white text-white px-4 py-2 rounded-lg text-xs font-bold transition" 
+                                    title="Edit">
+                                    ✏️ Edit
+                                </button>
+                                <button onclick="deleteCampaign(${campaign.id})" 
+                                    class="btn-glow-red text-red-400 px-4 py-2 rounded-lg text-xs font-bold transition" 
+                                    title="Delete">
+                                    🗑️ Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.log('Campaign load error:', err);
+                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-red-500">Unexpected error occurred</td></tr>';
+            }
+        }
+
+        function openCampaignForm() {
+            document.getElementById('campaign-form').classList.remove('hidden');
+            document.getElementById('campaign-edit-id').value = '';
+            document.getElementById('campaign-title').value = '';
+            document.getElementById('campaign-sponsor').value = 'SPONSORED TRIBUTE';
+            document.getElementById('campaign-image').value = '';
+            document.getElementById('campaign-target').value = '';
+        }
+
+        function closeCampaignForm() {
+            document.getElementById('campaign-form').classList.add('hidden');
+        }
+
+        async function saveCampaign() {
+            const id = document.getElementById('campaign-edit-id').value;
+            const title = document.getElementById('campaign-title').value;
+            const sponsor = document.getElementById('campaign-sponsor').value;
+            const imageUrl = document.getElementById('campaign-image').value;
+            const targetUrl = document.getElementById('campaign-target').value;
+
+            if (!title || !imageUrl || !targetUrl) {
+                alert('❌ Please fill in all required fields (Title, Image URL, Target URL)');
+                return;
+            }
+
+            const payload = {
+                title: title,
+                sponsor_label: sponsor,
+                image_url: imageUrl,
+                target_url: targetUrl,
+                active: true
+            };
+
+            try {
+                let error;
+                if (id) {
+                    const res = await db.from('campaigns').update(payload).eq('id', id);
+                    error = res.error;
+                } else {
+                    const res = await db.from('campaigns').insert(payload);
+                    error = res.error;
+                }
+
+                if (error) {
+                    alert(`❌ Error saving campaign: ${error.message}`);
+                    return;
+                }
+
+                alert(`✅ Campaign ${id ? 'updated' : 'created'} successfully!`);
+                closeCampaignForm();
+                loadCampaigns();
+            } catch (err) {
+                alert(`❌ Unexpected error: ${err.message}`);
+            }
+        }
+
+        async function editCampaign(id) {
+            try {
+                const { data, error } = await db.from('campaigns').select('*').eq('id', id).single();
+
+                if (error || !data) {
+                    alert('❌ Error loading campaign');
+                    return;
+                }
+
+                document.getElementById('campaign-edit-id').value = data.id;
+                document.getElementById('campaign-title').value = data.title;
+                document.getElementById('campaign-sponsor').value = data.sponsor_label || 'SPONSORED TRIBUTE';
+                document.getElementById('campaign-image').value = data.image_url;
+                document.getElementById('campaign-target').value = data.target_url;
+                document.getElementById('campaign-form').classList.remove('hidden');
+            } catch (err) {
+                alert(`❌ Error: ${err.message}`);
+            }
+        }
+
+        async function toggleCampaignStatus(id, currentStatus) {
+            const newStatus = !currentStatus;
+            const action = newStatus ? 'activate' : 'deactivate';
+
+            if (!confirm(`Are you sure you want to ${action} this campaign?`)) return;
+
+            try {
+                const { error } = await db
+                    .from('campaigns')
+                    .update({ active: newStatus })
+                    .eq('id', id);
+
+                if (error) {
+                    alert(`❌ Error: ${error.message}`);
+                    return;
+                }
+
+                alert(`✅ Campaign ${action}d successfully!`);
+                loadCampaigns();
+            } catch (err) {
+                alert(`❌ Error: ${err.message}`);
+            }
+        }
+
+        async function deleteCampaign(id) {
+            if (!confirm('⚠️ Are you sure you want to delete this campaign? This cannot be undone.')) return;
+
+            try {
+                const { error } = await db.from('campaigns').delete().eq('id', id);
+
+                if (error) {
+                    alert(`❌ Error deleting campaign: ${error.message}`);
+                    return;
+                }
+
+                alert('✅ Campaign deleted successfully!');
+                loadCampaigns();
+            } catch (err) {
+                alert(`❌ Error: ${err.message}`);
+            }
+        }
+
+        async function generateInviteLink() {
+            try {
+                const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+                const { data, error } = await db
+                    .from('invites')
+                    .insert([{
+                        code: inviteCode,
+                        status: 'active',
+                        created_by_admin: 'admin'
+                    }])
+                    .select()
+                    .single();
+
+                if (error) {
+                    console.error('Error creating invite:', error);
+                    alert(`❌ Error creating invite: ${error.message}`);
+                    return;
+                }
+
+                const inviteLink = `${window.location.origin}/invite/${inviteCode}`;
+                const message = `🔗 VIP Invite Link Created!\n\nCode: ${inviteCode}\nLink: ${inviteLink}\n\nThis link grants premium access.\nShare it with your VIP guests!`;
+
+                try {
+                    await navigator.clipboard.writeText(inviteLink);
+                    alert(message + '\n\n✅ Link copied to clipboard!');
+                } catch (clipErr) {
+                    alert(message);
+                }
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                alert(`❌ Unexpected error: ${err.message}`);
+            }
+        }
+
+        // --- PLAYLISTS MANAGEMENT FUNCTIONS ---
+        async function loadPlaylists() {
+            const { data, error } = await db.from('playlists').select('*').order('sort_order', { ascending: true });
+            if (error) { console.error('Error loading playlists:', error); return; }
+
+            const tbody = document.getElementById('playlists-table-body');
+            tbody.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-gray-500">No playlists yet. Create your first one!</td></tr>';
+                return;
+            }
+
+            data.forEach(playlist => {
+                const row = document.createElement('tr');
+                row.className = 'table-row-glow';
+                row.innerHTML = `
+                    <td class="p-4">
+                        <img src="${playlist.cover_url}" class="w-12 h-12 rounded object-cover border border-white/10" 
+                             onerror="this.src='https://via.placeholder.com/48/1a1a1a/666?text=No+Image'">
+                    </td>
+                    <td class="p-4 text-white font-medium">${playlist.title}</td>
+                    <td class="p-4">
+                        <a href="${playlist.spotify_url}" target="_blank" class="text-[#1DB954] hover:underline text-xs">
+                            Open in Spotify
+                        </a>
+                    </td>
+                    <td class="p-4">
+                        <button onclick="togglePlaylistStatus('${playlist.id}', ${playlist.is_active})"
+                            class="px-3 py-1 rounded text-xs font-bold uppercase ${playlist.is_active ? 'bg-green-500/20 text-green-500 border border-green-500/30' : 'bg-gray-500/20 text-gray-500 border border-gray-500/30'}">
+                            ${playlist.is_active ? 'Active' : 'Inactive'}
+                        </button>
+                    </td>
+                    <td class="p-4 text-gray-400">${playlist.sort_order}</td>
+                    <td class="p-4 text-right">
+                        <button onclick="editPlaylist('${playlist.id}')" 
+                            class="btn-glow-white text-white px-3 py-2 rounded-lg text-xs font-bold mr-2">
+                            EDIT
+                        </button>
+                        <button onclick="deletePlaylist('${playlist.id}')" 
+                            class="btn-glow-red text-red-500 px-3 py-2 rounded-lg text-xs font-bold">
+                            DELETE
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function openPlaylistForm() {
+            document.getElementById('playlist-form').classList.remove('hidden');
+            document.getElementById('playlist-edit-id').value = '';
+            document.getElementById('playlist-title').value = '';
+            document.getElementById('playlist-spotify').value = '';
+            document.getElementById('playlist-sort').value = '0';
+            document.getElementById('playlist-active').checked = true;
+            selectedPlaylistCoverFile = null;
+            document.getElementById('playlist-drop-content').classList.remove('hidden');
+            document.getElementById('playlist-preview-container').classList.add('hidden');
+            document.getElementById('playlist-preview-img').src = '';
+        }
+
+        function closePlaylistForm() {
+            document.getElementById('playlist-form').classList.add('hidden');
+            selectedPlaylistCoverFile = null;
+        }
+
+        async function savePlaylist() {
+            const id = document.getElementById('playlist-edit-id').value;
+            const title = document.getElementById('playlist-title').value;
+            const spotify_url = document.getElementById('playlist-spotify').value;
+            const sort_order = parseInt(document.getElementById('playlist-sort').value) || 0;
+            const is_active = document.getElementById('playlist-active').checked;
+
+            if (!title || !spotify_url) {
+                alert('Please fill in playlist title and Spotify URL!');
+                return;
+            }
+
+            if (!selectedPlaylistCoverFile && !id) {
+                alert('Please select a cover image!');
+                return;
+            }
+
+            const saveBtn = document.querySelector('#playlist-form button[onclick="savePlaylist()"]');
+            const originalBtnText = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+            saveBtn.disabled = true;
+
+            let cover_url = null;
+
+            try {
+                if (selectedPlaylistCoverFile) {
+                    const fileExt = selectedPlaylistCoverFile.name.split('.').pop();
+                    const fileName = `playlist_${Date.now()}.${fileExt}`;
+                    const { error: uploadError } = await db.storage.from('playlist-covers').upload(fileName, selectedPlaylistCoverFile);
+                    if (uploadError) throw new Error('Upload failed: ' + uploadError.message);
+                    const { data: urlData } = db.storage.from('playlist-covers').getPublicUrl(fileName);
+                    cover_url = urlData.publicUrl;
+                }
+
+                const playlistData = { title, spotify_url, sort_order, is_active };
+                if (cover_url) playlistData.cover_url = cover_url;
+
+                if (id) {
+                    const { error } = await db.from('playlists').update(playlistData).eq('id', id);
+                    if (error) throw new Error('Database update failed: ' + error.message);
+                } else {
+                    if (!cover_url) throw new Error('Cover image is required for new playlists');
+                    const { error } = await db.from('playlists').insert([playlistData]);
+                    if (error) throw new Error('Database insert failed: ' + error.message);
+                }
+
+                selectedPlaylistCoverFile = null;
+                closePlaylistForm();
+                loadPlaylists();
+
+            } catch (error) {
+                alert('Error: ' + error.message);
+                console.error('Playlist save error:', error);
+            } finally {
+                saveBtn.innerHTML = originalBtnText;
+                saveBtn.disabled = false;
+            }
+        }
+
+        async function editPlaylist(id) {
+            const { data, error } = await db.from('playlists').select('*').eq('id', id).single();
+            if (error) { console.error('Error loading playlist:', error); return; }
+
+            document.getElementById('playlist-edit-id').value = data.id;
+            document.getElementById('playlist-title').value = data.title;
+            document.getElementById('playlist-spotify').value = data.spotify_url;
+            document.getElementById('playlist-sort').value = data.sort_order;
+            document.getElementById('playlist-active').checked = data.is_active;
+
+            if (data.cover_url) {
+                document.getElementById('playlist-drop-content').classList.add('hidden');
+                document.getElementById('playlist-preview-container').classList.remove('hidden');
+                document.getElementById('playlist-preview-img').src = data.cover_url;
+            }
+            selectedPlaylistCoverFile = null;
+            document.getElementById('playlist-form').classList.remove('hidden');
+        }
+
+        async function deletePlaylist(id) {
+            if (!confirm('Are you sure you want to delete this playlist?')) return;
+            const { error } = await db.from('playlists').delete().eq('id', id);
+            if (error) { alert('Error deleting playlist: ' + error.message); return; }
+            loadPlaylists();
+        }
+
+        async function togglePlaylistStatus(id, currentStatus) {
+            const { error } = await db.from('playlists').update({ is_active: !currentStatus }).eq('id', id);
+            if (error) { alert('Error updating status: ' + error.message); return; }
+            loadPlaylists();
+        }
+
+        // Init
+        loadStats();
+        initChart();
+        loadPlaylists();
+    </script>
 </body>
+
 </html>

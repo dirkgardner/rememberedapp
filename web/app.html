@@ -1096,7 +1096,8 @@
                     <div class="journey-ring-circle">🎵</div>
                     <span class="journey-ring-label">Music</span>
                 </div>
-                <div class="journey-ring-item" onclick="journeyRingNavigate(this, 'filterCategoryMulti([\'Actor\', \'Comedian\'])')">
+                <div class="journey-ring-item"
+                    onclick="journeyRingNavigate(this, 'filterCategoryMulti([\'Actor\', \'Comedian\'])')">
                     <div class="journey-ring-circle">🎭</div>
                     <span class="journey-ring-label">Film & Comedy</span>
                 </div>
@@ -1335,7 +1336,8 @@
             </div>
         </div>
 
-        <h2 id="category-title" class="hidden text-3xl font-black text-white mb-8 uppercase tracking-tight pl-1 font-serif-custom"></h2>
+        <h2 id="category-title"
+            class="hidden text-3xl font-black text-white mb-8 uppercase tracking-tight pl-1 font-serif-custom"></h2>
         <div id="legends-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20"></div>
     </main>
 
@@ -1646,15 +1648,16 @@
                 </div>
             </div>
             <h2 id="profile-name" class="text-3xl font-bold text-white mb-2 font-serif-custom">My Profile</h2>
-            
+
             <!-- Plan Badge -->
             <div id="plan-label"
                 class="bg-black border border-gold/50 px-4 py-1.5 rounded-full shadow-[0_0_20px_rgba(234,179,8,0.2)] mb-2">
                 <p class="text-gold text-[10px] tracking-[0.25em] uppercase font-bold">Free Member</p>
             </div>
-            
+
             <!-- Supporter Badge (Premium Only) -->
-            <div id="supporter-badge-profile" class="hidden bg-gradient-to-r from-gold/20 to-gold/10 border border-gold/40 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(234,179,8,0.2)]">
+            <div id="supporter-badge-profile"
+                class="hidden bg-gradient-to-r from-gold/20 to-gold/10 border border-gold/40 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(234,179,8,0.2)]">
                 <span class="text-gold">★</span> SUPPORTER
             </div>
         </div>
@@ -1687,54 +1690,60 @@
         <!-- VIP LOUNGE: Premium Features (SUPPORTER+) -->
         <div id="premium-features-section" class="hidden mb-8 space-y-3">
             <p class="text-gray-500 text-xs uppercase tracking-widest font-bold text-center mb-4">Premium Features</p>
-            
+
             <!-- Collections Button (SUPPORTER+) -->
-            <button onclick="openCollections()" 
+            <button onclick="openCollections()"
                 class="w-full flex items-center justify-between p-4 bg-gradient-to-r from-gold/10 to-gold/5 backdrop-blur-md border border-gold/20 rounded-xl hover:bg-gold/15 hover:border-gold/30 transition-all duration-300 group">
                 <div class="flex items-center gap-3">
                     <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
                     <div class="text-left">
                         <p class="text-sm font-medium text-white">Personal Collections</p>
                         <p class="text-xs text-gray-400">Organize your favorites</p>
                     </div>
                 </div>
-                <svg class="w-5 h-5 text-gold group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-gold group-hover:translate-x-1 transition-transform" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </button>
-            
+
             <!-- Memorial Pages Button (LEGACY+ Only) -->
-            <button id="memorial-pages-btn" onclick="openMemorialPages()" 
+            <button id="memorial-pages-btn" onclick="openMemorialPages()"
                 class="hidden w-full flex items-center justify-between p-4 bg-gradient-to-r from-blue-900/10 to-blue-900/5 backdrop-blur-md border border-blue-500/20 rounded-xl hover:bg-blue-900/15 hover:border-blue-500/30 transition-all duration-300 group">
                 <div class="flex items-center gap-3">
                     <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                     <div class="text-left">
                         <p class="text-sm font-medium text-white">Memorial Pages</p>
                         <p class="text-xs text-gray-400">Create private tributes</p>
                     </div>
                 </div>
-                <svg class="w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-transform" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </button>
-            
+
             <!-- Export Button (LEGACY+ Only) -->
-            <button id="export-btn" onclick="openExport()" 
+            <button id="export-btn" onclick="openExport()"
                 class="hidden w-full flex items-center justify-between p-4 bg-gradient-to-r from-blue-900/10 to-blue-900/5 backdrop-blur-md border border-blue-500/20 rounded-xl hover:bg-blue-900/15 hover:border-blue-500/30 transition-all duration-300 group">
                 <div class="flex items-center gap-3">
                     <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     <div class="text-left">
                         <p class="text-sm font-medium text-white">Export & Archive</p>
                         <p class="text-xs text-gray-400">Download as PDF</p>
                     </div>
                 </div>
-                <svg class="w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-transform" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </button>
@@ -1906,8 +1915,9 @@
 
                 <!-- LUXURY TRIBUTE SYSTEM -->
                 <div class="mb-12">
-                    <p class="text-center text-xs text-gray-400 uppercase tracking-[0.15em] mb-6 font-medium">Leave Your Tribute</p>
-                    
+                    <p class="text-center text-xs text-gray-400 uppercase tracking-[0.15em] mb-6 font-medium">Leave Your
+                        Tribute</p>
+
                     <div class="tribute-container mb-6">
                         <!-- Digital Candle -->
                         <div class="flex flex-col items-center">
@@ -1919,7 +1929,8 @@
                                         clip-rule="evenodd" />
                                 </svg>
                             </div>
-                            <p id="candle-text" class="text-[9px] font-bold text-gray-500 tracking-[0.2em] uppercase mt-2">Light</p>
+                            <p id="candle-text"
+                                class="text-[9px] font-bold text-gray-500 tracking-[0.2em] uppercase mt-2">Light</p>
                         </div>
 
                         <!-- Virtual Flower -->
@@ -1931,14 +1942,17 @@
                                         d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                                 </svg>
                             </div>
-                            <p id="flower-text" class="text-[9px] font-bold text-gray-500 tracking-[0.2em] uppercase mt-2">Bloom</p>
+                            <p id="flower-text"
+                                class="text-[9px] font-bold text-gray-500 tracking-[0.2em] uppercase mt-2">Bloom</p>
                         </div>
                     </div>
 
                     <!-- Community Stats -->
                     <div class="text-center space-y-2">
-                        <p class="text-xs text-gold font-mono"><span id="candle-count">0</span> Candles • <span id="flower-count">0</span> Flowers</p>
-                        <p id="community-text" class="text-[10px] text-platinum font-medium tracking-wider"><span id="community-count">0</span> fans left their tribute here</p>
+                        <p class="text-xs text-gold font-mono"><span id="candle-count">0</span> Candles • <span
+                                id="flower-count">0</span> Flowers</p>
+                        <p id="community-text" class="text-[10px] text-platinum font-medium tracking-wider"><span
+                                id="community-count">0</span> fans left their tribute here</p>
                     </div>
                 </div>
 
@@ -2068,6 +2082,19 @@
         const supabaseUrl = 'https://aahsaqygohmykhagbihk.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhaHNhcXlnb2hteWtoYWdiaWhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwODQzMDcsImV4cCI6MjA4MjY2MDMwN30.yRGsxsWC9EGO5rR1cy4_9Clt6FvJ05cqRo9qHlVyE-E';
         const db = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // 👇👇👇 HIER STARTET DER WÄCHTER 👇👇👇
+
+        // 🔥 SECURITY CHECK: Sofortiger Rauswurf, wenn nicht eingeloggt
+        (async function protectApp() {
+            const { data: { session } } = await db.auth.getSession();
+            if (!session) {
+                // Nicht eingeloggt? Zurück zur Startseite!
+                window.location.href = "/";
+            }
+        })();
+
+        // 👆👆👆 HIER ENDET DER WÄCHTER 👆👆👆
 
         // --- PLAN-BASED FEATURE CONTROL (Apple Review Safe) ---
         // Features are now controlled by user plan, not feature flags
@@ -2211,7 +2238,7 @@
                 }
                 this.updateUI();
             },
-            updateUI() { 
+            updateUI() {
                 const planLabel = document.getElementById('plan-label');
                 if (planLabel) {
                     planLabel.innerHTML = `<p class="text-gold text-[10px] tracking-[0.25em] uppercase font-bold">${this.currentPlan} Member</p>`;
@@ -2224,7 +2251,7 @@
                 if (profileBadge) {
                     if (this.isSupporter() || this.isLegacy()) {
                         profileBadge.classList.remove('hidden');
-                        profileBadge.innerHTML = this.isLegacy() 
+                        profileBadge.innerHTML = this.isLegacy()
                             ? '<span class="text-blue-400">★</span> LEGACY+ MEMBER'
                             : '<span class="text-gold">★</span> SUPPORTER';
                     } else {
@@ -2252,7 +2279,7 @@
                     'trailers': 'trailers',
                     'flowers': 'flowers'
                 };
-                
+
                 const mappedFeature = featureMap[featureName] || featureName;
                 return this.hasFeature(mappedFeature);
             },
@@ -2722,47 +2749,47 @@
             const isLit = getMyCandles().includes(id);
             const circle = document.getElementById('candle-circle');
             const text = document.getElementById('candle-text');
-            if (isLit) { 
-                text.innerText = "LIT"; 
-                text.classList.add('text-gold'); 
-                circle.classList.add('candle-active'); 
-            } else { 
-                text.innerText = "LIGHT"; 
-                text.classList.remove('text-gold'); 
-                circle.classList.remove('candle-active'); 
+            if (isLit) {
+                text.innerText = "LIT";
+                text.classList.add('text-gold');
+                circle.classList.add('candle-active');
+            } else {
+                text.innerText = "LIGHT";
+                text.classList.remove('text-gold');
+                circle.classList.remove('candle-active');
             }
 
             // Flowers Update with Premium Check
             const hasFlower = getMyFlowers().includes(id);
             const flowerCircle = document.getElementById('flower-circle');
             const flowerText = document.getElementById('flower-text');
-            
+
             // STEP 6: Show lock icon for FREE users
             if (!canUseFlower() && !hasFlower) {
                 flowerText.innerText = "LOCKED";
                 flowerText.classList.add('text-gray-600');
                 flowerCircle.classList.add('opacity-50');
                 flowerCircle.style.cursor = 'not-allowed';
-            } else if (hasFlower) { 
-                flowerText.innerText = "BLOOMED"; 
-                flowerText.classList.add('text-platinum'); 
+            } else if (hasFlower) {
+                flowerText.innerText = "BLOOMED";
+                flowerText.classList.add('text-platinum');
                 flowerCircle.classList.add('flower-active');
                 flowerCircle.classList.remove('opacity-50');
                 flowerCircle.style.cursor = 'pointer';
-            } else { 
-                flowerText.innerText = "BLOOM"; 
-                flowerText.classList.remove('text-platinum', 'text-gray-600'); 
+            } else {
+                flowerText.innerText = "BLOOM";
+                flowerText.classList.remove('text-platinum', 'text-gray-600');
                 flowerCircle.classList.remove('flower-active', 'opacity-50');
                 flowerCircle.style.cursor = 'pointer';
             }
-            
+
             // Candle Update with Daily Limit for FREE
             if (!Permissions.isPremium()) {
                 const limit = getCandleLimit();
                 const candleStatus = document.createElement('p');
                 candleStatus.className = 'text-[9px] text-gray-500 text-center mt-8 tracking-wider';
                 candleStatus.innerHTML = `Free: ${limit.used}/${limit.limit} candles today`;
-                
+
                 // Add after tribute container
                 const tributeParent = document.querySelector('.tribute-container').parentElement;
                 const existingStatus = tributeParent.querySelector('.candle-status-text');
@@ -2772,16 +2799,16 @@
             }
 
             updateFavBtnState(id);
-            
+
             // Update counts with Apple-Style formatting
             const candleCountNum = l.candles || 0;
             const flowerCountNum = l.flowers || 0;
             const communityCount = candleCountNum + flowerCountNum;
-            
+
             document.getElementById('candle-count').innerText = candleCountNum.toLocaleString('en-US');
             document.getElementById('flower-count').innerText = flowerCountNum.toLocaleString('en-US');
             document.getElementById('community-count').innerText = communityCount.toLocaleString('en-US');
-            
+
             // Apple-Style dynamic community text
             const communityText = document.getElementById('community-text');
             if (communityCount === 0) {
@@ -2791,7 +2818,7 @@
             } else {
                 communityText.innerHTML = `<span id="community-count">${communityCount.toLocaleString('en-US')}</span> fans left their tribute here`;
             }
-            
+
             document.getElementById('detail-overlay').classList.remove('hidden');
             document.getElementById('radio-fab').classList.add('hidden');
         }
@@ -2858,10 +2885,10 @@
         }
         // LUXURY TRIBUTE SYSTEM: Candles & Flowers (WITH STEP 6 GATES)
         async function toggleCandle() {
-            const t = document.getElementById('candle-text'); 
+            const t = document.getElementById('candle-text');
             const circle = document.getElementById('candle-circle');
             if (t.innerText === "LIT") return;
-            
+
             // STEP 6: Check permission for FREE users
             if (!Permissions.isPremium()) {
                 const limit = getCandleLimit();
@@ -2870,61 +2897,61 @@
                     return;
                 }
             }
-            
-            t.innerText = "LIT"; 
-            t.classList.add('text-gold'); 
+
+            t.innerText = "LIT";
+            t.classList.add('text-gold');
             circle.classList.add('candle-active');
-            
+
             // Increment daily counter for FREE users
             if (!Permissions.isPremium()) {
                 incrementCandleCount();
             }
-            
-            let c = getMyCandles(); 
-            if (!c.includes(currentDetailId)) { 
-                c.push(currentDetailId); 
-                saveMyCandles(c); 
+
+            let c = getMyCandles();
+            if (!c.includes(currentDetailId)) {
+                c.push(currentDetailId);
+                saveMyCandles(c);
             }
-            
+
             let countEl = document.getElementById('candle-count');
             let currentVal = parseInt(countEl.innerText.replace(/,/g, ''));
             countEl.innerText = (currentVal + 1).toLocaleString('en-US');
-            
+
             // Update community count
             updateCommunityCount(1, 0);
-            
+
             const table = activeFilter === 'CLUB 27' ? 'club27' : 'legends';
             await db.from(table).update({ candles: db.raw('candles + 1') }).eq('id', currentDetailId);
         }
 
         async function toggleFlower() {
-            const t = document.getElementById('flower-text'); 
+            const t = document.getElementById('flower-text');
             const circle = document.getElementById('flower-circle');
             if (t.innerText === "BLOOMED") return;
-            
+
             // STEP 6: Flowers are PREMIUM-ONLY
             if (!canUseFlower()) {
                 showPremiumGate('flower');
                 return;
             }
-            
-            t.innerText = "BLOOMED"; 
-            t.classList.add('text-platinum'); 
+
+            t.innerText = "BLOOMED";
+            t.classList.add('text-platinum');
             circle.classList.add('flower-active');
-            
-            let f = getMyFlowers(); 
-            if (!f.includes(currentDetailId)) { 
-                f.push(currentDetailId); 
-                saveMyFlowers(f); 
+
+            let f = getMyFlowers();
+            if (!f.includes(currentDetailId)) {
+                f.push(currentDetailId);
+                saveMyFlowers(f);
             }
-            
+
             let countEl = document.getElementById('flower-count');
             let currentVal = parseInt(countEl.innerText.replace(/,/g, ''));
             countEl.innerText = (currentVal + 1).toLocaleString('en-US');
-            
+
             // Update community count
             updateCommunityCount(0, 1);
-            
+
             const table = activeFilter === 'CLUB 27' ? 'club27' : 'legends';
             await db.from(table).update({ flowers: db.raw('flowers + 1') }).eq('id', currentDetailId);
         }
@@ -2934,10 +2961,10 @@
             const communityText = document.getElementById('community-text');
             let currentVal = parseInt(communityEl.innerText.replace(/,/g, ''));
             const newVal = currentVal + candleIncrement + flowerIncrement;
-            
+
             // Update with Apple-Style formatting
             communityEl.innerText = newVal.toLocaleString('en-US');
-            
+
             // Update dynamic text
             if (newVal === 0) {
                 communityText.innerHTML = '<span id="community-count">0</span> tributes yet · be the first';
@@ -2958,21 +2985,21 @@
         // ============================================================================
         function toggleSearch() { const s = document.getElementById('search-bar-container'); if (s.classList.contains('hidden')) { s.classList.remove('hidden'); document.getElementById('search-input').focus(); } else document.getElementById('search-bar-container').classList.add('hidden'); }
         function closeSearch() { document.getElementById('search-bar-container').classList.add('hidden'); showHome(); }
-        function showProfile() { 
-            hideAllViews(); 
-            document.getElementById('profile-view').classList.remove('hidden'); 
-            updateNavColors('profile'); 
-            document.getElementById('profile-candle-count').innerText = getMyCandles().length; 
+        function showProfile() {
+            hideAllViews();
+            document.getElementById('profile-view').classList.remove('hidden');
+            updateNavColors('profile');
+            document.getElementById('profile-candle-count').innerText = getMyCandles().length;
             document.getElementById('profile-fav-count').innerText = getFavorites().length;
-            
+
             // Show/hide premium features section
             const premiumSection = document.getElementById('premium-features-section');
             const memorialBtn = document.getElementById('memorial-pages-btn');
             const exportBtn = document.getElementById('export-btn');
-            
+
             if (Permissions.isPremium()) {
                 premiumSection.classList.remove('hidden');
-                
+
                 // Show LEGACY+ exclusive features
                 if (Permissions.isLegacy()) {
                     if (memorialBtn) memorialBtn.classList.remove('hidden');
@@ -3350,49 +3377,49 @@
         // ============================================================================
         // STEP 6: GATE & REALITY MODE - Premium Limits (Apple-Style)
         // ============================================================================
-        
+
         // Candle Limit System (1 per day for FREE users)
         function getCandleLimit() {
             const today = new Date().toDateString();
             const lastCandle = localStorage.getItem('last_candle_date');
             const candleCount = parseInt(localStorage.getItem('daily_candle_count') || '0');
-            
+
             // Reset counter if it's a new day
             if (lastCandle !== today) {
                 localStorage.setItem('last_candle_date', today);
                 localStorage.setItem('daily_candle_count', '0');
                 return { used: 0, limit: 1, canLight: true };
             }
-            
-            return { 
-                used: candleCount, 
-                limit: 1, 
-                canLight: candleCount < 1 
+
+            return {
+                used: candleCount,
+                limit: 1,
+                canLight: candleCount < 1
             };
         }
-        
+
         function incrementCandleCount() {
             const count = parseInt(localStorage.getItem('daily_candle_count') || '0');
             localStorage.setItem('daily_candle_count', (count + 1).toString());
         }
-        
+
         // Flower Permission Check (Premium-only)
         function canUseFlower() {
             return Permissions.isPremium();
         }
-        
+
         // Flyover Permission Check
         function canUseFlyover() {
             return Permissions.isPremium();
         }
-        
+
         // Premium Gate Modal (Zen & Glass - Poetisch, nicht verkäuferisch)
         function showPremiumGate(feature) {
             const modal = document.createElement('div');
             modal.id = 'premium-gate-modal';
             modal.className = 'fixed inset-0 z-[100] bg-black/98 backdrop-blur-3xl flex items-center justify-center p-6 animate-in fade-in';
             modal.onclick = () => closePremiumGate();
-            
+
             modal.innerHTML = `
                 <div class="relative w-full max-w-lg" onclick="event.stopPropagation();">
                     <!-- Close Button (minimal) -->
@@ -3448,13 +3475,13 @@
                     </div>
                 </div>
             `;
-            
+
             document.body.appendChild(modal);
-            
+
             // Haptic feedback
             triggerHapticFeedback(50);
         }
-        
+
         function closePremiumGate() {
             const modal = document.getElementById('premium-gate-modal');
             if (modal) modal.remove();
@@ -3463,7 +3490,7 @@
         // ============================================================================
         // PREMIUM FEATURE MODALS (Apple Review Safe)
         // ============================================================================
-        
+
         function openCollections() {
             if (!Permissions.canAccessFeature('collections')) {
                 const required = Permissions.getRequiredPlan('collections');
@@ -3473,7 +3500,7 @@
             // Feature is available - show placeholder for now
             showComingSoonModal('Personal Collections', 'This feature is being crafted and will launch soon!');
         }
-        
+
         function openMemorialPages() {
             if (!Permissions.canAccessFeature('memorial_pages')) {
                 const required = Permissions.getRequiredPlan('memorial_pages');
@@ -3483,7 +3510,7 @@
             // Feature is available - show placeholder for now
             showComingSoonModal('Private Memorial Pages', 'Memorial pages builder launching soon. Create beautiful tributes for your loved ones.');
         }
-        
+
         function openExport() {
             if (!Permissions.canAccessFeature('export')) {
                 const required = Permissions.getRequiredPlan('export');
@@ -3493,14 +3520,14 @@
             // Feature is available - show placeholder for now
             showComingSoonModal('Export & Archive', 'PDF export feature launching soon. Download legends for offline viewing.');
         }
-        
+
         // Coming Soon Modal (Feature Flag Placeholder)
         function showComingSoonModal(featureName, description) {
             const modal = document.createElement('div');
             modal.id = 'coming-soon-modal';
             modal.className = 'fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-6 animate-in fade-in';
             modal.onclick = () => closeComingSoonModal();
-            
+
             modal.innerHTML = `
                 <div class="relative w-full max-w-md" onclick="event.stopPropagation();">
                     <button onclick="closeComingSoonModal()" 
@@ -3539,22 +3566,22 @@
                     </div>
                 </div>
             `;
-            
+
             document.body.appendChild(modal);
         }
-        
+
         function closeComingSoonModal() {
             const modal = document.getElementById('coming-soon-modal');
             if (modal) modal.remove();
         }
-        
+
         // Upgrade Modal (For Non-Premium Users)
         function showUpgradeModal(requiredPlan, featureDescription) {
             const modal = document.createElement('div');
             modal.id = 'upgrade-modal';
             modal.className = 'fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-6 animate-in fade-in';
             modal.onclick = () => closeUpgradeModal();
-            
+
             modal.innerHTML = `
                 <div class="relative w-full max-w-md" onclick="event.stopPropagation();">
                     <button onclick="closeUpgradeModal()" 
@@ -3593,10 +3620,10 @@
                     </div>
                 </div>
             `;
-            
+
             document.body.appendChild(modal);
         }
-        
+
         function closeUpgradeModal() {
             const modal = document.getElementById('upgrade-modal');
             if (modal) modal.remove();
@@ -3611,7 +3638,7 @@
         // ============================================================================
         // PLAN SIMULATION SYSTEM (Admin-Controlled)
         // ============================================================================
-        
+
         function devSetPermission(plan) {
             // Validate plan
             const validPlans = ['FREE', 'SUPPORTER', 'LEGACY+'];
@@ -3619,17 +3646,17 @@
                 alert('❌ Invalid plan. Use: FREE, SUPPORTER, or LEGACY+');
                 return;
             }
-            
+
             Permissions.currentPlan = plan;
             localStorage.setItem('dev_permission', plan);
             Permissions.updateUI();
-            
+
             // Show detailed feature breakdown
             const features = PLAN_FEATURES[plan] || [];
             const featureList = features.length > 0 ? features.join(', ') : 'Basic access only';
-            
+
             alert(`✅ Plan activated: ${plan}\n\n📦 Available features:\n${featureList}\n\nRefresh any view to see changes.`);
-            
+
             // Auto-refresh current view
             const currentView = getCurrentView();
             if (currentView === 'profile') {
@@ -3647,7 +3674,7 @@
                 console.log(`🔧 DEV MODE: Plan loaded from localStorage: ${devPlan}`);
             }
         }
-        
+
         function getCurrentView() {
             if (!document.getElementById('profile-view').classList.contains('hidden')) return 'profile';
             if (!document.getElementById('home-view').classList.contains('hidden')) return 'home';
@@ -3657,23 +3684,23 @@
             if (!document.getElementById('settings-view').classList.contains('hidden')) return 'settings';
             return 'home';
         }
-        
+
         // Test Plan Access (Console Debug)
-        window.testPlanAccess = function() {
+        window.testPlanAccess = function () {
             console.log('=== PLAN ACCESS TEST ===');
             console.log('Current Plan:', Permissions.currentPlan);
             console.log('Is Premium:', Permissions.isPremium());
             console.log('Is Supporter:', Permissions.isSupporter());
             console.log('Is Legacy+:', Permissions.isLegacy());
             console.log('\n=== FEATURE ACCESS ===');
-            
+
             const testFeatures = ['collections', 'memorial_pages', 'ai_summaries', 'export', 'trailers', 'flowers'];
             testFeatures.forEach(feature => {
                 const hasAccess = Permissions.canAccessFeature(feature);
                 const required = Permissions.getRequiredPlan(feature);
                 console.log(`${feature}: ${hasAccess ? '✅ GRANTED' : '❌ DENIED'} (requires: ${required})`);
             });
-            
+
             console.log('\n=== AVAILABLE FEATURES ===');
             const planFeatures = PLAN_FEATURES[Permissions.currentPlan] || [];
             console.log(planFeatures.length > 0 ? planFeatures : 'None');
@@ -4044,11 +4071,11 @@
             titleEl.innerText = 'Film & Comedy';
             titleEl.classList.remove('hidden');
             updateNavColors('home');
-            
+
             currentOffset = 0;
             endOfList = false;
             document.getElementById('legends-grid').innerHTML = '';
-            
+
             fetchLegendsMulti(categories);
         }
 

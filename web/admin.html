@@ -3,16 +3,13 @@
 
 <head>
     <meta charset="UTF-8" />
-    
     <meta name="robots" content="noindex, nofollow">
-    
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mission Control – Remembered</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
@@ -79,6 +76,56 @@
         .btn-glow-red:hover {
             box-shadow: 0 0 30px rgba(220, 38, 38, 0.6), inset 0 0 20px rgba(220, 38, 38, 0.2);
             border-color: #EF4444;
+        }
+
+        /* --- NICE TOGGLE SWITCH (Der "Kasten Active") --- */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #333;
+            transition: .4s;
+            border-radius: 34px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: rgba(234, 179, 8, 0.2);
+            border-color: #EAB308;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(24px);
+            background-color: #EAB308;
+            box-shadow: 0 0 10px #EAB308;
         }
 
         /* --- NAVIGATION STYLES --- */
@@ -637,335 +684,337 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="tab-users" class="hidden h-full flex flex-col" style="justify-content: flex-start;">
-            <div class="glass-panel p-6 rounded-xl border border-white/10 mb-6">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                    Plan Feature Matrix
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-black/40 border border-white/10 rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <h4 class="text-white font-bold">FREE</h4>
-                            <span class="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">$0</span>
-                        </div>
-                        <ul class="space-y-2 text-xs text-gray-400">
-                            <li class="flex items-center gap-2">
-                                <span class="text-green-500">✓</span> Basic access
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-yellow-500">⚠</span> 1 candle/day
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-yellow-500">⚠</span> Limited favorites
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-red-500">✕</span> Ads visible
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-gold/5 border border-gold/30 rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <h4 class="text-gold font-bold">SUPPORTER</h4>
-                            <span class="text-xs text-gold bg-gold/20 px-2 py-1 rounded">$1.99/mo</span>
-                        </div>
-                        <ul class="space-y-2 text-xs text-gray-300">
-                            <li class="flex items-center gap-2">
-                                <span class="text-gold">★</span> Unlimited candles
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-gold">★</span> Unlimited favorites
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-gold">★</span> Ad-free
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-gold">★</span> Virtual flowers
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-gold">★</span> Collections
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-gold">★</span> Watch trailers
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-blue-900/10 border border-blue-500/30 rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <h4 class="text-blue-400 font-bold">LEGACY+</h4>
-                            <span class="text-xs text-blue-400 bg-blue-900/20 px-2 py-1 rounded">$4.99/mo</span>
-                        </div>
-                        <ul class="space-y-2 text-xs text-gray-300">
-                            <li class="flex items-center gap-2">
-                                <span class="text-blue-400">✓</span> All SUPPORTER features
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-blue-400">+</span> Memorial pages
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-blue-400">+</span> AI summaries
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-blue-400">+</span> Export to PDF
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-blue-400">+</span> Personal memories
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <span class="text-blue-400">+</span> Eternal coordinates
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex justify-between items-center mb-6">
-                <div class="flex gap-3">
-                    <button onclick="createTestUser('FREE')"
-                        class="btn-glow-white text-white px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div id="tab-users" class="hidden h-full flex flex-col" style="justify-content: flex-start;">
+                <div class="glass-panel p-6 rounded-xl border border-white/10 mb-6">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
-                        Test User (Free)
-                    </button>
-                    <button onclick="createTestUser('SUPPORTER')"
-                        class="btn-glow-gold text-black px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                        </svg>
-                        Test User (Supporter)
-                    </button>
-                    <button onclick="createTestUser('LEGACY+')"
-                        class="bg-blue-900/20 border border-blue-500/30 text-blue-400 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:bg-blue-900/40 transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                        </svg>
-                        Test User (Legacy+)
-                    </button>
-                </div>
-                <button onclick="generateInviteLink()"
-                    class="btn-glow-gold text-black px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
-                        </path>
-                    </svg>
-                    Generate Invite Link
-                </button>
-            </div>
-
-            <div class="glass-panel overflow-hidden rounded-xl border border-white/10 flex-1">
-                <div class="overflow-y-auto h-full">
-                    <table class="w-full text-left text-sm text-gray-400">
-                        <thead
-                            class="bg-white/5 text-xs uppercase font-bold text-gray-500 sticky top-0 backdrop-blur-md z-10">
-                            <tr>
-                                <th class="p-4">User ID / Email</th>
-                                <th class="p-4">Current Plan</th>
-                                <th class="p-4">Features</th>
-                                <th class="p-4">Joined</th>
-                                <th class="p-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="users-table-body" class="divide-y divide-white/5"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-campaigns" class="hidden h-full flex flex-col">
-            <div class="flex justify-end items-center mb-6">
-                <button onclick="openCampaignForm()"
-                    class="btn-glow-gold text-black px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    CREATE CAMPAIGN
-                </button>
-            </div>
-
-            <div id="campaign-form" class="hidden glass-panel p-6 rounded-xl border border-white/10 mb-6">
-                <h3 class="text-xl font-bold text-white mb-4">Add/Edit Campaign</h3>
-                <input type="hidden" id="campaign-edit-id" value="">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Campaign Title
-                            *</label>
-                        <input id="campaign-title"
-                            class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
-                            placeholder="e.g. Watch the Legends Documentary" />
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sponsor
-                            Label</label>
-                        <input id="campaign-sponsor"
-                            class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
-                            placeholder="e.g. Presented by Netflix" value="SPONSORED TRIBUTE" />
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Banner Image URL
-                            *</label>
-                        <input id="campaign-image"
-                            class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
-                            placeholder="https://..." />
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Target URL
-                            *</label>
-                        <input id="campaign-target"
-                            class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
-                            placeholder="https://..." />
-                    </div>
-                </div>
-                <div class="flex justify-end gap-3 mt-6">
-                    <button onclick="closeCampaignForm()"
-                        class="btn-glow-white text-white font-bold py-3 px-6 rounded-lg uppercase text-sm tracking-wider">
-                        Cancel
-                    </button>
-                    <button onclick="saveCampaign()"
-                        class="btn-glow-gold text-black font-bold py-3 px-8 rounded-lg uppercase text-sm tracking-wider">
-                        Save Campaign
-                    </button>
-                </div>
-            </div>
-
-            <div class="glass-panel overflow-hidden rounded-xl border border-white/10 flex-1">
-                <div class="overflow-y-auto h-full">
-                    <table class="w-full text-left text-sm text-gray-400">
-                        <thead
-                            class="bg-white/5 text-xs uppercase font-bold text-gray-500 sticky top-0 backdrop-blur-md z-10">
-                            <tr>
-                                <th class="p-4 w-20">Image</th>
-                                <th class="p-4">Title</th>
-                                <th class="p-4">Sponsor</th>
-                                <th class="p-4">Status</th>
-                                <th class="p-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="campaigns-table-body" class="divide-y divide-white/5"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-playlists" class="hidden h-full flex flex-col">
-            <div class="flex justify-end items-center mb-6">
-                <button onclick="openPlaylistForm()"
-                    class="btn-glow-gold text-black px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    CREATE PLAYLIST
-                </button>
-            </div>
-
-            <div id="playlist-form" class="hidden glass-panel p-6 rounded-xl border border-white/10 mb-6">
-                <h3 class="text-xl font-bold text-white mb-4">Add/Edit Playlist</h3>
-                <input type="hidden" id="playlist-edit-id" value="">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Playlist Title
-                            *</label>
-                        <input id="playlist-title"
-                            class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
-                            placeholder="e.g. Rock Legends Forever" />
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sort Order</label>
-                        <input id="playlist-sort" type="number"
-                            class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
-                            placeholder="0" value="0" />
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 gap-4 mb-4">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block">Cover Image
-                            *</label>
-                        <div id="playlist-drop-area"
-                            class="drop-zone w-full h-40 rounded-xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden group">
-                            <input type="file" id="playlist-file-input" accept="image/*" class="hidden"
-                                onchange="handlePlaylistCoverFiles(this.files)">
-                            <div id="playlist-drop-content" class="text-center transition-opacity duration-200">
-                                <div
-                                    class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3 group-hover:bg-gold/10">
-                                    <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <p class="text-sm text-gray-300 font-medium">Click to upload playlist cover</p>
-                                <p class="text-xs text-gray-500 mt-1">JPG, PNG, or WebP</p>
+                        Plan Feature Matrix
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-black/40 border border-white/10 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="text-white font-bold">FREE</h4>
+                                <span class="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">$0</span>
                             </div>
-                            <div id="playlist-preview-container"
-                                class="absolute inset-0 bg-black hidden flex items-center justify-center">
-                                <img id="playlist-preview-img" class="h-full w-full object-cover opacity-50" />
-                                <div class="absolute z-10 flex flex-col items-center">
-                                    <span
-                                        class="text-green-500 font-bold text-sm bg-black/50 px-3 py-1 rounded-full border border-green-500/30">✓
-                                        SELECTED</span>
+                            <ul class="space-y-2 text-xs text-gray-400">
+                                <li class="flex items-center gap-2">
+                                    <span class="text-green-500">✓</span> Basic access
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-yellow-500">⚠</span> 1 candle/day
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-yellow-500">⚠</span> Limited favorites
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-red-500">✕</span> Ads visible
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-gold/5 border border-gold/30 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="text-gold font-bold">SUPPORTER</h4>
+                                <span class="text-xs text-gold bg-gold/20 px-2 py-1 rounded">$1.99/mo</span>
+                            </div>
+                            <ul class="space-y-2 text-xs text-gray-300">
+                                <li class="flex items-center gap-2">
+                                    <span class="text-gold">★</span> Unlimited candles
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-gold">★</span> Unlimited favorites
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-gold">★</span> Ad-free
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-gold">★</span> Virtual flowers
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-gold">★</span> Collections
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-gold">★</span> Watch trailers
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-blue-900/10 border border-blue-500/30 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="text-blue-400 font-bold">LEGACY+</h4>
+                                <span class="text-xs text-blue-400 bg-blue-900/20 px-2 py-1 rounded">$4.99/mo</span>
+                            </div>
+                            <ul class="space-y-2 text-xs text-gray-300">
+                                <li class="flex items-center gap-2">
+                                    <span class="text-blue-400">✓</span> All SUPPORTER features
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-blue-400">+</span> Memorial pages
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-blue-400">+</span> AI summaries
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-blue-400">+</span> Export to PDF
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-blue-400">+</span> Personal memories
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-blue-400">+</span> Eternal coordinates
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex gap-3">
+                        <button onclick="createTestUser('FREE')"
+                            class="btn-glow-white text-white px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                            </svg>
+                            Test User (Free)
+                        </button>
+                        <button onclick="createTestUser('SUPPORTER')"
+                            class="btn-glow-gold text-black px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                            </svg>
+                            Test User (Supporter)
+                        </button>
+                        <button onclick="createTestUser('LEGACY+')"
+                            class="bg-blue-900/20 border border-blue-500/30 text-blue-400 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:bg-blue-900/40 transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                            </svg>
+                            Test User (Legacy+)
+                        </button>
+                    </div>
+                    <button onclick="generateInviteLink()"
+                        class="btn-glow-gold text-black px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                            </path>
+                        </svg>
+                        Generate Invite Link
+                    </button>
+                </div>
+
+                <div class="glass-panel overflow-hidden rounded-xl border border-white/10 flex-1">
+                    <div class="overflow-y-auto h-full">
+                        <table class="w-full text-left text-sm text-gray-400">
+                            <thead
+                                class="bg-white/5 text-xs uppercase font-bold text-gray-500 sticky top-0 backdrop-blur-md z-10">
+                                <tr>
+                                    <th class="p-4">User ID / Email</th>
+                                    <th class="p-4">Current Plan</th>
+                                    <th class="p-4">Features</th>
+                                    <th class="p-4">Joined</th>
+                                    <th class="p-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body" class="divide-y divide-white/5"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-campaigns" class="hidden h-full flex flex-col">
+                <div class="flex justify-end items-center mb-6">
+                    <button onclick="openCampaignForm()"
+                        class="btn-glow-gold text-black px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        CREATE CAMPAIGN
+                    </button>
+                </div>
+
+                <div id="campaign-form" class="hidden glass-panel p-6 rounded-xl border border-white/10 mb-6">
+                    <h3 class="text-xl font-bold text-white mb-4">Add/Edit Campaign</h3>
+                    <input type="hidden" id="campaign-edit-id" value="">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Campaign Title
+                                *</label>
+                            <input id="campaign-title"
+                                class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
+                                placeholder="e.g. Watch the Legends Documentary" />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sponsor
+                                Label</label>
+                            <input id="campaign-sponsor"
+                                class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
+                                placeholder="e.g. Presented by Netflix" value="SPONSORED TRIBUTE" />
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Banner Image URL
+                                *</label>
+                            <input id="campaign-image"
+                                class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
+                                placeholder="https://..." />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Target URL
+                                *</label>
+                            <input id="campaign-target"
+                                class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
+                                placeholder="https://..." />
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-3 mt-6">
+                        <button onclick="closeCampaignForm()"
+                            class="btn-glow-white text-white font-bold py-3 px-6 rounded-lg uppercase text-sm tracking-wider">
+                            Cancel
+                        </button>
+                        <button onclick="saveCampaign()"
+                            class="btn-glow-gold text-black font-bold py-3 px-8 rounded-lg uppercase text-sm tracking-wider">
+                            Save Campaign
+                        </button>
+                    </div>
+                </div>
+
+                <div class="glass-panel overflow-hidden rounded-xl border border-white/10 flex-1">
+                    <div class="overflow-y-auto h-full">
+                        <table class="w-full text-left text-sm text-gray-400">
+                            <thead
+                                class="bg-white/5 text-xs uppercase font-bold text-gray-500 sticky top-0 backdrop-blur-md z-10">
+                                <tr>
+                                    <th class="p-4 w-20">Image</th>
+                                    <th class="p-4">Title</th>
+                                    <th class="p-4">Sponsor</th>
+                                    <th class="p-4">Status</th>
+                                    <th class="p-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="campaigns-table-body" class="divide-y divide-white/5"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-playlists" class="hidden h-full flex flex-col">
+                <div class="flex justify-end items-center mb-6">
+                    <button onclick="openPlaylistForm()"
+                        class="btn-glow-gold text-black px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        CREATE PLAYLIST
+                    </button>
+                </div>
+
+                <div id="playlist-form" class="hidden glass-panel p-6 rounded-xl border border-white/10 mb-6">
+                    <h3 class="text-xl font-bold text-white mb-4">Add/Edit Playlist</h3>
+                    <input type="hidden" id="playlist-edit-id" value="">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Playlist Title
+                                *</label>
+                            <input id="playlist-title"
+                                class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
+                                placeholder="e.g. Rock Legends Forever" />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sort Order</label>
+                            <input id="playlist-sort" type="number"
+                                class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
+                                placeholder="0" value="0" />
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 gap-4 mb-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block">Cover Image
+                                *</label>
+                            <div id="playlist-drop-area"
+                                class="drop-zone w-full h-40 rounded-xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden group">
+                                <input type="file" id="playlist-file-input" accept="image/*" class="hidden"
+                                    onchange="handlePlaylistCoverFiles(this.files)">
+                                <div id="playlist-drop-content" class="text-center transition-opacity duration-200">
+                                    <div
+                                        class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3 group-hover:bg-gold/10">
+                                        <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm text-gray-300 font-medium">Click to upload playlist cover</p>
+                                    <p class="text-xs text-gray-500 mt-1">JPG, PNG, or WebP</p>
+                                </div>
+                                <div id="playlist-preview-container"
+                                    class="absolute inset-0 bg-black hidden flex items-center justify-center">
+                                    <img id="playlist-preview-img" class="h-full w-full object-cover opacity-50" />
+                                    <div class="absolute z-10 flex flex-col items-center">
+                                        <span
+                                            class="text-green-500 font-bold text-sm bg-black/50 px-3 py-1 rounded-full border border-green-500/30">✓
+                                            SELECTED</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Spotify Playlist
-                        URL *</label>
-                    <input id="playlist-spotify"
-                        class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
-                        placeholder="https://open.spotify.com/playlist/..." />
-                </div>
-            </div>
-            <div class="flex items-center gap-3 mb-4">
-                <input type="checkbox" id="playlist-active" checked
-                    class="w-4 h-4 bg-black border-white/20 rounded text-gold focus:ring-gold focus:ring-2">
-                <label class="text-sm text-gray-300">Active (visible in app)</label>
-            </div>
-            <div class="flex justify-end gap-3 mt-6">
-                <button onclick="closePlaylistForm()"
-                    class="btn-glow-white text-white font-bold py-3 px-6 rounded-lg uppercase text-sm tracking-wider">
-                    Cancel
-                </button>
-                <button onclick="savePlaylist()"
-                    class="btn-glow-gold text-black font-bold py-3 px-8 rounded-lg uppercase text-sm tracking-wider">
-                    Save Playlist
-                </button>
-            </div>
-        </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Spotify Playlist
+                            URL *</label>
+                        <input id="playlist-spotify"
+                            class="w-full bg-black border border-white/20 rounded-lg p-4 text-white focus:border-gold focus:outline-none"
+                            placeholder="https://open.spotify.com/playlist/..." />
+                    </div>
+                    
+                    <div class="flex items-center gap-3 mt-6">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="playlist-active" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <label class="text-sm text-gray-300 font-bold uppercase tracking-wider">Active (visible in app)</label>
+                    </div>
 
-        <div class="glass-panel overflow-hidden rounded-xl border border-white/10 flex-1">
-            <div class="overflow-y-auto h-full">
-                <table class="w-full text-left text-sm text-gray-400">
-                    <thead
-                        class="bg-white/5 text-xs uppercase font-bold text-gray-500 sticky top-0 backdrop-blur-md z-10">
-                        <tr>
-                            <th class="p-4 w-20">Cover</th>
-                            <th class="p-4">Title</th>
-                            <th class="p-4">Spotify URL</th>
-                            <th class="p-4">Status</th>
-                            <th class="p-4">Order</th>
-                            <th class="p-4 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="playlists-table-body" class="divide-y divide-white/5"></tbody>
-                </table>
+                    <div class="flex justify-end gap-3 mt-6">
+                        <button onclick="closePlaylistForm()"
+                            class="btn-glow-white text-white font-bold py-3 px-6 rounded-lg uppercase text-sm tracking-wider">
+                            Cancel
+                        </button>
+                        <button onclick="savePlaylist()"
+                            class="btn-glow-gold text-black font-bold py-3 px-8 rounded-lg uppercase text-sm tracking-wider">
+                            Save Playlist
+                        </button>
+                    </div>
+                </div>
+
+                <div class="glass-panel overflow-hidden rounded-xl border border-white/10 flex-1">
+                    <div class="overflow-y-auto h-full">
+                        <table class="w-full text-left text-sm text-gray-400">
+                            <thead
+                                class="bg-white/5 text-xs uppercase font-bold text-gray-500 sticky top-0 backdrop-blur-md z-10">
+                                <tr>
+                                    <th class="p-4 w-20">Cover</th>
+                                    <th class="p-4">Title</th>
+                                    <th class="p-4">Spotify URL</th>
+                                    <th class="p-4">Status</th>
+                                    <th class="p-4">Order</th>
+                                    <th class="p-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="playlists-table-body" class="divide-y divide-white/5"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
-        </div>
         </div>
     </main>
 

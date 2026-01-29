@@ -2098,10 +2098,27 @@
 
         // --- PLAN-BASED FEATURE CONTROL (Apple Review Safe) ---
         // Features are now controlled by user plan, not feature flags
-        const PLAN_FEATURES = {
+        
+        // ⭐ HIERARCHICAL PLAN SYSTEM ⭐
+        // Define plan hierarchy: Each higher tier inherits ALL features from lower tiers
+        const PLAN_HIERARCHY = {
+            'FREE': 0,
+            'SUPPORTER': 1,
+            'LEGACY+': 2
+        };
+
+        // Base features per plan (without inheritance)
+        const BASE_PLAN_FEATURES = {
             FREE: [],
             SUPPORTER: ['collections', 'unlimited_candles', 'unlimited_favorites', 'ad_free', 'trailers', 'flowers', 'supporter_badge'],
-            'LEGACY+': ['collections', 'unlimited_candles', 'unlimited_favorites', 'ad_free', 'trailers', 'flowers', 'supporter_badge', 'memorial_pages', 'ai_summaries', 'export', 'personal_memories', 'eternal_coordinates']
+            'LEGACY+': ['memorial_pages', 'ai_summaries', 'export', 'personal_memories', 'eternal_coordinates']
+        };
+
+        // Computed features with inheritance (Legacy+ gets ALL Supporter features + its own)
+        const PLAN_FEATURES = {
+            FREE: [],
+            SUPPORTER: [...BASE_PLAN_FEATURES.SUPPORTER],
+            'LEGACY+': [...BASE_PLAN_FEATURES.SUPPORTER, ...BASE_PLAN_FEATURES['LEGACY+']]
         };
 
         // --- 2. ASSETS (PARTNER LOGOS) ---
@@ -2225,12 +2242,216 @@
         // Initialize the namespace manager
         const glassNamespace = new GlassNamespaceManager();
 
-        // --- 4. AUTH & PERMISSIONS (PREMIUM CHECK) ---
+        // ============================================================================
+        // 📧 EMAIL SYSTEM - Supabase Edge Functions Integration
+        // ============================================================================
+        
+        /**
+         * Send welcome email after user registration
+         * @param {string} userEmail - User's email address
+         * @param {string} userName - User's name (optional)
+         */
+        async function sendWelcomeEmail(userEmail, userName = null) {
+            try {
+                const { data: { user } } = await db.auth.getUser();
+                
+                const { data, error } = await db.functions.invoke('send-welcome-email', {
+                    body: {
+                        email: userEmail,
+                        name: userName || user?.user_metadata?.full_name || 'there'
+                    }
+                });
+
+                if (error) {
+                    console.error('Welcome email error:', error);
+                    return false;
+                }
+
+                console.log('✓ Welcome email sent:', data?.messageId);
+                return true;
+            } catch (err) {
+                console.error('Welcome email failed:', err);
+                return false;
+            }
+        }
+
+        /**
+         * Send security alert for new device/IP login
+         * @param {string} userEmail - User's email address
+         * @param {string} userName - User's name
+         */
+        async function sendSecurityAlert(userEmail, userName) {
+            try {
+                // Get current IP address
+                const ipResponse = await fetch('https://api.ipify.org?format=json').catch(() => ({ json: async () => ({ ip: 'Unknown' }) }));
+                const { ip } = await ipResponse.json();
+                
+                // Get device info
+                const device = navigator.userAgent.match(/\(([^)]+)\)/)?.[1] || 'Unknown Device';
+                
+                // Format login time
+                const loginTime = new Date().toLocaleString('de-DE', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const { data: { user } } = await db.auth.getUser();
+
+                const { data, error } = await db.functions.invoke('send-security-alert', {
+                    body: {
+                        email: userEmail,
+                        name: userName,
+                        loginTime: loginTime,
+                        ipAddress: ip,
+                        device: device,
+                        userId: user?.id || 'unknown'
+                    }
+                });
+
+                if (error) {
+                    console.error('Security alert error:', error);
+                    return false;
+                }
+
+                console.log('✓ Security alert sent:', data?.messageId);
+                return true;
+            } catch (err) {
+                console.error('Security alert failed:', err);
+                return false;
+            }
+        }
+
+        /**
+         * Send confirmation email after data upload
+         * @param {string} userEmail - User's email address
+         * @param {string} userName - User's name
+         * @param {string} itemType - Type of item ('memory' | 'tribute' | 'collection' | 'memorial')
+         * @param {string} itemName - Name of the uploaded item
+         */
+        async function sendConfirmationEmail(userEmail, userName, itemType, itemName) {
+            try {
+                const uploadTime = new Date().toLocaleString('de-DE', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const { data, error } = await db.functions.invoke('send-confirmation-email', {
+                    body: {
+                        email: userEmail,
+                        name: userName,
+                        itemType: itemType,
+                        itemName: itemName,
+                        uploadTime: uploadTime
+                    }
+                });
+
+                if (error) {
+                    console.error('Confirmation email error:', error);
+                    return false;
+                }
+
+                console.log('✓ Confirmation email sent:', data?.messageId);
+                return true;
+            } catch (err) {
+                console.error('Confirmation email failed:', err);
+                return false;
+            }
+        }
+
+        /**
+         * Send support auto-reply after contact form submission
+         * @param {string} subject - Subject of the inquiry
+         * @param {string} category - Category selected (used as subject if no specific subject)
+         */
+        async function sendSupportAutoReply(subject, category) {
+            try {
+                const { data: { user } } = await db.auth.getUser();
+                const userEmail = user?.email;
+                const userName = user?.user_metadata?.full_name || 'there';
+
+                if (!userEmail) {
+                    console.warn('No user email found for support auto-reply');
+                    return false;
+                }
+
+                // Generate ticket ID
+                const ticketId = `TKT-${Date.now().toString(36).toUpperCase()}`;
+
+                const { data, error } = await db.functions.invoke('send-support-autoreply', {
+                    body: {
+                        email: userEmail,
+                        name: userName,
+                        subject: subject || `Suggestion: ${category}`,
+                        ticketId: ticketId
+                    }
+                });
+
+                if (error) {
+                    console.error('Support auto-reply error:', error);
+                    return false;
+                }
+
+                console.log('✓ Support auto-reply sent:', data?.messageId);
+                return true;
+            } catch (err) {
+                console.error('Support auto-reply failed:', err);
+                return false;
+            }
+        }
+
+        /**
+         * Check and send security alert for new IP addresses
+         * Stores known IPs in localStorage for tracking
+         */
+        async function checkAndAlertNewLogin() {
+            try {
+                const { data: { user } } = await db.auth.getUser();
+                if (!user) return;
+
+                // Get current IP
+                const ipResponse = await fetch('https://api.ipify.org?format=json').catch(() => ({ json: async () => ({ ip: null }) }));
+                const { ip } = await ipResponse.json();
+                
+                if (!ip) return;
+
+                // Check known IPs
+                const knownIPs = JSON.parse(localStorage.getItem(`known_ips_${user.id}`) || '[]');
+                
+                if (!knownIPs.includes(ip)) {
+                    // New IP detected - send alert
+                    const userName = user.user_metadata?.full_name || 'there';
+                    await sendSecurityAlert(user.email, userName);
+                    
+                    // Save IP as known
+                    knownIPs.push(ip);
+                    localStorage.setItem(`known_ips_${user.id}`, JSON.stringify(knownIPs));
+                }
+            } catch (err) {
+                console.error('Login check failed:', err);
+            }
+        }
+
+        // ============================================================================
+        // AUTH & PERMISSIONS (HIERARCHICAL SYSTEM)
+        // ============================================================================
         const Permissions = {
             currentPlan: 'FREE',
+            
             async init() {
                 const { data: { session } } = await db.auth.getSession();
                 if (!session) { this.updateUI(); return; }
+                
+                // 📧 Check for new login and send security alert if needed
+                checkAndAlertNewLogin().catch(err => {
+                    console.error('Security check failed (non-blocking):', err);
+                });
+                
                 const { data: sub } = await db.from('user_subscriptions').select('plan_id').eq('user_id', session.user.id).eq('is_active', true).maybeSingle();
                 if (sub) {
                     const { data: planInfo } = await db.from('plans').select('name').eq('id', sub.plan_id).single();
@@ -2238,6 +2459,7 @@
                 }
                 this.updateUI();
             },
+            
             updateUI() {
                 const planLabel = document.getElementById('plan-label');
                 if (planLabel) {
@@ -2245,11 +2467,13 @@
                 }
                 this.updateBadges();
             },
+            
             updateBadges() {
-                // Update Supporter Badge in Profile
+                // Update Supporter Badge in Profile - HIERARCHICAL CHECK
                 const profileBadge = document.getElementById('supporter-badge-profile');
                 if (profileBadge) {
-                    if (this.isSupporter() || this.isLegacy()) {
+                    // ✅ FIX: Use hierarchical check - Legacy+ qualifies for Supporter badge
+                    if (this.hasMinimumPlan('SUPPORTER')) {
                         profileBadge.classList.remove('hidden');
                         profileBadge.innerHTML = this.isLegacy()
                             ? '<span class="text-blue-400">★</span> LEGACY+ MEMBER'
@@ -2259,16 +2483,43 @@
                     }
                 }
             },
-            isPremium() { return this.currentPlan === 'SUPPORTER' || this.currentPlan === 'LEGACY+'; },
-            isSupporter() { return this.currentPlan === 'SUPPORTER'; },
-            isLegacy() { return this.currentPlan === 'LEGACY+'; },
+            
+            // ⭐ NEW: Hierarchical plan comparison
+            getPlanRank(planName = null) {
+                const plan = planName || this.currentPlan;
+                return PLAN_HIERARCHY[plan] !== undefined ? PLAN_HIERARCHY[plan] : -1;
+            },
+            
+            // ⭐ NEW: Check if user has at least the minimum required plan
+            hasMinimumPlan(requiredPlan) {
+                const userRank = this.getPlanRank();
+                const requiredRank = this.getPlanRank(requiredPlan);
+                return userRank >= requiredRank;
+            },
+            
+            // ✅ UPDATED: Premium means SUPPORTER or higher
+            isPremium() { 
+                return this.hasMinimumPlan('SUPPORTER'); 
+            },
+            
+            // ✅ UPDATED: Supporter check (includes Legacy+)
+            isSupporter() { 
+                return this.hasMinimumPlan('SUPPORTER'); 
+            },
+            
+            // ✅ UPDATED: Legacy+ specific check
+            isLegacy() { 
+                return this.currentPlan === 'LEGACY+'; 
+            },
+            
+            // ✅ UPDATED: Feature check with proper inheritance
             hasFeature(feature) {
-                // Check if user's plan includes this feature
                 const planFeatures = PLAN_FEATURES[this.currentPlan] || [];
                 return planFeatures.includes(feature.toLowerCase());
             },
+            
+            // ✅ UPDATED: Universal feature access check
             canAccessFeature(featureName) {
-                // Universal feature access check
                 const featureMap = {
                     'collections': 'collections',
                     'memorial_pages': 'memorial_pages',
@@ -2277,16 +2528,27 @@
                     'personal_memories': 'personal_memories',
                     'eternal_coordinates': 'eternal_coordinates',
                     'trailers': 'trailers',
-                    'flowers': 'flowers'
+                    'flowers': 'flowers',
+                    'supporter_badge': 'supporter_badge',
+                    'unlimited_candles': 'unlimited_candles',
+                    'unlimited_favorites': 'unlimited_favorites',
+                    'ad_free': 'ad_free'
                 };
 
                 const mappedFeature = featureMap[featureName] || featureName;
                 return this.hasFeature(mappedFeature);
             },
+            
+            // ✅ UPDATED: Get required plan with hierarchical awareness
             getRequiredPlan(featureName) {
-                // Return which plan is required for a feature
-                if (PLAN_FEATURES.SUPPORTER.includes(featureName)) return 'SUPPORTER';
-                if (PLAN_FEATURES['LEGACY+'].includes(featureName)) return 'LEGACY+';
+                // Check Legacy+ exclusive features first
+                if (BASE_PLAN_FEATURES['LEGACY+'].includes(featureName)) {
+                    return 'LEGACY+';
+                }
+                // Check Supporter features
+                if (BASE_PLAN_FEATURES.SUPPORTER.includes(featureName)) {
+                    return 'SUPPORTER';
+                }
                 return 'FREE';
             }
         };
@@ -3300,7 +3562,14 @@
             const suggestionData = { name: n, category: c };
             if (r) suggestionData.reason = r;
 
+            // Save suggestion to database
             await db.from('suggestions').insert([suggestionData]);
+            
+            // 📧 EMAIL INTEGRATION: Send support auto-reply
+            sendSupportAutoReply(n, c).catch(err => {
+                console.error('Email send failed (non-blocking):', err);
+            });
+
             closeSuggest();
             alert('Thank you! Your suggestion has been submitted.');
         }
@@ -4112,6 +4381,61 @@
             eval(action);
         }
 
+        // ============================================================================
+        // 📧 EMAIL INTEGRATION - Ready for Registration Flow
+        // ============================================================================
+        
+        /**
+         * Helper function to trigger welcome email from registration page
+         * Call this from your registration success handler:
+         * 
+         * Example usage in index.html or auth page:
+         * ```javascript
+         * // After successful registration
+         * const { data: { user } } = await supabase.auth.signUp({ email, password });
+         * if (user) {
+         *     // Trigger welcome email
+         *     await fetch('/app.html#trigger-welcome-email', {
+         *         method: 'POST',
+         *         body: JSON.stringify({ 
+         *             email: user.email, 
+         *             name: user.user_metadata?.full_name 
+         *         })
+         *     });
+         * }
+         * ```
+         */
+        window.triggerWelcomeEmail = async function(email, name) {
+            return await sendWelcomeEmail(email, name);
+        };
+
+        /**
+         * Helper function to trigger confirmation email from save operations
+         * Use when saving memories, tributes, or collections
+         * 
+         * Example usage:
+         * ```javascript
+         * // After saving a memory
+         * const saved = await saveMemory(memoryData);
+         * if (saved) {
+         *     await window.triggerConfirmationEmail(
+         *         'memory', 
+         *         memoryData.title
+         *     );
+         * }
+         * ```
+         */
+        window.triggerConfirmationEmail = async function(itemType, itemName) {
+            const { data: { user } } = await db.auth.getUser();
+            if (!user) return false;
+            
+            const userName = user.user_metadata?.full_name || 'there';
+            return await sendConfirmationEmail(user.email, userName, itemType, itemName);
+        };
+
+        // ============================================================================
+        // APP INITIALIZATION
+        // ============================================================================
         loadDevPermission();
         Permissions.init();
         loadUserData();
